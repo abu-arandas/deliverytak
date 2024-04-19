@@ -33,21 +33,21 @@ class UserModel {
       );
 
   UserModel copyWith({
-    Map? newName,
-    String? newEmail,
-    String? newPassword,
-    String? newImage,
-    PhoneNumber? newPhone,
-    GeoPoint? newAddress,
+    Map? name,
+    String? email,
+    String? password,
+    String? image,
+    PhoneNumber? phone,
+    GeoPoint? address,
   }) =>
       UserModel(
         id: id,
-        name: newName ?? name,
-        email: newEmail ?? email,
-        password: newPassword ?? password,
-        image: newImage ?? image,
-        phone: newPhone ?? phone,
-        address: newAddress ?? address,
+        name: name ?? this.name,
+        email: email ?? this.email,
+        password: password ?? this.password,
+        image: image ?? this.image,
+        phone: phone ?? this.phone,
+        address: address ?? this.address,
         role: role,
       );
 

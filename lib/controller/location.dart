@@ -10,7 +10,7 @@ class LocationController extends GetxController {
     permission();
   }
 
-  LatLng? currentLocation;
+  LatLng currentLocation = App.address;
 
   permission() async {
     bool serviceEnabled;
@@ -36,9 +36,7 @@ class LocationController extends GetxController {
     }
   }
 
-  currentAddress() =>
-      Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
-          .then((position) {
+  currentAddress() => Geolocator.getPositionStream().listen((position) {
         currentLocation = LatLng(position.latitude, position.longitude);
         update();
       });
@@ -50,11 +48,4 @@ class LocationController extends GetxController {
         second.latitude,
         second.longitude,
       );
-
-  Future<String> addressTitle({required LatLng address}) async {
-    List<Placemark> placemarks =
-        await placemarkFromCoordinates(address.latitude, address.longitude);
-
-    return '${placemarks.first.subLocality ?? ''}, ${placemarks.first.street ?? ''}';
-  }
 }

@@ -14,105 +14,127 @@ class _LoginState extends State<Login> {
   bool obscureText = true, loading = false;
 
   @override
-  Widget build(BuildContext context) => AlertDialog(
-        // Title
-        title: const Text('Enter your email and Password'),
-
-        // Form
-        content: SingleChildScrollView(
-          child: Form(
-            key: formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Email
-                TextFormField(
-                  decoration: const InputDecoration(
-                    labelText: 'email',
-                    prefixIcon: Icon(Icons.email),
-                  ),
-                  controller: email,
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.next,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return '* required';
-                    } else if (!value.isEmail) {
-                      return '* enter a valid email';
-                    } else {
-                      return null;
-                    }
-                  },
+  Widget build(BuildContext context) => AuthScaffold(
+        title: 'Login',
+        subTitle: 'enter your email and password',
+        form: Form(
+          key: formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Email
+              Text(
+                'Email',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall!
+                    .copyWith(fontWeight: FontWeight.normal),
+                decoration: const InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
                 ),
-                const SizedBox(height: 16),
+                controller: email,
+                keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.next,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return '* required';
+                  } else if (!value.isEmail) {
+                    return '* enter a valid email';
+                  } else {
+                    return null;
+                  }
+                },
+              ),
+              const SizedBox(height: 16),
 
-                // Password
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'password',
-                    prefixIcon: const Icon(Icons.key),
-                    suffixIcon: IconButton(
-                      onPressed: () =>
-                          setState(() => obscureText = !obscureText),
-                      icon:
-                          Icon(obscureText ? Icons.remove_red_eye : Icons.lock),
-                    ),
-                  ),
-                  controller: password,
-                  keyboardType: TextInputType.visiblePassword,
-                  obscureText: obscureText,
-                  textInputAction: TextInputAction.done,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return '* required';
-                    } else if (value.length < 6) {
-                      return '* must be 6 characters';
-                    } else {
-                      return null;
-                    }
-                  },
-                  onFieldSubmitted: (value) => validate(),
-                ),
-
-                // Reset Password
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () => showDialog(
-                      context: context,
-                      builder: (context) => const Reset(),
-                    ),
-                    child: const Text('Forget my Password'),
+              // Password
+              Text(
+                'Password',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall!
+                    .copyWith(fontWeight: FontWeight.normal),
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  suffixIcon: IconButton(
+                    onPressed: () => setState(() => obscureText = !obscureText),
+                    icon: Icon(obscureText ? Icons.remove_red_eye : Icons.lock),
                   ),
                 ),
+                controller: password,
+                keyboardType: TextInputType.visiblePassword,
+                obscureText: obscureText,
+                textInputAction: TextInputAction.done,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return '* required';
+                  } else if (value.length < 6) {
+                    return '* must be 6 characters';
+                  } else {
+                    return null;
+                  }
+                },
+                onFieldSubmitted: (value) => validate(),
+              ),
+              const SizedBox(height: 16),
 
-                // Login
-                ElevatedButton(
+              // Reset Password
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () => showDialog(
+                    context: context,
+                    builder: (context) => const Reset(),
+                  ),
+                  child: const Text('Forget my Password'),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Login
+              Align(
+                alignment: Alignment.center,
+                child: ElevatedButton(
                   onPressed: () => validate(),
+                  style: ElevatedButton.styleFrom(
+                    fixedSize: const Size(200, 50),
+                  ),
                   child: loading
                       ? const CircularProgressIndicator()
                       : const Text('Login'),
                 ),
-              ],
-            ),
+              ),
+
+              // Sign Up
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Not have an account?'),
+                    TextButton(
+                      onPressed: () => page(
+                        context: context,
+                        page: const Register(),
+                      ),
+                      child: const Text('Sign Up'),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
-
-        // Register
-        actionsAlignment: MainAxisAlignment.center,
-        actions: [
-          const Text(
-            'don\'t have an account',
-            style: TextStyle(fontSize: 12),
-          ),
-          TextButton(
-            onPressed: () => showDialog(
-              context: context,
-              builder: (context) => const Register(),
-            ),
-            child: const Text('register'),
-          ),
-        ],
       );
 
   validate() {
@@ -120,14 +142,14 @@ class _LoginState extends State<Login> {
 
     if (formKey.currentState!.validate()) {
       try {
-        FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: email.text,
-          password: password.text,
-        );
-
-        Navigator.pop(context);
-      } on FirebaseAuthException catch (error) {
-        errorSnackBar(error.message.toString());
+        FirebaseAuth.instance
+            .signInWithEmailAndPassword(
+              email: email.text,
+              password: password.text,
+            )
+            .then((value) => page(context: context, page: const Main()));
+      } catch (error) {
+        errorSnackBar(context, error.toString());
       }
     }
 

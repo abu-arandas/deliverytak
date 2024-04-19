@@ -9,90 +9,112 @@ class EnumValues<T> {
 
   EnumValues(this.map);
 
-  Map<T, String> get reverse => map.map((k, v) => MapEntry(v, k));
+  Map<T, String> get reverse => map.map(
+        (k, v) => MapEntry(v, k),
+      );
 }
 
-errorSnackBar(String text) => ScaffoldMessenger.of(Get.context!)
-  ..hideCurrentSnackBar()
-  ..showSnackBar(
-    SnackBar(
-      backgroundColor: Theme.of(Get.context!).colorScheme.error,
-      content: Text(text, style: const TextStyle(color: Colors.white)),
-    ),
-  );
+errorSnackBar(BuildContext context, String text) =>
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          backgroundColor: Theme.of(context).colorScheme.error,
+          content: Text(
+            text,
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
+      );
 
-succesSnackBar(String text) => ScaffoldMessenger.of(Get.context!)
-  ..hideCurrentSnackBar()
-  ..showSnackBar(
-    SnackBar(
-      backgroundColor: const Color(0xFF01b075),
-      content: Text(text, style: const TextStyle(color: Colors.white)),
-    ),
-  );
+succesSnackBar(BuildContext context, String text) =>
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          backgroundColor: const Color(0xFF01b075),
+          content: Text(
+            text,
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
+      );
 
 String toTitleCase(String text) => text
     .replaceAll(RegExp(' +'), ' ')
     .split(' ')
-    .map((str) => str[0].toUpperCase() + str.substring(1).toLowerCase())
+    .map(
+      (str) => str[0].toUpperCase() + str.substring(1).toLowerCase(),
+    )
     .join(' ');
 
-Widget title(context, String text) => Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            text,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Container(
-            width: 50,
-            height: 2,
-            color: Theme.of(context).colorScheme.primary,
-            margin: const EdgeInsets.only(top: 8, bottom: 32),
-          ),
-        ],
+page({required BuildContext context, required Widget page}) {
+  PageRouteBuilder route = PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => page,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+        SlideTransition(
+      position: Tween(begin: const Offset(0.0, 1.0), end: Offset.zero).animate(
+        CurvedAnimation(parent: animation, curve: Curves.easeInOut),
       ),
-    );
+      child: child,
+    ),
+  );
 
-Widget pageTtitle({
-  required BuildContext context,
-  required String text,
-  required String bg,
-  Widget? addition,
-}) =>
-    Container(
-      width: double.maxFinite,
-      height: 300,
-      padding: const EdgeInsets.all(64),
-      margin: const EdgeInsets.only(bottom: 32),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(bg),
-          fit: BoxFit.cover,
-          colorFilter: const ColorFilter.mode(Colors.black26, BlendMode.darken),
-        ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            text,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 36,
-              fontWeight: FontWeight.w900,
-              color: Colors.white,
-            ),
-          ),
-          if (addition != null) addition
-        ],
-      ),
-    );
+  return page == const Main()
+      ? Navigator.of(context).pushAndRemoveUntil(
+          route,
+          (Route<dynamic> route) => false,
+        )
+      : Navigator.of(context).push(route);
+}
+
+Color progressColor(OrderProgress progress) {
+  Color color;
+
+  switch (progress) {
+    case OrderProgress.binding:
+      color = Colors.blue;
+      break;
+    case OrderProgress.inProgress:
+      color = const Color(0xFF01b075);
+      break;
+    case OrderProgress.done:
+      color = Colors.grey;
+      break;
+
+    default:
+      color = Colors.blueGrey;
+  }
+
+  return color;
+}
+
+String progressDescription(OrderProgress progress) {
+  String text;
+
+  switch (progress) {
+    case OrderProgress.binding:
+      text = 'Waiting the shop to prepare it.';
+      break;
+    case OrderProgress.inProgress:
+      text = 'Waiting the delivey company';
+      break;
+    case OrderProgress.done:
+      text = 'Delivered';
+      break;
+
+    default:
+      text = '';
+  }
+
+  return text;
+}
+
+String paymentDetails(PaymentMethod payment) {
+  switch (payment) {
+    case PaymentMethod.cash:
+      return 'Cash on deliver';
+    case PaymentMethod.online:
+      return 'Paid by Credit Card';
+  }
+}

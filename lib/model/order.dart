@@ -6,7 +6,7 @@ class OrderModel {
   DateTime startTime;
   LatLng clientAddress;
   List<ProductModel> products;
-  DateTime? acceptTime, endTime;
+  DateTime? acceptTime;
   PaymentMethod payment;
   OrderProgress progress;
 
@@ -18,7 +18,6 @@ class OrderModel {
     required this.products,
     required this.payment,
     this.acceptTime,
-    this.endTime,
     required this.progress,
   });
 
@@ -35,34 +34,57 @@ class OrderModel {
         acceptTime: data['acceptTime'] != null
             ? (data['acceptTime'] as Timestamp).toDate()
             : null,
-        endTime: data['endTime'] != null
-            ? (data['endTime'] as Timestamp).toDate()
-            : null,
         progress: orderProgress.map[data['progress']]!,
+      );
+
+  OrderModel copyWith({
+    String? clientId,
+    DateTime? startTime,
+    LatLng? clientAddress,
+    List<ProductModel>? products,
+    String? driverId,
+    PaymentMethod? payment,
+    DateTime? acceptTime,
+    DateTime? endTime,
+    OrderProgress? progress,
+  }) =>
+      OrderModel(
+        id: id,
+        clientId: clientId ?? this.clientId,
+        startTime: startTime ?? this.startTime,
+        clientAddress: clientAddress ?? this.clientAddress,
+        products: products ?? this.products,
+        payment: payment ?? this.payment,
+        acceptTime: acceptTime ?? this.acceptTime,
+        progress: progress ?? this.progress,
       );
 
   Map<String, dynamic> toJson() => {
         'clientId': clientId,
         'startTime': startTime,
         'clientAddress': clientAddress.toJson(),
-        'products':
-            List.generate(products.length, (index) => products[index].toJson()),
+        'products': List.generate(
+          products.length,
+          (index) => products[index].toJson(),
+        ),
         'payment': paymentMethod.reverse[payment],
         'acceptTime': acceptTime,
-        'endTime': endTime,
         'progress': orderProgress.reverse[progress],
       };
 }
 
-enum OrderProgress { binding, inProgress, done }
+enum OrderProgress { binding, inProgress, done, deleted }
 
 EnumValues<OrderProgress> orderProgress = EnumValues({
   'Binding': OrderProgress.binding,
   'In Progress': OrderProgress.inProgress,
   'Done': OrderProgress.done,
+  'Deleted': OrderProgress.deleted,
 });
 
 enum PaymentMethod { cash, online }
 
-EnumValues<PaymentMethod> paymentMethod =
-    EnumValues({'Cash': PaymentMethod.cash, 'Online': PaymentMethod.online});
+EnumValues<PaymentMethod> paymentMethod = EnumValues({
+  'Cash': PaymentMethod.cash,
+  'Online': PaymentMethod.online,
+});

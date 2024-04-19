@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import '/exports.dart';
 
 class Register extends StatefulWidget {
@@ -11,86 +9,44 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   GlobalKey<FormState> formKey = GlobalKey();
-  XFile? pickedImage;
-  ImageProvider? image;
+  String image = noImage;
   TextEditingController fName = TextEditingController();
   TextEditingController lName = TextEditingController();
   TextEditingController email = TextEditingController();
   PhoneController phone = PhoneController(
-      initialValue: const PhoneNumber(isoCode: IsoCode.JO, nsn: ''));
+    initialValue: const PhoneNumber(isoCode: IsoCode.JO, nsn: ''),
+  );
   TextEditingController password = TextEditingController();
   bool obscureText = true, loading = false;
 
   @override
-  Widget build(BuildContext context) {
-    if (pickedImage == null) {
-      image = NetworkImage(noImage);
-    } else {
-      image = FileImage(File(pickedImage!.path));
-    }
-
-    return AlertDialog(
-      // Title
-      title: const Text('Enter your informations to Complete'),
-
-      // Form
-      content: SingleChildScrollView(
-        child: Form(
+  Widget build(BuildContext context) => AuthScaffold(
+        title: 'Register',
+        subTitle: 'enter your informations to get access',
+        form: Form(
           key: formKey,
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Image
-              Container(
-                width: 150,
-                height: 150,
-                margin: const EdgeInsets.all(16),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                  image: DecorationImage(
-                    image: image!,
-                    fit: BoxFit.fill,
-                    colorFilter: ColorFilter.mode(
-                        Colors.transparent.withOpacity(0.5), BlendMode.darken),
-                  ),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black,
-                      blurRadius: 5,
-                      blurStyle: BlurStyle.outer,
-                    ),
-                  ],
-                ),
-                child: IconButton(
-                  onPressed: () async {
-                    if (pickedImage == null) {
-                      await ImagePicker()
-                          .pickImage(source: ImageSource.gallery)
-                          .then((value) => setState(() => pickedImage = value));
-                    } else {
-                      setState(() => pickedImage = null);
-                    }
-                  },
-                  icon: Icon(
-                    pickedImage == null
-                        ? Icons.camera_alt
-                        : Icons.remove_circle,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-
               // Name
+              Text(
+                'Name',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 8),
               Row(
                 children: [
                   Expanded(
                     child: TextFormField(
-                      decoration:
-                          const InputDecoration(labelText: 'First Name'),
                       controller: fName,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall!
+                          .copyWith(fontWeight: FontWeight.normal),
+                      decoration: const InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                      ),
                       textInputAction: TextInputAction.next,
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -104,8 +60,15 @@ class _RegisterState extends State<Register> {
                   const SizedBox(width: 16),
                   Expanded(
                     child: TextFormField(
-                      decoration: const InputDecoration(labelText: 'Last Name'),
                       controller: lName,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall!
+                          .copyWith(fontWeight: FontWeight.normal),
+                      decoration: const InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                      ),
                       textInputAction: TextInputAction.next,
                     ),
                   ),
@@ -114,10 +77,19 @@ class _RegisterState extends State<Register> {
               const SizedBox(height: 16),
 
               // Email
+              Text(
+                'Email',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 8),
               TextFormField(
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall!
+                    .copyWith(fontWeight: FontWeight.normal),
                 decoration: const InputDecoration(
-                  labelText: 'email',
-                  prefixIcon: Icon(Icons.email),
+                  filled: true,
+                  fillColor: Colors.white,
                 ),
                 controller: email,
                 keyboardType: TextInputType.emailAddress,
@@ -135,10 +107,19 @@ class _RegisterState extends State<Register> {
               const SizedBox(height: 16),
 
               // Phone
+              Text(
+                'Phone',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 8),
               PhoneFormField(
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall!
+                    .copyWith(fontWeight: FontWeight.normal),
                 decoration: const InputDecoration(
-                  labelText: 'phone',
-                  prefixIcon: Icon(Icons.phone),
+                  filled: true,
+                  fillColor: Colors.white,
                 ),
                 controller: phone,
                 textInputAction: TextInputAction.next,
@@ -146,10 +127,19 @@ class _RegisterState extends State<Register> {
               const SizedBox(height: 16),
 
               // Password
+              Text(
+                'Password',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 8),
               TextFormField(
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall!
+                    .copyWith(fontWeight: FontWeight.normal),
                 decoration: InputDecoration(
-                  labelText: 'password',
-                  prefixIcon: const Icon(Icons.key),
+                  filled: true,
+                  fillColor: Colors.white,
                   suffixIcon: IconButton(
                     onPressed: () => setState(() => obscureText = !obscureText),
                     icon: Icon(obscureText ? Icons.remove_red_eye : Icons.lock),
@@ -173,75 +163,64 @@ class _RegisterState extends State<Register> {
               const SizedBox(height: 16),
 
               // Register
-              ElevatedButton(
-                onPressed: () => validate(),
-                child: loading
-                    ? const CircularProgressIndicator()
-                    : const Text('Register'),
+              Align(
+                alignment: Alignment.center,
+                child: ElevatedButton(
+                  onPressed: () => validate(),
+                  style: ElevatedButton.styleFrom(
+                    fixedSize: const Size(200, 50),
+                  ),
+                  child: loading
+                      ? const CircularProgressIndicator()
+                      : const Text('Register'),
+                ),
+              ),
+
+              // Log In
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Already have an account?'),
+                    TextButton(
+                      onPressed: () => page(
+                        context: context,
+                        page: const Login(),
+                      ),
+                      child: const Text('Log In'),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
         ),
-      ),
+      );
 
-      // Login
-      actionsAlignment: MainAxisAlignment.center,
-      actions: [
-        const Text(
-          'already have an account',
-          style: TextStyle(fontSize: 12),
-        ),
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('login'),
-        ),
-      ],
-    );
-  }
-
-  validate() async {
+  validate() {
     setState(() => loading = true);
 
     if (formKey.currentState!.validate()) {
       try {
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: email.text,
-          password: password.text,
-        );
-
-        String imageURL;
-
-        if (pickedImage != null) {
-          await FirebaseStorage.instance
-              .ref('users/')
-              .child(FirebaseAuth.instance.currentUser!.uid)
-              .putFile(File(pickedImage!.path));
-
-          imageURL = await FirebaseStorage.instance
-              .ref('users/')
-              .child(FirebaseAuth.instance.currentUser!.uid)
-              .getDownloadURL();
-        } else {
-          imageURL = noImage;
-        }
-
-        FirebaseFirestore.instance
-            .collection('users')
-            .doc(FirebaseAuth.instance.currentUser!.uid)
-            .set(UserModel(
-              id: '',
-              name: {'first': fName.text, 'last': lName.text},
+        FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
               email: email.text,
               password: password.text,
-              image: imageURL,
-              phone: phone.value,
-              role: UserRole.client,
-            ).toJson());
-
-        Navigator.pop;
-        Navigator.pop;
-      } on FirebaseAuthException catch (error) {
-        errorSnackBar(error.message.toString());
+            )
+            .then(
+              (value) => usersCollection.doc(value.user!.uid).set(UserModel(
+                    id: '',
+                    name: {'first': fName.text, 'last': lName.text},
+                    email: email.text,
+                    image: image,
+                    phone: phone.value,
+                    role: UserRole.client,
+                  ).toJson()),
+            )
+            .then((value) => page(context: context, page: const Main()));
+      } catch (error) {
+        errorSnackBar(context, error.toString());
       }
     }
 

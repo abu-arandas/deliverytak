@@ -1,9 +1,10 @@
 name: deliverytak
-description: "is a cutting-edge mobile application built using Flutter and Firebase, designed to revolutionize the online fashion shopping experience. With its sleek design, seamless user experience, and robust backend powered by Firebase, Fashionista offers both customers and administrators a comprehensive solution for all their fashion needs."
+description: "Deliverytak is a Flutter application integrated with Firebase backend services, designed to serve as a fashion store with an intuitive admin panel. It allows users to browse through a variety of fashion items, add them to their cart, and make purchases seamlessly. Additionally, it empowers administrators to manage product listings, orders, and user data efficiently."
 publish_to: 'none'
 version: 1.0.0+1
 environment:
-  sdk: '>=3.1.5 <4.0.0'
+  sdk: '>=3.3.3 <4.0.0'
+
 dependencies:
   flutter:
     sdk: flutter
@@ -13,8 +14,6 @@ dependencies:
   cloud_firestore: ^4.15.9
   firebase_storage: ^11.6.10
 
-  cupertino_icons: ^1.0.2
-  get_storage: ^2.1.1
   flutter_bootstrap5: ^1.1.1+1
   get: ^4.6.5
   phone_form_field: ^9.1.0
@@ -25,33 +24,27 @@ dependencies:
   image_picker: ^1.0.2
   flutter_map: ^6.1.0
   geolocator: ^11.0.0
-  geocoding: ^3.0.0
+  syncfusion_flutter_charts: ^25.1.38
+  barcode_widget: ^2.0.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^3.0.1
+  flutter_lints: ^3.0.0
   flutter_launcher_icons: ^0.13.1
 
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/images/favicon.png"
+  image_path: "assets/favicon.png"
   adaptive_icon_background: "#ffffff"
-  adaptive_icon_foreground: "assets/images/favicon.png"
+  adaptive_icon_foreground: "assets/favicon.png"
   min_sdk_android: 21
 
 flutter:
 
   uses-material-design: true
-
-  assets:
-    - assets/data.json
-    - assets/images/
-    - assets/images/title/
-    - assets/images/collections/
-    - assets/images/empty/
 
   fonts:
     - family: Montserrat

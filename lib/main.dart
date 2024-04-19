@@ -1,8 +1,7 @@
-import '/exports.dart';
+import 'exports.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await GetStorage.init();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(const MyApp());
@@ -16,94 +15,114 @@ class MyApp extends StatelessWidget {
         builder: (context) => GetMaterialApp(
           title: App.name,
           debugShowCheckedModeBanner: false,
-          theme: BootstrapTheme.of(context).toTheme(
-            theme: ThemeData(
-              useMaterial3: true,
-              fontFamily: 'Montserrat',
-              colorScheme:
-                  ColorScheme.fromSeed(seedColor: const Color(0xFF540804)),
-              iconTheme: const IconThemeData(size: 20),
-              appBarTheme: const AppBarTheme(
-                backgroundColor: Colors.white,
-                surfaceTintColor: Colors.transparent,
-                shadowColor: Colors.transparent,
+          theme: ThemeData(
+            useMaterial3: true,
+            fontFamily: 'Montserrat',
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color(0xFF3A57E8),
+              background: const Color(0xFFF8F8F8),
+            ),
+            inputDecorationTheme: InputDecorationTheme(
+              contentPadding: const EdgeInsets.all(16),
+              labelStyle: const TextStyle(fontSize: 14),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5),
               ),
-              inputDecorationTheme: InputDecorationTheme(
-                contentPadding: const EdgeInsets.all(16),
-                labelStyle: const TextStyle(fontSize: 14),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.5)),
-                focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.5)),
-                enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.5)),
-                errorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.5)),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5),
               ),
-              buttonTheme: const ButtonThemeData(
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5),
               ),
-              textButtonTheme: const TextButtonThemeData(
-                style: ButtonStyle(
-                  overlayColor: MaterialStatePropertyAll(Colors.transparent),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5),
+              ),
+            ),
+            buttonTheme: const ButtonThemeData(
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              buttonColor: Color(0xFF3A57E8),
+            ),
+            textButtonTheme: const TextButtonThemeData(
+              style: ButtonStyle(
+                overlayColor: MaterialStatePropertyAll(Colors.transparent),
+              ),
+            ),
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ButtonStyle(
+                shape: MaterialStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+                backgroundColor: MaterialStateProperty.resolveWith(
+                  (states) => states.contains(MaterialState.focused) ||
+                          states.contains(MaterialState.hovered) ||
+                          states.contains(MaterialState.pressed)
+                      ? Colors.white
+                      : const Color(0xFF3A57E8),
+                ),
+                foregroundColor: MaterialStateProperty.resolveWith(
+                  (states) => states.contains(MaterialState.focused) ||
+                          states.contains(MaterialState.hovered) ||
+                          states.contains(MaterialState.pressed)
+                      ? const Color(0xFF3A57E8)
+                      : Colors.white,
                 ),
               ),
-              elevatedButtonTheme: ElevatedButtonThemeData(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith(
-                    (states) => states.contains(MaterialState.focused) ||
+            ),
+            outlinedButtonTheme: OutlinedButtonThemeData(
+              style: ButtonStyle(
+                shape: MaterialStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+                backgroundColor: MaterialStateProperty.resolveWith(
+                  (states) => states.contains(MaterialState.focused) ||
+                          states.contains(MaterialState.hovered) ||
+                          states.contains(MaterialState.pressed)
+                      ? const Color(0xFF3A57E8)
+                      : Colors.transparent,
+                ),
+                foregroundColor: MaterialStateProperty.resolveWith(
+                  (states) => states.contains(MaterialState.focused) ||
+                          states.contains(MaterialState.hovered) ||
+                          states.contains(MaterialState.pressed)
+                      ? Colors.white
+                      : const Color(0xFF3A57E8),
+                ),
+                side: MaterialStateProperty.resolveWith(
+                  (states) => BorderSide(
+                    color: states.contains(MaterialState.focused) ||
                             states.contains(MaterialState.hovered) ||
                             states.contains(MaterialState.pressed)
                         ? Colors.white
-                        : const Color(0xFF540804),
-                  ),
-                  foregroundColor: MaterialStateProperty.resolveWith(
-                    (states) => states.contains(MaterialState.focused) ||
-                            states.contains(MaterialState.hovered) ||
-                            states.contains(MaterialState.pressed)
-                        ? const Color(0xFF540804)
-                        : Colors.white,
+                        : const Color(0xFF3A57E8),
                   ),
                 ),
               ),
-              outlinedButtonTheme: OutlinedButtonThemeData(
-                style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.resolveWith(
-                    (states) => states.contains(MaterialState.focused) ||
-                            states.contains(MaterialState.hovered) ||
-                            states.contains(MaterialState.pressed)
-                        ? Colors.white
-                        : const Color(0xFF540804),
-                  ),
-                  side: MaterialStateProperty.resolveWith(
-                    (states) => BorderSide(
-                      color: states.contains(MaterialState.focused) ||
-                              states.contains(MaterialState.hovered) ||
-                              states.contains(MaterialState.pressed)
-                          ? Colors.white
-                          : const Color(0xFF540804),
-                    ),
-                  ),
-                ),
-              ),
-              cardTheme: const CardTheme(elevation: 2.5),
-              floatingActionButtonTheme: const FloatingActionButtonThemeData(
-                shape: CircleBorder(),
-                backgroundColor: Color(0xFF540804),
-                foregroundColor: Colors.white,
-              ),
+            ),
+            cardTheme: const CardTheme(elevation: 2.5),
+            floatingActionButtonTheme: const FloatingActionButtonThemeData(
+              shape: CircleBorder(),
+              backgroundColor: Color(0xFF3A57E8),
+              foregroundColor: Colors.white,
             ),
           ),
           initialBinding: BindingsBuilder(() {
-            Get.put(UserController());
-            Get.put(ScaffoldController());
-            Get.put(ProductController());
-            Get.put(OrderController());
-            Get.put(LocationController());
+            Get.put(
+              CartController(),
+            );
+            Get.put(
+              SortController(),
+            );
+            Get.put(
+              LocationController(),
+            );
           }),
           home: OrientationBuilder(
-            builder: (context, orientation) => const Home(),
+            builder: (context, orientation) => const Main(),
           ),
         ),
       );

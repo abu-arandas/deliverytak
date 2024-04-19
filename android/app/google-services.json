@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "752904600547",
+    "firebase_url": "https://deliverytak-default-rtdb.firebaseio.com",
+    "project_id": "deliverytak",
+    "storage_bucket": "deliverytak.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:752904600547:android:790aa9982777dbc5097ed6",
+        "android_client_info": {
+          "package_name": "com.arandas.deliverytak"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "752904600547-982e05lthuk88gs6n446buvq6hd1vi97.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5Vitlm4m0HeeX2ZJp6IvhIG1xJlcPDS8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "752904600547-982e05lthuk88gs6n446buvq6hd1vi97.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "752904600547-366b3p8vanqagehcndarakf1p8tjfvg6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.alshaamil"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

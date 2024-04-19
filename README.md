@@ -4,40 +4,40 @@ Deliverytak is a Flutter application integrated with Firebase backend services, 
 
 ## Features
 
-- **User Interface:** 
-  - Sleek and user-friendly interface designed with Flutter for a seamless user experience.
-  - Intuitive navigation allowing users to effortlessly browse through various fashion items.
+- **User Interface:**
+    - Sleek and user-friendly interface designed with Flutter for a seamless user experience.
+    - Intuitive navigation allowing users to effortlessly browse through various fashion items.
 - **Authentication:**
-  - Firebase Authentication integration for secure user authentication and authorization.
-  - Users can sign up, log in, and reset their passwords securely.
+    - Firebase Authentication integration for secure user authentication and authorization.
+    - Users can sign up, log in, and reset their passwords securely.
 - **Product Management:**
-  - Admin panel for managing fashion products, including adding new products, updating existing ones, and removing items as necessary.
+    - Admin panel for managing fashion products, including adding new products, updating existing ones, and removing items as necessary.
 - **Shopping Cart:**
-  - Users can add products to their shopping cart and proceed to checkout easily.
-  - Cart management functionalities such as adding, removing, or updating the quantity of items.
+    - Users can add products to their shopping cart and proceed to checkout easily.
+    - Cart management functionalities such as adding, removing, or updating the quantity of items.
 - **Orders:**
-  - Users can view their order history, including details such as order date, items purchased, and total cost.
-  - Admins can monitor incoming orders, mark them as processed, and track order fulfillment.
+    - Users can view their order history, including details such as order date, items purchased, and total cost.
+    - Admins can monitor incoming orders, mark them as processed, and track order fulfillment.
 - **Real-time Database:**
-  - Firebase Realtime Database integration for seamless data synchronization across devices.
-  - Instant updates on product availability, stock levels, and order status.
+    - Firebase Realtime Database integration for seamless data synchronization across devices.
+    - Instant updates on product availability, stock levels, and order status.
 - **Notifications:**
-  - Push notifications to keep users informed about order confirmations, shipment updates, and promotional offers.
+    - Push notifications to keep users informed about order confirmations, shipment updates, and promotional offers.
 - **Responsive Design:**
-  - Responsive UI design ensuring optimal user experience across various screen sizes and orientations.
+    - Responsive UI design ensuring optimal user experience across various screen sizes and orientations.
 - **Analytics and Insights:**
-  - Utilize Firebase Analytics to gain valuable insights into user behavior, popular products, and sales trends.
+    - Utilize Firebase Analytics to gain valuable insights into user behavior, popular products, and sales trends.
 - **Scalability and Reliability:**
-  - Leveraging Firebase backend services ensures scalability and reliability, allowing the application to handle increased user loads seamlessly.
+    - Leveraging Firebase backend services ensures scalability and reliability, allowing the application to handle increased user loads seamlessly.
 
 ## Technologies Used
 
 - **Flutter:** A cross-platform UI toolkit for building natively compiled applications for mobile, web, and desktop from a single codebase.
 - **Firebase:**
-  - Firebase Authentication: For user authentication and authorization.
-  - Firebase Realtime Database: For storing and synchronizing data in real time.
-  - Firebase Cloud Messaging: For sending push notifications to users.
-  - Firebase Analytics: For tracking user engagement and behavior.
+    - Firebase Authentication: For user authentication and authorization.
+    - Firebase Realtime Database: For storing and synchronizing data in real time.
+    - Firebase Cloud Messaging: For sending push notifications to users.
+    - Firebase Analytics: For tracking user engagement and behavior.
 - **Dart:** The programming language used for building Flutter applications.
 
 ## Getting Started
@@ -64,9 +64,12 @@ DeliveryTak is open-source software licensed under the [MIT License](LICENSE).
 
 DeliveryTak is a fictional project created for demonstration purposes only. It is not associated with any real business or entity.
 
+## APK
+![APK](assets/app.apk)
+
 ## Screenshots
 
-    *Client Interface:*
+    *Client Interface*
 
 ![Screenshot 1](assets/screenshots/client/1.png)
 ![Screenshot 2](assets/screenshots/client/2.png)
@@ -76,4 +79,4 @@ DeliveryTak is a fictional project created for demonstration purposes only. It i
 ![Screenshot 6](assets/screenshots/client/6.png)
 ![Screenshot 7](assets/screenshots/client/7.png)
 
-    *Admin Interface:*
+    *Admin Interface*
