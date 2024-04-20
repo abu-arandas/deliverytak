@@ -15,7 +15,7 @@ CollectionReference<Map<String, dynamic>> ordersCollection =
 /* ====== Read ====== */
 Stream<List<UserModel>> users() => usersCollection.snapshots().map(
     (query) => query.docs.map((item) => UserModel.fromJson(item)).toList());
-Stream<UserModel> singletUser(id) => usersCollection
+Stream<UserModel> singleUser(id) => usersCollection
     .doc(id)
     .snapshots()
     .map((query) => UserModel.fromJson(query));

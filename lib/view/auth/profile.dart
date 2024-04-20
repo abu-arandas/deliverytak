@@ -26,7 +26,7 @@ class _ProfileState extends State<Profile> {
   void initState() {
     super.initState();
 
-    singletUser(widget.id).listen((event) {
+    singleUser(widget.id).listen((event) {
       setState(() {
         image = NetworkImage(event.image);
         imageUrl = event.image;

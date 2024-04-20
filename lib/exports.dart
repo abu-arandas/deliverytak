@@ -24,7 +24,7 @@ export 'package:image_picker/image_picker.dart';
 export 'package:flutter_map/flutter_map.dart';
 export 'package:latlong2/latlong.dart' hide Path;
 export 'package:geolocator/geolocator.dart';
-export 'package:barcode_widget/barcode_widget.dart';
+export 'package:flex_color_picker/flex_color_picker.dart';
 export 'package:intl/intl.dart' hide TextDirection;
 
 /* ====== Config ====== */

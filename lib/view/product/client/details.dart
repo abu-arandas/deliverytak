@@ -9,6 +9,7 @@ class ProductDetails extends StatefulWidget {
 }
 
 class _ProductDetailsState extends State<ProductDetails> {
+  int count = 0;
   String? size;
   String? color;
 
@@ -19,6 +20,7 @@ class _ProductDetailsState extends State<ProductDetails> {
     for (var element in CartController.instance.cartProducts) {
       if (widget.id == element.id) {
         setState(() {
+          count = element.stock;
           size = element.sizes.first;
           color = element.colors.first.name;
         });
@@ -273,15 +275,95 @@ class _ProductDetailsState extends State<ProductDetails> {
                 style: const TextStyle(color: Colors.white),
               ),
               const Spacer(),
-              CartController.instance.cartButton(
-                id: product.id,
-                color: color != null
-                    ? product.colors
-                        .singleWhere((element) => element.name == color)
-                    : null,
-                size: size,
-                bgColor: Colors.white,
-              )
+              GetBuilder<CartController>(
+                builder: (controller) {
+                  bool exists = controller.cartProducts
+                      .any((element) => element.id == product.id);
+
+                  return Row(
+                    children: [
+                      // Remove
+                      if (exists) ...{
+                        IconButton(
+                          onPressed: () {
+                            if (count > 1) {
+                              controller.cartProducts
+                                  .singleWhere(
+                                      (element) => element.id == product.id)
+                                  .stock--;
+                              controller.update();
+
+                              count--;
+                              setState(() {});
+                            } else {
+                              controller.cartProducts.removeWhere(
+                                  (element) => element.id == product.id);
+                              controller.update();
+                            }
+                          },
+                          icon: const Icon(Icons.remove, color: Colors.white),
+                        )
+                      },
+
+                      // Count
+                      if (exists) ...{
+                        Text(
+                          count.toString(),
+                          style: const TextStyle(color: Colors.white),
+                        )
+                      },
+
+                      // Add
+                      if (product.stock >= count) ...{
+                        IconButton(
+                          onPressed: () {
+                            if (exists) {
+                              ProductModel cartProduct = controller.cartProducts
+                                  .singleWhere(
+                                      (element) => element.id == product.id);
+
+                              if (color != null) {
+                                cartProduct.colors = [
+                                  product.colors.singleWhere(
+                                      (element) => element.name == color)
+                                ];
+                              }
+
+                              if (size != null) {
+                                cartProduct.sizes = [size!];
+                              }
+
+                              cartProduct.stock++;
+                            } else {
+                              controller.cartProducts.add(
+                                product.copyWith(
+                                  colors: color != null
+                                      ? [
+                                          product.colors.singleWhere(
+                                              (element) =>
+                                                  element.name == color)
+                                        ]
+                                      : null,
+                                  sizes: size != null ? [size!] : null,
+                                  stock: 1,
+                                ),
+                              );
+                            }
+
+                            controller.update();
+                            count++;
+                            setState(() {});
+                          },
+                          icon: Icon(
+                            exists ? Icons.add : Icons.shopping_cart,
+                            color: Colors.white,
+                          ),
+                        )
+                      },
+                    ],
+                  );
+                },
+              ),
             ],
           ),
         ),

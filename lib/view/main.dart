@@ -9,7 +9,7 @@ class Main extends StatelessWidget {
         builder: (context, authSnapshot) {
           if (authSnapshot.hasData) {
             return StreamBuilder(
-              stream: singletUser(authSnapshot.data!.uid),
+              stream: singleUser(authSnapshot.data!.uid),
               builder: (context, userSnapshot) {
                 if (userSnapshot.hasData) {
                   switch (userSnapshot.data!.role) {

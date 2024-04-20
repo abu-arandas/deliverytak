@@ -56,7 +56,9 @@ class _AdminScaffoldState extends State<AdminScaffold> {
           // Body
           body: SingleChildScrollView(
             controller: scrollController,
-            child: widget.body,
+            child: FB5Container(
+              child: widget.body,
+            ),
           ),
 
           // Scroll to Top

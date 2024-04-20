@@ -36,7 +36,7 @@ class AdminBrands extends StatelessWidget {
                   children: List.generate(
                     snapshot.data!.length,
                     (index) => FB5Col(
-                      classNames: 'col-lg-3 col-md-4 col-sm-6 col-xs-6 p-1',
+                      classNames: 'col-lg-12 col-md-12 col-sm-6 col-xs-6 p-1',
                       child: ListTile(
                         contentPadding: const EdgeInsets.all(8),
 

@@ -254,8 +254,8 @@ class _OrderDetailsState extends State<OrderDetails> {
             ),
           },
 
-          if (widget.order.progress != OrderProgress.deleted ||
-              widget.order.progress != OrderProgress.done) ...{
+          if (widget.order.progress == OrderProgress.binding &&
+              !currentUser) ...{
             // Start
             ElevatedButton(
               onPressed: () {
@@ -267,6 +267,14 @@ class _OrderDetailsState extends State<OrderDetails> {
                       )
                       .toJson());
 
+                  for (var product in widget.order.products) {
+                    singleProduct(product.id).listen((event) {
+                      productsCollection.doc(product.id).update({
+                        'stock': event.stock - product.stock,
+                      });
+                    });
+                  }
+
                   succesSnackBar(context, 'Started');
                   Navigator.pop(context);
                 } catch (error) {
@@ -277,16 +285,17 @@ class _OrderDetailsState extends State<OrderDetails> {
                 backgroundColor: Theme.of(context).colorScheme.primary,
               ),
               child: const Text('Start'),
-            ),
+            )
+          },
 
-            // Delete
+          // Delete
+          if (widget.order.progress != OrderProgress.deleted ||
+              widget.order.progress != OrderProgress.done) ...{
             ElevatedButton(
               onPressed: () {
                 try {
                   ordersCollection.doc(widget.order.id).update(widget.order
-                      .copyWith(
-                        progress: OrderProgress.deleted,
-                      )
+                      .copyWith(progress: OrderProgress.deleted)
                       .toJson());
 
                   succesSnackBar(context, 'Deleted');
@@ -537,7 +546,7 @@ class _OrderDetailsState extends State<OrderDetails> {
           const SizedBox(height: 16),
 
           // Logo
-          App.logo(),
+          App.logo(color: Colors.black),
           divider(),
 
           // Informations

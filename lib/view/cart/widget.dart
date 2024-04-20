@@ -54,12 +54,11 @@ class _CartProductState extends State<CartProduct> {
 
                   subtitle: Column(
                     children: [
-                      // Color & Size
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          // Colors
-                          if (snapshot.data!.colors.isNotEmpty) ...{
+                      // Color
+                      if (snapshot.data!.colors.isNotEmpty) ...{
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
                             const Text('Color'),
                             Flexible(
                               child: PopupMenuButton(
@@ -68,6 +67,17 @@ class _CartProductState extends State<CartProduct> {
                                   snapshot.data!.colors.length,
                                   (index) => PopupMenuItem(
                                     value: snapshot.data!.colors[index],
+                                    onTap: () {
+                                      controller.cartProducts
+                                          .singleWhere((element) =>
+                                              element.id ==
+                                              widget.cartProduct.id)
+                                          .colors = [
+                                        snapshot.data!.colors[index]
+                                      ];
+
+                                      controller.update();
+                                    },
                                     child: ListTile(
                                       leading: Icon(
                                         Icons.circle,
@@ -97,10 +107,15 @@ class _CartProductState extends State<CartProduct> {
                                 ),
                               ),
                             ),
-                          },
+                          ],
+                        ),
+                      },
 
-                          // Sizes
-                          if (snapshot.data!.sizes.isNotEmpty) ...{
+                      // Size
+                      if (snapshot.data!.sizes.isNotEmpty) ...{
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
                             const Text('Size'),
                             Flexible(
                               child: PopupMenuButton(
@@ -108,9 +123,17 @@ class _CartProductState extends State<CartProduct> {
                                     List.generate(
                                   snapshot.data!.sizes.length,
                                   (index) => PopupMenuItem(
-                                    onTap: () => setState(() {
-                                      size == snapshot.data!.sizes[index];
-                                    }),
+                                    onTap: () {
+                                      controller.cartProducts
+                                          .singleWhere((element) =>
+                                              element.id ==
+                                              widget.cartProduct.id)
+                                          .sizes = [
+                                        snapshot.data!.sizes[index]
+                                      ];
+
+                                      controller.update();
+                                    },
                                     child: Text(snapshot.data!.sizes[index]),
                                   ),
                                 ),
@@ -124,9 +147,9 @@ class _CartProductState extends State<CartProduct> {
                                 ),
                               ),
                             ),
-                          },
-                        ],
-                      ),
+                          ],
+                        ),
+                      },
 
                       // Price & Quantity
                       Row(

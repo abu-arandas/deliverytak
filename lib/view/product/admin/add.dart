@@ -20,15 +20,18 @@ class _AddProductState extends State<AddProduct> {
   TextEditingController name = TextEditingController();
   TextEditingController price = TextEditingController();
   TextEditingController description = TextEditingController();
-  String? category, brand;
+  TextEditingController category = TextEditingController();
+  TextEditingController gender = TextEditingController();
+  TextEditingController brand = TextEditingController();
+  TextEditingController stock = TextEditingController();
 
-  TextEditingController color = TextEditingController();
+  GlobalKey<FormState> colorFormKey = GlobalKey();
+  TextEditingController colorName = TextEditingController();
+  Color? colorHex;
   List<ColorModel> colors = [];
 
+  TextEditingController size = TextEditingController();
   List<String> sizes = [];
-
-  Genders? gender;
-  int? stock;
 
   @override
   Widget build(BuildContext context) => AdminScaffold(
@@ -37,7 +40,7 @@ class _AddProductState extends State<AddProduct> {
           key: formKey,
           child: Center(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 400),
+              constraints: const BoxConstraints(maxWidth: 500),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -117,30 +120,35 @@ class _AddProductState extends State<AddProduct> {
                         ),
 
                         // Images
-                        for (var element in imageProviders) ...{
-                          AspectRatio(
-                            aspectRatio: 1,
-                            child: Container(
-                              width: double.maxFinite,
-                              height: double.maxFinite,
-                              alignment: Alignment.center,
-                              margin: const EdgeInsets.only(left: 8),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12.5),
-                                image: DecorationImage(
-                                  image: element,
-                                  fit: BoxFit.fill,
+                        Expanded(
+                          child: Row(
+                            children: List.generate(
+                              imageProviders.length,
+                              (index) => AspectRatio(
+                                aspectRatio: 1,
+                                child: Container(
+                                  width: double.maxFinite,
+                                  height: double.maxFinite,
+                                  alignment: Alignment.center,
+                                  margin: const EdgeInsets.only(left: 8),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12.5),
+                                    image: DecorationImage(
+                                      image: imageProviders[index],
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
+                                  child: IconButton(
+                                    onPressed: () => setState(() {
+                                      imageProviders.removeAt(index);
+                                    }),
+                                    icon: const Icon(Icons.remove_circle),
+                                  ),
                                 ),
-                              ),
-                              child: IconButton(
-                                onPressed: () => setState(() {
-                                  imageProviders.remove(element);
-                                }),
-                                icon: const Icon(Icons.remove_circle),
                               ),
                             ),
                           ),
-                        }
+                        ),
                       ],
                     ),
                   ),
@@ -189,6 +197,7 @@ class _AddProductState extends State<AddProduct> {
                           const InputDecoration(labelText: 'Description'),
                       controller: description,
                       keyboardType: TextInputType.multiline,
+                      expands: true,
                       textInputAction: TextInputAction.newline,
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -203,76 +212,53 @@ class _AddProductState extends State<AddProduct> {
                   // Category
                   Padding(
                     padding: const EdgeInsets.all(8),
-                    child: StreamBuilder(
-                      stream: categories(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.all(8).copyWith(top: 0),
-                                child: Text(
-                                  'Category',
-                                  style: Theme.of(context)
-                                      .inputDecorationTheme
-                                      .labelStyle!
-                                      .copyWith(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              FB5Row(
-                                children: List.generate(
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'Category',
+                        suffixIcon: StreamBuilder(
+                          stream: categories(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return PopupMenuButton(
+                                itemBuilder: (BuildContext context) =>
+                                    List.generate(
                                   snapshot.data!.length,
-                                  (index) => FB5Col(
-                                    classNames:
-                                        'col-lg-3 col-md-4 col-sm-6 col-xs-6',
-                                    child: ListTile(
-                                      onTap: () => setState(() =>
-                                          category = snapshot.data![index].id),
-                                      shape: BeveledRectangleBorder(
-                                        borderRadius: BorderRadius.circular(5),
-                                        side:
-                                            category == snapshot.data![index].id
-                                                ? const BorderSide(
-                                                    width: 0.5,
-                                                    color: Colors.black,
-                                                  )
-                                                : BorderSide.none,
+                                  (index) => PopupMenuItem(
+                                    onTap: () => setState(
+                                      () => category = TextEditingController(
+                                        text: snapshot.data![index].id,
                                       ),
-                                      title: Text(
-                                        snapshot.data![index].name,
-                                        style: Theme.of(context)
-                                            .inputDecorationTheme
-                                            .labelStyle,
-                                      ),
-                                      trailing:
-                                          category == snapshot.data![index].id
-                                              ? IconButton(
-                                                  onPressed: () => setState(
-                                                      () => category = null),
-                                                  icon: const Icon(Icons.close),
-                                                )
-                                              : null,
                                     ),
+                                    value: snapshot.data![index].id,
+                                    child: Text(snapshot.data![index].name),
                                   ),
                                 ),
-                              ),
-                              const Divider(),
-                            ],
-                          );
-                        } else if (snapshot.hasError) {
-                          return Center(
-                              child: Text(
-                            snapshot.error.toString(),
-                          ));
-                        } else if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
+                                child: const Icon(Icons.keyboard_arrow_down),
+                              );
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                  child: Text(
+                                snapshot.error.toString(),
+                              ));
+                            } else if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            } else {
+                              return Container();
+                            }
+                          },
+                        ),
+                      ),
+                      controller: category,
+                      keyboardType: TextInputType.name,
+                      textInputAction: TextInputAction.next,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return '* required';
                         } else {
-                          return Container();
+                          return null;
                         }
                       },
                     ),
@@ -281,194 +267,92 @@ class _AddProductState extends State<AddProduct> {
                   // Brand
                   Padding(
                     padding: const EdgeInsets.all(8),
-                    child: StreamBuilder(
-                      stream: brands(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.all(8).copyWith(top: 0),
-                                child: Text(
-                                  'Brand',
-                                  style: Theme.of(context)
-                                      .inputDecorationTheme
-                                      .labelStyle!
-                                      .copyWith(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              FB5Row(
-                                children: List.generate(
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'Brand',
+                        suffixIcon: StreamBuilder(
+                          stream: brands(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return PopupMenuButton(
+                                itemBuilder: (BuildContext context) =>
+                                    List.generate(
                                   snapshot.data!.length,
-                                  (index) => FB5Col(
-                                    classNames:
-                                        'col-lg-3 col-md-4 col-sm-6 col-xs-6',
-                                    child: ListTile(
-                                      onTap: () => setState(() =>
-                                          brand = snapshot.data![index].id),
-                                      shape: BeveledRectangleBorder(
-                                        borderRadius: BorderRadius.circular(5),
-                                        side: brand == snapshot.data![index].id
-                                            ? const BorderSide(
-                                                width: 0.5,
-                                                color: Colors.black,
-                                              )
-                                            : BorderSide.none,
+                                  (index) => PopupMenuItem(
+                                    onTap: () => setState(
+                                      () => brand = TextEditingController(
+                                        text: snapshot.data![index].id,
                                       ),
-                                      title: Text(
-                                        snapshot.data![index].name,
-                                        style: Theme.of(context)
-                                            .inputDecorationTheme
-                                            .labelStyle,
-                                      ),
-                                      trailing: brand ==
-                                              snapshot.data![index].id
-                                          ? IconButton(
-                                              onPressed: () =>
-                                                  setState(() => brand = null),
-                                              icon: const Icon(Icons.close),
-                                            )
-                                          : null,
                                     ),
+                                    value: snapshot.data![index].id,
+                                    child: Text(snapshot.data![index].name),
                                   ),
                                 ),
-                              ),
-                              const Divider(),
-                            ],
-                          );
-                        } else if (snapshot.hasError) {
-                          return Center(
-                              child: Text(
-                            snapshot.error.toString(),
-                          ));
-                        } else if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
+                                child: const Icon(Icons.keyboard_arrow_down),
+                              );
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                  child: Text(
+                                snapshot.error.toString(),
+                              ));
+                            } else if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            } else {
+                              return Container();
+                            }
+                          },
+                        ),
+                      ),
+                      controller: category,
+                      keyboardType: TextInputType.name,
+                      textInputAction: TextInputAction.next,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return '* required';
                         } else {
-                          return Container();
+                          return null;
                         }
                       },
-                    ),
-                  ),
-
-                  // Colors & Sizes
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: FB5Row(
-                      children: [
-                        // Colors
-                        FB5Col(
-                          classNames: 'col-6',
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 4),
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                labelText: 'Colors',
-                                prefixIcon: IconButton(
-                                  onPressed: () {}, // TODO Color Picker
-                                  icon: const Icon(Icons.circle),
-                                ),
-                              ),
-                              controller: color,
-                              keyboardType: TextInputType.number,
-                              textInputAction: TextInputAction.next,
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return '* required';
-                                } else {
-                                  return null;
-                                }
-                              },
-                            ),
-                          ),
-                        ),
-
-                        // Sizes
-                        FB5Col(
-                          classNames: 'col-6',
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 4),
-                            child: TextFormField(
-                              decoration:
-                                  const InputDecoration(labelText: 'Sizes'),
-                              keyboardType: TextInputType.name,
-                              textInputAction: TextInputAction.done,
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return '* required';
-                                } else {
-                                  return null;
-                                }
-                              },
-                              onFieldSubmitted: (value) => setState(() {
-                                if (!sizes.contains(value)) {
-                                  sizes.add(value);
-                                }
-
-                                value = value;
-                              }),
-                            ),
-                          ),
-                        ),
-                      ],
                     ),
                   ),
 
                   // Gender
                   Padding(
                     padding: const EdgeInsets.all(8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8).copyWith(top: 0),
-                          child: Text(
-                            'Gender',
-                            style: Theme.of(context)
-                                .inputDecorationTheme
-                                .labelStyle!
-                                .copyWith(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        FB5Row(
-                          children: List.generate(
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'Gender',
+                        suffixIcon: PopupMenuButton(
+                          itemBuilder: (BuildContext context) => List.generate(
                             Genders.values.length,
-                            (index) => FB5Col(
-                              classNames: 'col-lg-3 col-md-4 col-sm-6 col-xs-6',
-                              child: ListTile(
-                                onTap: () => setState(
-                                    () => gender = Genders.values[index]),
-                                shape: BeveledRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                  side: gender == Genders.values[index]
-                                      ? const BorderSide(
-                                          width: 0.5,
-                                          color: Colors.black,
-                                        )
-                                      : BorderSide.none,
+                            (index) => PopupMenuItem(
+                              onTap: () => setState(
+                                () => gender = TextEditingController(
+                                  text: genders.reverse[Genders.values[index]],
                                 ),
-                                title: Text(
-                                  genders.reverse[Genders.values[index]]!,
-                                  style: Theme.of(context)
-                                      .inputDecorationTheme
-                                      .labelStyle,
-                                ),
-                                trailing: gender == Genders.values[index]
-                                    ? IconButton(
-                                        onPressed: () =>
-                                            setState(() => gender = null),
-                                        icon: const Icon(Icons.close),
-                                      )
-                                    : null,
+                              ),
+                              value: Genders.values[index],
+                              child: Text(
+                                genders.reverse[Genders.values[index]]!,
                               ),
                             ),
                           ),
+                          child: const Icon(Icons.keyboard_arrow_down),
                         ),
-                      ],
+                      ),
+                      controller: category,
+                      keyboardType: TextInputType.name,
+                      textInputAction: TextInputAction.next,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return '* required';
+                        } else {
+                          return null;
+                        }
+                      },
                     ),
                   ),
 
@@ -476,23 +360,277 @@ class _AddProductState extends State<AddProduct> {
                   Padding(
                     padding: const EdgeInsets.all(8),
                     child: TextFormField(
+                      controller: stock,
                       decoration: const InputDecoration(labelText: 'Stock'),
                       keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.done,
                       validator: (value) {
-                        if (value!.isNotEmpty) {
-                          setState(() {
-                            stock = int.parse(value);
-                          });
-                        }
-
-                        if (value.isEmpty) {
+                        if (value!.isEmpty) {
                           return '* required';
                         } else {
                           return null;
                         }
                       },
                       onFieldSubmitted: (value) => validate(),
+                    ),
+                  ),
+
+                  // Colors
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              child: Text(
+                                'Colors',
+                                style: Theme.of(context)
+                                    .inputDecorationTheme
+                                    .labelStyle!
+                                    .copyWith(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            IconButton.outlined(
+                              onPressed: () => showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  content: Form(
+                                    key: colorFormKey,
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                        children: [
+                                          // Name
+                                          TextFormField(
+                                            controller: colorName,
+                                            decoration: const InputDecoration(
+                                                labelText: 'Name'),
+                                            keyboardType: TextInputType.name,
+                                            textInputAction:
+                                                TextInputAction.done,
+                                            validator: (value) {
+                                              if (value!.isEmpty) {
+                                                return '* required';
+                                              } else {
+                                                return null;
+                                              }
+                                            },
+                                          ),
+
+                                          // Color
+                                          ColorPicker(
+                                            color: colorHex ??
+                                                Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
+                                            onColorChanged: (Color color) =>
+                                                setState(
+                                                    () => colorHex = color),
+                                            width: 44,
+                                            height: 44,
+                                            borderRadius: 22,
+                                            heading: Text(
+                                              'Select color',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headlineSmall,
+                                            ),
+                                            subheading: Text(
+                                              'Select color shade',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleSmall,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  actions: [
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        if (colorFormKey.currentState!
+                                                .validate() &&
+                                            colorHex != null) {
+                                          colors.add(
+                                            ColorModel(
+                                                name: colorName.text,
+                                                color: colorHex!),
+                                          );
+
+                                          colorName.clear();
+                                          colorHex = null;
+
+                                          setState(() {});
+
+                                          Navigator.pop(context);
+                                        }
+                                      },
+                                      child: const Text('add'),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              icon: const Icon(Icons.add),
+                            ),
+                          ],
+                        ),
+                        Wrap(
+                          children: List.generate(
+                            colors.length,
+                            (index) => Container(
+                              margin: const EdgeInsets.only(
+                                right: 4,
+                                bottom: 4,
+                              ),
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.circle,
+                                    color: colors[index].color,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 4),
+                                    child: Text(colors[index].name),
+                                  ),
+                                  InkWell(
+                                    onTap: () => colors.removeAt(index),
+                                    child: const Icon(Icons.close),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Sizes
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              child: Text(
+                                'Sizes',
+                                style: Theme.of(context)
+                                    .inputDecorationTheme
+                                    .labelStyle!
+                                    .copyWith(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            IconButton.outlined(
+                              onPressed: () => showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('Product sizes'),
+                                  content: Wrap(
+                                    children: List.generate(
+                                      sizes.length,
+                                      (index) => Container(
+                                        margin: const EdgeInsets.only(right: 4),
+                                        padding: const EdgeInsets.only(left: 4),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(),
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(sizes[index]),
+                                            IconButton(
+                                              onPressed: () =>
+                                                  sizes.removeAt(index),
+                                              icon: const Icon(Icons.close),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  actions: [
+                                    TextFormField(
+                                      controller: size,
+                                      decoration: const InputDecoration(
+                                          labelText: 'Size'),
+                                      keyboardType: TextInputType.name,
+                                      textInputAction: TextInputAction.done,
+                                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return '* required';
+                                        } else {
+                                          return null;
+                                        }
+                                      },
+                                      onFieldSubmitted: (value) {
+                                        setState(() {
+                                          if (!sizes.contains(value)) {
+                                            sizes.add(value);
+                                          }
+
+                                          size = TextEditingController();
+                                        });
+
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              icon: const Icon(Icons.add),
+                            ),
+                          ],
+                        ),
+                        Wrap(
+                          children: List.generate(
+                            sizes.length,
+                            (index) => Container(
+                              margin: const EdgeInsets.only(
+                                right: 4,
+                                bottom: 4,
+                              ),
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 4),
+                                    child: Text(sizes[index]),
+                                  ),
+                                  InkWell(
+                                    onTap: () => sizes.removeAt(index),
+                                    child: const Icon(Icons.close),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
 
@@ -518,71 +656,81 @@ class _AddProductState extends State<AddProduct> {
 
   void validate() async {
     if (formKey.currentState!.validate()) {
-      if (pickedImage != null &&
-          category != null &&
-          gender != null &&
-          stock != null) {
+      if (pickedImage != null) {
         try {
-          // Storage
-          FirebaseStorage.instance
-              .ref('products/${name.text.toUpperCase()}/')
-              .child('main')
-              .putData(
-                await pickedImage!.readAsBytes(),
-              )
+          const chars =
+              'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+          Random rnd = Random();
+
+          String getRandomString() => String.fromCharCodes(
+                Iterable.generate(
+                    15, (_) => chars.codeUnitAt(rnd.nextInt(chars.length))),
+              );
+
+          ProductModel product = ProductModel(
+            id: '',
+            name: name.text,
+            image: '',
+            price: double.parse(price.text),
+            category: category.text,
+            description: description.text,
+            colors: colors,
+            sizes: sizes,
+            images: [],
+            gender: genders.map[gender.text]!,
+            stock: int.parse(stock.text),
+          );
+
+          // Firestore
+          productsCollection
+              .doc(getRandomString())
+              .set(product.toJson())
+
+              // Storage
+              .then((value) async => FirebaseStorage.instance
+                  .ref('products/${getRandomString()}/')
+                  .child('main')
+                  .putData(await pickedImage!.readAsBytes()))
 
               // Image url
-              .then(
-                (value) => value.ref
-                    .getDownloadURL()
+              .then((value) => value.ref.getDownloadURL())
 
-                    // Images
-                    .then((image) async {
-                  List<TaskSnapshot> refs = [];
+              // Images
+              .then((image) async {
+                List<String> refs = [];
 
-                  for (var i = 0; i < pickedImages.length; i++) {
-                    Uint8List image = await pickedImages[i]!.readAsBytes();
+                for (var i = 0; i < pickedImages.length; i++) {
+                  Uint8List image = await pickedImages[i]!.readAsBytes();
 
-                    FirebaseStorage.instance
-                        .ref('products/${name.text.toUpperCase()}/')
-                        .child(
-                          i.toString(),
-                        )
-                        .putData(image)
-                        .then(
-                          (p0) => refs.add(p0),
-                        );
-                  }
+                  FirebaseStorage.instance
+                      .ref('products/${getRandomString()}/')
+                      .child(i.toString())
+                      .putData(image)
+                      .then((p0) async {
+                    String link = await p0.ref.getDownloadURL();
 
-                  return {
-                    'mainImage': image,
-                    'refs': refs,
-                  };
-                }).then(
-                  (value) => productsCollection.doc().set(
-                        ProductModel(
-                          id: '',
-                          name: name.text,
-                          image: value['mainImage'].toString(),
-                          price: double.parse(price.text),
-                          category: category!,
-                          description: description.text,
-                          colors: colors,
-                          sizes: sizes,
-                          images: value['refs'] as List<String>,
-                          gender: gender!,
-                          stock: stock!,
-                        ).toJson(),
-                      ),
-                ),
-              )
+                    refs.add(link);
+                  });
+                }
+
+                return {'mainImage': image, 'refs': refs};
+              })
+
+              // Update Images
+              .then((value) =>
+                  productsCollection.doc(getRandomString()).update(product
+                      .copyWith(
+                        image: value['mainImage'].toString(),
+                        images: value['refs'] as List<String>,
+                      )
+                      .toJson()))
 
               // Exit
               .then((value) {
-            Navigator.pop(context);
+                Navigator.pop(context);
 
-            succesSnackBar(context, 'Added');
-          });
+                succesSnackBar(context, 'Added');
+              });
         } catch (error) {
           errorSnackBar(
             context,

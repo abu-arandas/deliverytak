@@ -34,7 +34,7 @@ class ClientDrawer extends StatelessWidget {
               // User Data
               if (authSnapshot.hasData) ...{
                 StreamBuilder(
-                  stream: singletUser(authSnapshot.data!.uid),
+                  stream: singleUser(authSnapshot.data!.uid),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return Column(
