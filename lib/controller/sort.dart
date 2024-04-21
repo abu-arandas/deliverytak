@@ -4,8 +4,7 @@ class SortController extends GetxController {
   static SortController instance = Get.find();
 
   TextEditingController title = TextEditingController();
-  BrandModel? brandModel;
-  CategoryModel? categoryModel;
+  String? brand, category;
   Genders? gender;
 
   Stream<List<ProductModel>> limitProducts() =>
@@ -19,13 +18,13 @@ class SortController extends GetxController {
             }
 
             // Brand
-            if (brandModel != null && element.brand != null) {
-              return element.brand!.toLowerCase() == brandModel!.id;
+            if (brand != null && element.brand != null) {
+              return element.brand!.toLowerCase() == brand;
             }
 
             // Category
-            if (categoryModel != null) {
-              return element.category.toLowerCase() == categoryModel!.name;
+            if (category != null) {
+              return element.category.toLowerCase() == category;
             }
 
             // Brand

@@ -15,8 +15,7 @@ class _ProfileState extends State<Profile> {
   String? imageUrl;
   TextEditingController fName = TextEditingController();
   TextEditingController lName = TextEditingController();
-  TextEditingController email = TextEditingController();
-  PhoneController phone = PhoneController();
+  PhoneController phone = PhoneController(null);
 
   bool loading = false;
 
@@ -32,8 +31,7 @@ class _ProfileState extends State<Profile> {
         imageUrl = event.image;
         fName = TextEditingController(text: event.name['first']);
         lName = TextEditingController(text: event.name['last']);
-        email = TextEditingController(text: event.email);
-        phone = PhoneController(initialValue: event.phone);
+        phone = PhoneController(event.phone);
         user = event;
       });
     });
@@ -163,43 +161,15 @@ class _ProfileState extends State<Profile> {
                 ),
                 const SizedBox(height: 16),
 
-                // Email
-                Text(
-                  'Email',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                const SizedBox(height: 8),
-                TextFormField(
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall!
-                      .copyWith(fontWeight: FontWeight.normal),
-                  decoration: const InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                  ),
-                  controller: email,
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.next,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return '* required';
-                    } else if (!value.isEmail) {
-                      return '* enter a valid email';
-                    } else {
-                      return null;
-                    }
-                  },
-                ),
-                const SizedBox(height: 16),
-
                 // Phone
                 Text(
                   'Phone',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 const SizedBox(height: 8),
-                PhoneFormField(
+                PhoneInput(
+                  countrySelectorNavigator:
+                      const CountrySelectorNavigator.bottomSheet(),
                   style: Theme.of(context)
                       .textTheme
                       .bodySmall!
@@ -210,6 +180,11 @@ class _ProfileState extends State<Profile> {
                   ),
                   controller: phone,
                   textInputAction: TextInputAction.done,
+                  validator: PhoneValidator.compose([
+                    PhoneValidator.required(),
+                    PhoneValidator.valid(),
+                    PhoneValidator.validMobile(),
+                  ]),
                   onSubmitted: (value) => validate(),
                 ),
                 const SizedBox(height: 16),
@@ -265,7 +240,6 @@ class _ProfileState extends State<Profile> {
       await usersCollection.doc(widget.id).update(
             user.copyWith(
               name: {'first': fName.text, 'last': lName.text},
-              email: email.text,
               image: imageUrl ?? user.image,
               phone: phone.value,
             ).toJson(),

@@ -9,6 +9,7 @@ class UserModel {
   PhoneNumber phone;
   GeoPoint? address;
   UserRole role;
+  String token;
 
   UserModel({
     required this.id,
@@ -19,6 +20,7 @@ class UserModel {
     required this.phone,
     this.address,
     required this.role,
+    required this.token,
   });
 
   factory UserModel.fromJson(DocumentSnapshot data) => UserModel(
@@ -30,6 +32,7 @@ class UserModel {
         phone: PhoneNumber.fromJson(data['phone']),
         address: data['address'],
         role: roles.map[data['role']]!,
+        token: data['token'],
       );
 
   UserModel copyWith({
@@ -49,6 +52,7 @@ class UserModel {
         phone: phone ?? this.phone,
         address: address ?? this.address,
         role: role,
+        token: token,
       );
 
   Map<String, dynamic> toJson() => {
@@ -59,6 +63,7 @@ class UserModel {
         'phone': phone.toJson(),
         'address': address,
         'role': roles.reverse[role],
+        'token': token,
       };
 }
 

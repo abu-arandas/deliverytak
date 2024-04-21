@@ -30,7 +30,8 @@ class _ProductDetailsState extends State<ProductDetails> {
 
   @override
   Widget build(BuildContext context) => ClientScaffold(
-        pageName: 'cart',
+        pageName: 'product',
+        pageImage: '',
         body: StreamBuilder(
           stream: singleProduct(widget.id),
           builder: (context, snapshot) {
@@ -38,7 +39,6 @@ class _ProductDetailsState extends State<ProductDetails> {
               return Column(
                 children: [
                   FB5Row(
-                    classNames: 'align-items-end',
                     children: [
                       image(snapshot.data!.image),
                       FB5Col(
@@ -64,14 +64,9 @@ class _ProductDetailsState extends State<ProductDetails> {
                 ],
               );
             } else if (snapshot.hasError) {
-              return Center(
-                  child: Text(
-                snapshot.error.toString(),
-              ));
+              return Center(child: Text(snapshot.error.toString()));
             } else if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return const Center(child: CircularProgressIndicator());
             } else {
               return Container();
             }
@@ -161,63 +156,69 @@ class _ProductDetailsState extends State<ProductDetails> {
         ),
       );
 
-  FB5Col colorsSizes(ProductModel product) => FB5Col(
-        classNames: 'col-12 px-3 pt-3',
-        child: FB5Row(
-          children: [
-            // Colors
-            FB5Col(
-              classNames: 'col-6 p-1',
-              child: FB5Row(
-                children: List.generate(
-                  product.colors.length,
-                  (index) => FB5Col(
-                    classNames: 'col-lg-6 col-md-6 col-sm-12 p-1',
-                    child: ListTile(
-                      onTap: () =>
-                          setState(() => color = product.colors[index].name),
-                      shape: BeveledRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
-                        side: color == product.colors[index].name
-                            ? const BorderSide(color: Colors.black)
-                            : BorderSide.none,
-                      ),
-                      leading: Icon(
-                        Icons.circle,
-                        color: product.colors[index].color,
-                      ),
-                      title: Text(product.colors[index].name),
-                    ),
-                  ),
-                ),
-              ),
-            ),
+  FB5Col colorsSizes(ProductModel product) {
+    String classNames = product.colors.isEmpty || product.sizes.isEmpty
+        ? 'col-12 p-1'
+        : 'col-6 p-1';
 
-            // Sizes
-            FB5Col(
-              classNames: 'col-6 p-1',
-              child: FB5Row(
-                children: List.generate(
-                  product.sizes.length,
-                  (index) => FB5Col(
-                    classNames: 'col-6 p-1',
-                    child: ListTile(
-                      onTap: () => setState(() => size = product.sizes[index]),
-                      shape: BeveledRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
-                        side: size == product.sizes[index]
-                            ? const BorderSide(color: Colors.black)
-                            : BorderSide.none,
-                      ),
-                      title: Text(product.sizes[index]),
+    return FB5Col(
+      classNames: 'col-12 px-3 pt-3',
+      child: FB5Row(
+        children: [
+          // Colors
+          FB5Col(
+            classNames: classNames,
+            child: FB5Row(
+              children: List.generate(
+                product.colors.length,
+                (index) => FB5Col(
+                  classNames: 'col-lg-6 col-md-6 col-sm-12 p-1',
+                  child: ListTile(
+                    onTap: () =>
+                        setState(() => color = product.colors[index].name),
+                    shape: BeveledRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                      side: color == product.colors[index].name
+                          ? const BorderSide(color: Colors.black)
+                          : BorderSide.none,
                     ),
+                    leading: Icon(
+                      Icons.circle,
+                      color: product.colors[index].color,
+                    ),
+                    title: Text(product.colors[index].name),
                   ),
                 ),
               ),
             ),
-          ],
-        ),
-      );
+          ),
+
+          // Sizes
+          FB5Col(
+            classNames: classNames,
+            child: FB5Row(
+              children: List.generate(
+                product.sizes.length,
+                (index) => FB5Col(
+                  classNames: 'col-6 p-1',
+                  child: ListTile(
+                    onTap: () => setState(() => size = product.sizes[index]),
+                    shape: BeveledRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                      side: size == product.sizes[index]
+                          ? const BorderSide(color: Colors.black)
+                          : BorderSide.none,
+                    ),
+                    title: Text(product.sizes[index]),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   FB5Col images(ProductModel product) => FB5Col(
         classNames: 'col-12 px-3 pt-3',
@@ -271,7 +272,7 @@ class _ProductDetailsState extends State<ProductDetails> {
           child: Row(
             children: [
               Text(
-                product.price.toString(),
+                '${product.price} JD',
                 style: const TextStyle(color: Colors.white),
               ),
               const Spacer(),
@@ -314,50 +315,79 @@ class _ProductDetailsState extends State<ProductDetails> {
                       },
 
                       // Add
-                      if (product.stock >= count) ...{
-                        IconButton(
+                      if (product.stock >= count && !exists) ...{
+                        TextButton(
                           onPressed: () {
-                            if (exists) {
-                              ProductModel cartProduct = controller.cartProducts
-                                  .singleWhere(
-                                      (element) => element.id == product.id);
+                            controller.cartProducts.add(
+                              product.copyWith(
+                                colors: color != null
+                                    ? [
+                                        product.colors.singleWhere(
+                                            (element) => element.name == color)
+                                      ]
+                                    : null,
+                                sizes: size != null ? [size!] : null,
+                                stock: 1,
+                              ),
+                            );
 
-                              if (color != null) {
-                                cartProduct.colors = [
-                                  product.colors.singleWhere(
-                                      (element) => element.name == color)
-                                ];
-                              }
-
-                              if (size != null) {
-                                cartProduct.sizes = [size!];
-                              }
-
-                              cartProduct.stock++;
-                            } else {
-                              controller.cartProducts.add(
-                                product.copyWith(
-                                  colors: color != null
-                                      ? [
-                                          product.colors.singleWhere(
-                                              (element) =>
-                                                  element.name == color)
-                                        ]
-                                      : null,
-                                  sizes: size != null ? [size!] : null,
-                                  stock: 1,
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('Added to cart'),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () => page(
+                                        context: context,
+                                        page: const Cart(),
+                                      ),
+                                      child: const Text('View Cart'),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text('COntinue Shopping'),
+                                    ),
+                                  ],
                                 ),
-                              );
-                            }
+                              ),
+                            );
 
                             controller.update();
                             count++;
                             setState(() {});
                           },
-                          icon: Icon(
-                            exists ? Icons.add : Icons.shopping_cart,
-                            color: Colors.white,
-                          ),
+                          child: const Text('add to cart'),
+                        )
+                      },
+
+                      // Increase
+                      if (product.stock >= count && exists) ...{
+                        IconButton(
+                          onPressed: () {
+                            ProductModel cartProduct = controller.cartProducts
+                                .singleWhere(
+                                    (element) => element.id == product.id);
+
+                            if (color != null) {
+                              cartProduct.colors = [
+                                product.colors.singleWhere(
+                                    (element) => element.name == color)
+                              ];
+                            }
+
+                            if (size != null) {
+                              cartProduct.sizes = [size!];
+                            }
+
+                            cartProduct.stock++;
+
+                            controller.update();
+                            count++;
+                            setState(() {});
+                          },
+                          icon: const Icon(Icons.add, color: Colors.white),
                         )
                       },
                     ],

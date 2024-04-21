@@ -67,7 +67,9 @@ class AuthScaffold extends StatelessWidget {
                     // Form
                     ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 400),
-                      child: form,
+                      child: SingleChildScrollView(
+                        child: form,
+                      ),
                     ),
                   ],
                 ),

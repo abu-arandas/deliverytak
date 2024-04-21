@@ -57,29 +57,29 @@ class ClientShopSort extends StatelessWidget {
                           classNames: 'col-6',
                           child: ListTile(
                             onTap: () {
-                              controller.categoryModel = snapshot.data![index];
+                              controller.category = snapshot.data![index].id;
                               controller.update();
                             },
                             title: Text(
                               toTitleCase(snapshot.data![index].name),
                               style: TextStyle(
-                                color: controller.categoryModel ==
-                                        snapshot.data![index]
+                                color: controller.category ==
+                                        snapshot.data![index].id
                                     ? Theme.of(context).colorScheme.primary
                                     : Colors.black,
                                 fontSize: 12,
                               ),
                             ),
-                            trailing: controller.categoryModel ==
-                                    snapshot.data![index]
-                                ? IconButton(
-                                    onPressed: () {
-                                      controller.categoryModel = null;
-                                      controller.update();
-                                    },
-                                    icon: const Icon(Icons.close),
-                                  )
-                                : null,
+                            trailing:
+                                controller.category == snapshot.data![index].id
+                                    ? IconButton(
+                                        onPressed: () {
+                                          controller.category = null;
+                                          controller.update();
+                                        },
+                                        icon: const Icon(Icons.close),
+                                      )
+                                    : null,
                           ),
                         ),
                       ),
@@ -120,24 +120,24 @@ class ClientShopSort extends StatelessWidget {
                           classNames: 'col-6',
                           child: ListTile(
                             onTap: () {
-                              controller.brandModel = snapshot.data![index];
+                              controller.brand = snapshot.data![index].id;
                               controller.update();
                             },
                             title: Text(
                               toTitleCase(snapshot.data![index].name),
                               style: TextStyle(
-                                color: controller.brandModel ==
-                                        snapshot.data![index]
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Colors.black,
+                                color:
+                                    controller.brand == snapshot.data![index].id
+                                        ? Theme.of(context).colorScheme.primary
+                                        : Colors.black,
                                 fontSize: 12,
                               ),
                             ),
                             trailing:
-                                controller.brandModel == snapshot.data![index]
+                                controller.brand == snapshot.data![index].id
                                     ? IconButton(
                                         onPressed: () {
-                                          controller.brandModel = null;
+                                          controller.brand = null;
                                           controller.update();
                                         },
                                         icon: const Icon(Icons.close),

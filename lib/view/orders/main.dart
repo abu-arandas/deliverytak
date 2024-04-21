@@ -28,46 +28,48 @@ class _OrdersState extends State<Orders> {
                 ],
               ),
             ),
-            AnimatedContainer(
-              duration: const Duration(seconds: 1),
-              child: StreamBuilder(
-                stream: singleUser(FirebaseAuth.instance.currentUser!.uid),
-                builder: (context, userSnapshot) {
-                  if (userSnapshot.hasData) {
-                    Stream<List<OrderModel>> stream;
+            FB5Container(
+              child: AnimatedContainer(
+                duration: const Duration(seconds: 1),
+                child: StreamBuilder(
+                  stream: singleUser(FirebaseAuth.instance.currentUser!.uid),
+                  builder: (context, userSnapshot) {
+                    if (userSnapshot.hasData) {
+                      Stream<List<OrderModel>> stream;
 
-                    if (userSnapshot.data!.role == UserRole.client) {
-                      stream = clientOrders(userSnapshot.data!.id);
+                      if (userSnapshot.data!.role == UserRole.client) {
+                        stream = clientOrders(userSnapshot.data!.id);
+                      } else {
+                        stream = orders();
+                      }
+
+                      return StreamBuilder(
+                        stream: stream,
+                        builder: (context, ordersSnapshot) {
+                          if (ordersSnapshot.hasData) {
+                            return ordersData(context, ordersSnapshot.data!);
+                          } else if (ordersSnapshot.hasError) {
+                            return Center(
+                                child: Text(ordersSnapshot.error.toString()));
+                          } else if (ordersSnapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else {
+                            return Container();
+                          }
+                        },
+                      );
+                    } else if (userSnapshot.hasError) {
+                      return Center(child: Text(userSnapshot.error.toString()));
+                    } else if (userSnapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
                     } else {
-                      stream = orders();
+                      return Container();
                     }
-
-                    return StreamBuilder(
-                      stream: stream,
-                      builder: (context, ordersSnapshot) {
-                        if (ordersSnapshot.hasData) {
-                          return ordersData(context, ordersSnapshot.data!);
-                        } else if (ordersSnapshot.hasError) {
-                          return Center(
-                              child: Text(ordersSnapshot.error.toString()));
-                        } else if (ordersSnapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        } else {
-                          return Container();
-                        }
-                      },
-                    );
-                  } else if (userSnapshot.hasError) {
-                    return Center(child: Text(userSnapshot.error.toString()));
-                  } else if (userSnapshot.connectionState ==
-                      ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else {
-                    return Container();
-                  }
-                },
+                  },
+                ),
               ),
             ),
           ],

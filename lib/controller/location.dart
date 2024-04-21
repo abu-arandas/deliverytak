@@ -40,12 +40,4 @@ class LocationController extends GetxController {
         currentLocation = LatLng(position.latitude, position.longitude);
         update();
       });
-
-  double calculateDistance(LatLng first, LatLng second) =>
-      Geolocator.distanceBetween(
-        first.latitude,
-        first.longitude,
-        second.latitude,
-        second.longitude,
-      );
 }

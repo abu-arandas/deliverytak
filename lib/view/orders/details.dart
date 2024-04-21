@@ -105,16 +105,20 @@ class _OrderDetailsState extends State<OrderDetails> {
                           .titleLarge!
                           .copyWith(fontWeight: FontWeight.bold),
                     ),
-                    timeWidget(
-                      title: 'Strated',
-                      date: widget.order.startTime,
-                    ),
-                    if (widget.order.acceptTime != null) ...{
-                      timeWidget(
-                        title: 'Accepted',
-                        date: widget.order.acceptTime!,
-                      )
-                    },
+                    Row(
+                      children: [
+                        timeWidget(
+                          title: 'Strated',
+                          date: widget.order.startTime,
+                        ),
+                        if (widget.order.acceptTime != null) ...{
+                          timeWidget(
+                            title: 'Accepted',
+                            date: widget.order.acceptTime!,
+                          )
+                        },
+                      ],
+                    )
                   ],
                 ),
               ),
@@ -161,71 +165,43 @@ class _OrderDetailsState extends State<OrderDetails> {
               // Price
               price(),
 
-              // Time
+              // Payment Method
               Container(
                 width: 500,
-                padding: const EdgeInsets.all(16).copyWith(bottom: 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Payment Method
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12.5),
-                        color: Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withOpacity(0.25),
-                      ),
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.all(16),
-                        leading: Container(
-                          height: 50,
-                          width: 50,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primary,
-                              shape: BoxShape.circle),
-                          child: const Icon(FontAwesomeIcons.dollarSign,
-                              color: Colors.white),
-                        ),
-                        title: Text(
-                          paymentDetails(widget.order.payment),
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: currentUser
-                            ? widget.order.progress != OrderProgress.deleted ||
-                                    widget.order.progress != OrderProgress.done
-                                ? const Padding(
-                                    padding: EdgeInsets.all(4),
-                                    child: Text(
-                                      'Tap Here to select your Payment Method',
-                                      style: TextStyle(height: 0.9),
-                                    ),
-                                  )
-                                : null
-                            : null,
-                      ),
-                    ),
-
-                    // Cash on derivery
-                    if (currentUser &&
-                        widget.order.payment == PaymentMethod.cash) ...{
-                      const Padding(
-                        padding: EdgeInsets.all(16),
-                        child: Text(
-                          'Cash on derivery has some potential risks of spreading contamination. You can select other payment methods for a contactless safe delivery.',
-                        ),
-                      ),
-                    },
-                  ],
+                margin: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12.5),
+                  color:
+                      Theme.of(context).colorScheme.primary.withOpacity(0.25),
                 ),
-              ),
-
-              // Divider
-              const Padding(
-                padding: EdgeInsets.all(16),
-                child: Divider(thickness: 1),
+                child: ListTile(
+                  leading: Container(
+                    height: 50,
+                    width: 50,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      FontAwesomeIcons.dollarSign,
+                      color: Colors.white,
+                    ),
+                  ),
+                  title: Text(
+                    paymentDetails(widget.order.payment),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle:
+                      currentUser && widget.order.payment == PaymentMethod.cash
+                          ? const Padding(
+                              padding: EdgeInsets.all(8),
+                              child: Text(
+                                'Cash on derivery has some potential risks of spreading contamination. You can select other payment methods for a contactless safe delivery.',
+                              ),
+                            )
+                          : null,
+                ),
               ),
 
               // Products
@@ -275,6 +251,14 @@ class _OrderDetailsState extends State<OrderDetails> {
                     });
                   }
 
+                  NotificationController.instance.sendMessage(
+                    context: context,
+                    token: customer!.token,
+                    title: 'Order Started',
+                    body:
+                        'Order number ${widget.order.id} is ${orderProgress.reverse[widget.order.progress]}',
+                  );
+
                   succesSnackBar(context, 'Started');
                   Navigator.pop(context);
                 } catch (error) {
@@ -289,14 +273,22 @@ class _OrderDetailsState extends State<OrderDetails> {
           },
 
           // Delete
-          if (widget.order.progress != OrderProgress.deleted ||
-              widget.order.progress != OrderProgress.done) ...{
+          if (widget.order.progress == OrderProgress.binding ||
+              widget.order.progress == OrderProgress.inProgress) ...{
             ElevatedButton(
               onPressed: () {
                 try {
                   ordersCollection.doc(widget.order.id).update(widget.order
                       .copyWith(progress: OrderProgress.deleted)
                       .toJson());
+
+                  NotificationController.instance.sendMessage(
+                    context: context,
+                    token: customer!.token,
+                    title: 'Order Deleted',
+                    body:
+                        'Order number ${widget.order.id} is ${orderProgress.reverse[widget.order.progress]}',
+                  );
 
                   succesSnackBar(context, 'Deleted');
                   Navigator.pop(context);
@@ -336,14 +328,16 @@ class _OrderDetailsState extends State<OrderDetails> {
     required String title,
     required DateTime date,
   }) =>
-      ListTile(
-        title: Text('$title at'),
-        subtitle: Text(
-          DateFormat.yMMMMEEEEd().format(date),
-          style: Theme.of(context)
-              .textTheme
-              .bodySmall!
-              .copyWith(color: Colors.red),
+      Flexible(
+        child: ListTile(
+          title: Text('$title at'),
+          subtitle: Text(
+            DateFormat.yMMMMEEEEd().format(date),
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall!
+                .copyWith(color: Colors.red),
+          ),
         ),
       );
 
@@ -369,7 +363,39 @@ class _OrderDetailsState extends State<OrderDetails> {
           ),
           Padding(
             padding: const EdgeInsets.all(8),
-            child: Text('${total.toStringAsFixed(2)} JD'),
+            child: Row(
+              children: [
+                Expanded(
+                  child: RichText(
+                    text: TextSpan(
+                      style: const TextStyle(color: Colors.black),
+                      children: [
+                        const TextSpan(
+                          text: 'products: ',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        TextSpan(text: total.toStringAsFixed(2)),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: RichText(
+                    text: const TextSpan(
+                      style: TextStyle(color: Colors.black),
+                      children: [
+                        TextSpan(
+                          text: 'delivery: ',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        TextSpan(text: '1'),
+                      ],
+                    ),
+                  ),
+                ),
+                const Text(' JD'),
+              ],
+            ),
           ),
         ],
       ),
@@ -380,119 +406,118 @@ class _OrderDetailsState extends State<OrderDetails> {
     required BuildContext context,
     required OrderModel order,
   }) =>
-      Column(
-        children: List.generate(
-          order.products.length,
-          (index) => Container(
-            margin: const EdgeInsets.all(8).copyWith(top: 0),
-            constraints: const BoxConstraints(maxHeight: 125),
-            decoration: BoxDecoration(
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black,
-                  blurRadius: 10,
-                  blurStyle: BlurStyle.outer,
-                ),
-              ],
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12.5),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Image
-                ClipRRect(
-                  borderRadius: const BorderRadiusDirectional.only(
-                    topStart: Radius.circular(12.5),
-                    bottomStart: Radius.circular(12.5),
-                  ),
-                  child: CachedNetworkImage(
-                    imageUrl: order.products[index].image,
-                    fit: BoxFit.fill,
-                  ),
-                ),
-
-                // Informations
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  constraints: const BoxConstraints(maxWidth: 175),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Title
-                      Text(
-                        order.products[index].name,
-                        maxLines: 2,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+      Container(
+        width: 500,
+        margin: const EdgeInsets.all(16),
+        child: Column(
+          children: List.generate(
+            order.products.length,
+            (index) => Card(
+              margin: const EdgeInsets.all(8),
+              child: SizedBox(
+                height: 125,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Image
+                    ClipRRect(
+                      borderRadius: const BorderRadiusDirectional.only(
+                        topStart: Radius.circular(12.5),
+                        bottomStart: Radius.circular(12.5),
                       ),
+                      child: CachedNetworkImage(
+                        imageUrl: order.products[index].image,
+                        fit: BoxFit.fill,
+                      ),
+                    ),
 
-                      // Price && Count
-                      Padding(
-                        padding: const EdgeInsets.all(4),
-                        child: Row(
-                          children: [
-                            Text(
-                              '${order.products[index].price.toStringAsFixed(2)} JD',
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
+                    // Informations
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      constraints: const BoxConstraints(maxWidth: 175),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Title
+                          Text(
+                            order.products[index].name,
+                            maxLines: 2,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
                             ),
-                            const SizedBox(width: 8),
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              constraints: const BoxConstraints(
-                                  minHeight: 25, minWidth: 25),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                              child: Text(
-                                order.products[index].stock.toString(),
-                                style: const TextStyle(color: Colors.white),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
+                          ),
 
-                      // Color & Size
-                      Padding(
-                        padding: const EdgeInsets.all(4),
-                        child: Row(
-                          children: [
-                            if (order.products[index].sizes.isNotEmpty) ...{
-                              Text(
-                                order.products[index].sizes.first,
-                              ),
-                            },
-                            if (order.products[index].sizes.isNotEmpty &&
-                                order.products[index].colors.isNotEmpty) ...{
-                              Container(
-                                width: 1,
-                                height: 10,
-                                margin: const EdgeInsets.all(4),
-                                color: Colors.grey,
-                              ),
-                            },
-                            if (order.products[index].colors.isNotEmpty) ...{
-                              Icon(
-                                Icons.circle,
-                                color: order.products[index].colors.first.color,
-                              ),
-                              Text(
-                                order.products[index].colors.first.name,
-                              ),
-                            },
-                          ],
-                        ),
+                          // Price && Count
+                          Padding(
+                            padding: const EdgeInsets.all(4),
+                            child: Row(
+                              children: [
+                                Text(
+                                  '${order.products[index].price.toStringAsFixed(2)} JD',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(width: 8),
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  constraints: const BoxConstraints(
+                                      minHeight: 25, minWidth: 25),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                                  child: Text(
+                                    order.products[index].stock.toString(),
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+
+                          // Color & Size
+                          Padding(
+                            padding: const EdgeInsets.all(4),
+                            child: Row(
+                              children: [
+                                if (order.products[index].sizes.isNotEmpty) ...{
+                                  Text(
+                                    order.products[index].sizes.first,
+                                  ),
+                                },
+                                if (order.products[index].sizes.isNotEmpty &&
+                                    order
+                                        .products[index].colors.isNotEmpty) ...{
+                                  Container(
+                                    width: 1,
+                                    height: 10,
+                                    margin: const EdgeInsets.all(4),
+                                    color: Colors.grey,
+                                  ),
+                                },
+                                if (order
+                                    .products[index].colors.isNotEmpty) ...{
+                                  Icon(
+                                    Icons.circle,
+                                    color: order
+                                        .products[index].colors.first.color,
+                                  ),
+                                  Text(
+                                    order.products[index].colors.first.name,
+                                  ),
+                                },
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),

@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -69,4 +66,15 @@ class DefaultFirebaseOptions {
     iosClientId: '752904600547-3t74a9oorbor8ifj66o2tns6k3vg15fa.apps.googleusercontent.com',
     iosBundleId: 'com.arandas.deliverytak',
   );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyB-wRvfz3hvj_8gvyahQMoJXb0_Dpjsvxs',
+    appId: '1:752904600547:web:47b87348fef86237097ed6',
+    messagingSenderId: '752904600547',
+    projectId: 'deliverytak',
+    authDomain: 'deliverytak.firebaseapp.com',
+    databaseURL: 'https://deliverytak-default-rtdb.firebaseio.com',
+    storageBucket: 'deliverytak.appspot.com',
+  );
+
 }

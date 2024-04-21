@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import '/exports.dart';
 
 String noImage =
@@ -9,9 +11,7 @@ class EnumValues<T> {
 
   EnumValues(this.map);
 
-  Map<T, String> get reverse => map.map(
-        (k, v) => MapEntry(v, k),
-      );
+  Map<T, String> get reverse => map.map((k, v) => MapEntry(v, k));
 }
 
 errorSnackBar(BuildContext context, String text) =>
@@ -43,9 +43,7 @@ succesSnackBar(BuildContext context, String text) =>
 String toTitleCase(String text) => text
     .replaceAll(RegExp(' +'), ' ')
     .split(' ')
-    .map(
-      (str) => str[0].toUpperCase() + str.substring(1).toLowerCase(),
-    )
+    .map((str) => str[0].toUpperCase() + str.substring(1).toLowerCase())
     .join(' ');
 
 page({required BuildContext context, required Widget page}) {
@@ -59,6 +57,12 @@ page({required BuildContext context, required Widget page}) {
       child: child,
     ),
   );
+
+  SortController.instance.title.clear();
+  SortController.instance.brand = null;
+  SortController.instance.category = null;
+  SortController.instance.gender = null;
+  SortController.instance.update();
 
   return page == const Main()
       ? Navigator.of(context).pushAndRemoveUntil(
@@ -81,9 +85,8 @@ Color progressColor(OrderProgress progress) {
     case OrderProgress.done:
       color = Colors.grey;
       break;
-
-    default:
-      color = Colors.blueGrey;
+    case OrderProgress.deleted:
+      color = const Color(0xffdc3545);
   }
 
   return color;
@@ -102,9 +105,9 @@ String progressDescription(OrderProgress progress) {
     case OrderProgress.done:
       text = 'Delivered';
       break;
-
-    default:
-      text = '';
+    case OrderProgress.deleted:
+      text = 'Deleted';
+      break;
   }
 
   return text;

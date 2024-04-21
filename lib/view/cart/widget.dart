@@ -33,6 +33,8 @@ class _CartProductState extends State<CartProduct> {
           stream: singleProduct(widget.cartProduct.id),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
+              ProductModel productModel = widget.cartProduct;
+
               return Card(
                 margin: const EdgeInsets.all(8),
                 child: ListTile(
@@ -68,15 +70,14 @@ class _CartProductState extends State<CartProduct> {
                                   (index) => PopupMenuItem(
                                     value: snapshot.data!.colors[index],
                                     onTap: () {
-                                      controller.cartProducts
-                                          .singleWhere((element) =>
-                                              element.id ==
-                                              widget.cartProduct.id)
-                                          .colors = [
+                                      productModel.colors = [
                                         snapshot.data!.colors[index]
                                       ];
 
                                       controller.update();
+
+                                      setState(() =>
+                                          color = snapshot.data!.colors[index]);
                                     },
                                     child: ListTile(
                                       leading: Icon(
@@ -87,7 +88,8 @@ class _CartProductState extends State<CartProduct> {
                                       title: Text(
                                         snapshot.data!.colors[index].name,
                                         style: const TextStyle(
-                                            color: Colors.black),
+                                          color: Colors.black,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -133,6 +135,9 @@ class _CartProductState extends State<CartProduct> {
                                       ];
 
                                       controller.update();
+
+                                      setState(() =>
+                                          size = snapshot.data!.sizes[index]);
                                     },
                                     child: Text(snapshot.data!.sizes[index]),
                                   ),
@@ -157,12 +162,52 @@ class _CartProductState extends State<CartProduct> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                              '${(snapshot.data!.price * widget.cartProduct.stock).toStringAsFixed(2)} JD'),
+                            '${(snapshot.data!.price * widget.cartProduct.stock).toStringAsFixed(2)} JD',
+                          ),
                           const SizedBox(width: 16),
-                          controller.cartButton(
-                            color: color,
-                            size: size,
-                            id: snapshot.data!.id,
+                          Row(
+                            children: [
+                              // Remove
+                              IconButton(
+                                onPressed: () {
+                                  if (productModel.stock > 1) {
+                                    productModel.stock--;
+                                    controller.update();
+                                  } else {
+                                    controller.cartProducts.removeWhere(
+                                        (element) =>
+                                            element.id ==
+                                            widget.cartProduct.id);
+                                    controller.update();
+                                  }
+                                },
+                                icon: const Icon(Icons.remove),
+                              ),
+
+                              // Count
+                              Text(productModel.stock.toString()),
+
+                              // Add
+                              if (snapshot.data!.stock >=
+                                  productModel.stock) ...{
+                                IconButton(
+                                  onPressed: () {
+                                    controller.cartProducts
+                                        .singleWhere((element) =>
+                                            element.id == widget.cartProduct.id)
+                                        .copyWith(
+                                          colors:
+                                              color != null ? [color!] : null,
+                                          sizes: size != null ? [size!] : null,
+                                          stock: productModel.stock++,
+                                        );
+
+                                    controller.update();
+                                  },
+                                  icon: const Icon(Icons.add),
+                                )
+                              },
+                            ],
                           )
                         ],
                       ),

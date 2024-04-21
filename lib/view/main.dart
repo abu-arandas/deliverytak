@@ -12,6 +12,8 @@ class Main extends StatelessWidget {
               stream: singleUser(authSnapshot.data!.uid),
               builder: (context, userSnapshot) {
                 if (userSnapshot.hasData) {
+                  tokens(userSnapshot.data!.id);
+
                   switch (userSnapshot.data!.role) {
                     case UserRole.admin:
                       return const AdminHome();
@@ -28,4 +30,8 @@ class Main extends StatelessWidget {
           return const ClientHome();
         },
       );
+
+  void tokens(id) async => usersCollection.doc(id).update({
+        'token': await FirebaseMessaging.instance.getToken(),
+      });
 }

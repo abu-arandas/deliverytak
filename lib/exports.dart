@@ -12,10 +12,12 @@ export 'package:firebase_core/firebase_core.dart';
 export 'package:firebase_auth/firebase_auth.dart';
 export 'package:cloud_firestore/cloud_firestore.dart' hide Settings;
 export 'package:firebase_storage/firebase_storage.dart';
+export 'package:firebase_messaging/firebase_messaging.dart';
 
 export 'package:flutter_bootstrap5/flutter_bootstrap5.dart';
 export 'package:get/get.dart';
-export 'package:phone_form_field/phone_form_field.dart';
+export 'package:flutter_local_notifications/flutter_local_notifications.dart';
+export 'package:phone_input/phone_input_package.dart';
 export 'package:font_awesome_flutter/font_awesome_flutter.dart';
 export 'package:url_launcher/url_launcher.dart';
 export 'package:cached_network_image/cached_network_image.dart';
@@ -32,6 +34,7 @@ export 'config/app.dart';
 export 'config/constants.dart';
 
 /* ====== Controller ====== */
+export 'controller/notifications.dart';
 export 'controller/firestore.dart';
 export 'controller/cart.dart';
 export 'controller/sort.dart';

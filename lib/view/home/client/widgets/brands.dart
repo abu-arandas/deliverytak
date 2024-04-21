@@ -64,8 +64,8 @@ class _ClientBrandsState extends State<ClientBrands> {
                             padding: const EdgeInsets.all(8),
                             child: InkWell(
                               onTap: () {
-                                SortController.instance.brandModel =
-                                    snapshot.data![index];
+                                SortController.instance.brand =
+                                    snapshot.data![index].id;
                                 SortController.instance.update();
 
                                 page(

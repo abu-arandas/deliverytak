@@ -1,5 +1,10 @@
 import 'exports.dart';
 
+/*
+flutter run -d edge --web-renderer html // to run the app
+flutter build web --web-renderer html --release // to generate a production build
+*/
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -111,15 +116,10 @@ class MyApp extends StatelessWidget {
             ),
           ),
           initialBinding: BindingsBuilder(() {
-            Get.put(
-              CartController(),
-            );
-            Get.put(
-              SortController(),
-            );
-            Get.put(
-              LocationController(),
-            );
+            Get.put(NotificationController());
+            Get.put(CartController());
+            Get.put(SortController());
+            Get.put(LocationController());
           }),
           home: OrientationBuilder(
             builder: (context, orientation) => const Main(),

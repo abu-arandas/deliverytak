@@ -65,11 +65,12 @@ DeliveryTak is open-source software licensed under the [MIT License](LICENSE).
 DeliveryTak is a fictional project created for demonstration purposes only. It is not associated with any real business or entity.
 
 ## APK
-![APK](assets/app.apk)
+- [APK](assets/app.apk) 
+- [Web](https://deliverytak.web.app)
 
 ## Screenshots
 
-    *Client Interface*
+    Client Interface
 
 ![Screenshot 1](assets/screenshots/client/1.png)
 ![Screenshot 2](assets/screenshots/client/2.png)
@@ -79,4 +80,4 @@ DeliveryTak is a fictional project created for demonstration purposes only. It i
 ![Screenshot 6](assets/screenshots/client/6.png)
 ![Screenshot 7](assets/screenshots/client/7.png)
 
-    *Admin Interface*
+    Admin Interface

@@ -1,1 +1,37 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"deliverytak","appId":"1:752904600547:android:790aa9982777dbc5097ed6","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"deliverytak","configurations":{"android":"1:752904600547:android:790aa9982777dbc5097ed6","ios":"1:752904600547:ios:75e9c3a13c269542097ed6"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "deliverytak",
+          "appId": "1:752904600547:android:790aa9982777dbc5097ed6",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "deliverytak",
+          "configurations": {
+            "android": "1:752904600547:android:790aa9982777dbc5097ed6",
+            "ios": "1:752904600547:ios:75e9c3a13c269542097ed6",
+            "web": "1:752904600547:web:47b87348fef86237097ed6"
+          }
+        }
+      }
+    }
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

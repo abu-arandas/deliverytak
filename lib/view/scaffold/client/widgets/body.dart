@@ -19,7 +19,7 @@ class ClientBody extends StatelessWidget {
         controller: scrollController,
         child: Column(
           children: [
-            if (pageImage != null) ...{
+            if (pageImage != null && pageImage != '') ...{
               CachedNetworkImage(
                 imageUrl: pageImage!,
                 imageBuilder: (context, imageProvider) => Container(

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import '/exports.dart';
 
 class Register extends StatefulWidget {
@@ -13,9 +15,7 @@ class _RegisterState extends State<Register> {
   TextEditingController fName = TextEditingController();
   TextEditingController lName = TextEditingController();
   TextEditingController email = TextEditingController();
-  PhoneController phone = PhoneController(
-    initialValue: const PhoneNumber(isoCode: IsoCode.JO, nsn: ''),
-  );
+  PhoneController phone = PhoneController(null);
   TextEditingController password = TextEditingController();
   bool obscureText = true, loading = false;
 
@@ -112,7 +112,9 @@ class _RegisterState extends State<Register> {
                 style: Theme.of(context).textTheme.bodySmall,
               ),
               const SizedBox(height: 8),
-              PhoneFormField(
+              PhoneInput(
+                countrySelectorNavigator:
+                    const CountrySelectorNavigator.bottomSheet(),
                 style: Theme.of(context)
                     .textTheme
                     .bodySmall!
@@ -123,6 +125,11 @@ class _RegisterState extends State<Register> {
                 ),
                 controller: phone,
                 textInputAction: TextInputAction.next,
+                validator: PhoneValidator.compose([
+                  PhoneValidator.required(),
+                  PhoneValidator.valid(),
+                  PhoneValidator.validMobile(),
+                ]),
               ),
               const SizedBox(height: 16),
 
@@ -198,11 +205,13 @@ class _RegisterState extends State<Register> {
         ),
       );
 
-  validate() {
+  validate() async {
     setState(() => loading = true);
 
     if (formKey.currentState!.validate()) {
       try {
+        String token = await FirebaseMessaging.instance.getToken() ?? '';
+
         FirebaseAuth.instance
             .createUserWithEmailAndPassword(
               email: email.text,
@@ -214,8 +223,9 @@ class _RegisterState extends State<Register> {
                     name: {'first': fName.text, 'last': lName.text},
                     email: email.text,
                     image: image,
-                    phone: phone.value,
+                    phone: phone.value!,
                     role: UserRole.client,
+                    token: token,
                   ).toJson()),
             )
             .then((value) => page(context: context, page: const Main()));

@@ -45,7 +45,19 @@ class ClientShopData extends StatelessWidget {
                   children: [
                     FB5Col(
                       classNames: 'col-12 p-3',
-                      child: Text('Showing ${products.length}'),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Showing ${products.length}'),
+                          if (MediaQuery.sizeOf(context).width >= 767) ...{
+                            TextButton(
+                              onPressed: () =>
+                                  Scaffold.of(context).openDrawer(),
+                              child: const Text('sort'),
+                            ),
+                          }
+                        ],
+                      ),
                     ),
 
                     // Products
