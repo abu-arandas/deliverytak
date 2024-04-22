@@ -366,6 +366,7 @@ class _OrderDetailsState extends State<OrderDetails> {
             child: Row(
               children: [
                 Expanded(
+                  flex: 2,
                   child: RichText(
                     text: TextSpan(
                       style: const TextStyle(color: Colors.black),
@@ -415,107 +416,67 @@ class _OrderDetailsState extends State<OrderDetails> {
             (index) => Card(
               margin: const EdgeInsets.all(8),
               child: SizedBox(
-                height: 125,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // Image
-                    ClipRRect(
-                      borderRadius: const BorderRadiusDirectional.only(
-                        topStart: Radius.circular(12.5),
-                        bottomStart: Radius.circular(12.5),
-                      ),
-                      child: CachedNetworkImage(
-                        imageUrl: order.products[index].image,
-                        fit: BoxFit.fill,
-                      ),
+                width: 500,
+                child: ListTile(
+                  // Image
+                  leading: ClipRRect(
+                    borderRadius: const BorderRadiusDirectional.only(
+                      topStart: Radius.circular(12.5),
+                      bottomStart: Radius.circular(12.5),
                     ),
-
-                    // Informations
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      constraints: const BoxConstraints(maxWidth: 175),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Title
-                          Text(
-                            order.products[index].name,
-                            maxLines: 2,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-
-                          // Price && Count
-                          Padding(
-                            padding: const EdgeInsets.all(4),
-                            child: Row(
-                              children: [
-                                Text(
-                                  '${order.products[index].price.toStringAsFixed(2)} JD',
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(width: 8),
-                                Container(
-                                  padding: const EdgeInsets.all(8),
-                                  constraints: const BoxConstraints(
-                                      minHeight: 25, minWidth: 25),
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                  ),
-                                  child: Text(
-                                    order.products[index].stock.toString(),
-                                    style: const TextStyle(color: Colors.white),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-
-                          // Color & Size
-                          Padding(
-                            padding: const EdgeInsets.all(4),
-                            child: Row(
-                              children: [
-                                if (order.products[index].sizes.isNotEmpty) ...{
-                                  Text(
-                                    order.products[index].sizes.first,
-                                  ),
-                                },
-                                if (order.products[index].sizes.isNotEmpty &&
-                                    order
-                                        .products[index].colors.isNotEmpty) ...{
-                                  Container(
-                                    width: 1,
-                                    height: 10,
-                                    margin: const EdgeInsets.all(4),
-                                    color: Colors.grey,
-                                  ),
-                                },
-                                if (order
-                                    .products[index].colors.isNotEmpty) ...{
-                                  Icon(
-                                    Icons.circle,
-                                    color: order
-                                        .products[index].colors.first.color,
-                                  ),
-                                  Text(
-                                    order.products[index].colors.first.name,
-                                  ),
-                                },
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: CachedNetworkImage(
+                      imageUrl: order.products[index].image,
+                      fit: BoxFit.fill,
                     ),
-                  ],
+                  ),
+
+                  // Title
+                  title: Text(
+                    order.products[index].name,
+                    maxLines: 2,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  // Count
+                  trailing: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    child: Text(
+                      order.products[index].stock.toString(),
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ),
+
+                  // Informations
+                  subtitle: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Price
+                      Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: Text(
+                          '${order.products[index].price.toStringAsFixed(2)} JD',
+                        ),
+                      ),
+
+                      // Size
+                      if (order.products[index].sizes.isNotEmpty) ...{
+                        Padding(
+                          padding: const EdgeInsets.all(4),
+                          child: Text(
+                            order.products[index].sizes.first,
+                          ),
+                        ),
+                      },
+                    ],
+                  ),
                 ),
               ),
             ),

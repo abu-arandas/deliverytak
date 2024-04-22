@@ -130,9 +130,13 @@ class ClientAppBar extends StatelessWidget implements PreferredSizeWidget {
                     context: context,
                     page: const Cart(),
                   ),
-                  icon: Icon(
-                    Icons.shopping_bag,
-                    color: color(),
+                  icon: Badge(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    label: Text(controller.cartProducts.length.toString()),
+                    child: Icon(
+                      Icons.shopping_bag,
+                      color: color(),
+                    ),
                   ),
                 ),
               ),

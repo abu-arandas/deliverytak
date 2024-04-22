@@ -54,12 +54,12 @@ class AdminProducts extends StatelessWidget {
                           title: Text(snapshot.data![index].name),
 
                           // Edit
-                          trailing: IconButton(
+                          subtitle: TextButton(
                             onPressed: () => page(
                               context: context,
                               page: EditProduct(id: snapshot.data![index].id),
                             ),
-                            icon: const Icon(Icons.edit),
+                            child: const Text('Edit'),
                           ),
                         ),
                       ),

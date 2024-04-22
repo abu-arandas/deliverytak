@@ -31,47 +31,47 @@ class AuthScaffold extends StatelessWidget {
 
             // Form
             FB5Col(
-              classNames: 'col-lg-6 col-md-8 col-sm-12 px-5',
+              classNames: 'col-lg-6 col-md-8 col-sm-12 px-3',
               child: Container(
                 width: double.maxFinite,
                 height: MediaQuery.sizeOf(context).height,
                 alignment: Alignment.center,
-                child: Column(
-                  key: key,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: 32),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 32),
 
-                    // Title
-                    Container(
-                      width: double.maxFinite,
-                      padding: const EdgeInsets.all(32),
-                      child: Column(
-                        children: [
-                          App.logo(color: Colors.black),
-                          const SizedBox(height: 16),
-                          Text(
-                            title,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineMedium!
-                                .copyWith(fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(subTitle, textAlign: TextAlign.center),
-                        ],
+                      // Title
+                      Container(
+                        width: double.maxFinite,
+                        padding: const EdgeInsets.all(32),
+                        child: Column(
+                          children: [
+                            App.logo(color: Colors.black),
+                            const SizedBox(height: 16),
+                            Text(
+                              title,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineMedium!
+                                  .copyWith(fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(subTitle, textAlign: TextAlign.center),
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 16),
+                      const SizedBox(height: 16),
 
-                    // Form
-                    ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 400),
-                      child: SingleChildScrollView(
+                      // Form
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 400),
                         child: form,
                       ),
-                    ),
-                  ],
+                      SizedBox(
+                          height: MediaQuery.of(context).viewInsets.bottom),
+                    ],
+                  ),
                 ),
               ),
             ),

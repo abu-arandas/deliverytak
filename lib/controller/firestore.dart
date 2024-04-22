@@ -96,12 +96,6 @@ List<ProductModel> initialProducts = [
     category: '6k9or5e98E8MnAzfqUm0',
     description:
         'Oversized fit shirt. Italian collar and short sleeves. Chest patch pocket. Side vents at hem.Front button closure partially hidden by a flap',
-    colors: [
-      ColorModel(
-        name: 'Sky blue',
-        color: const Color(0xFF87CEEB),
-      ),
-    ],
     sizes: ['S', 'M', 'L', 'XL'],
     images: [
       'https://firebasestorage.googleapis.com/v0/b/deliverytak.appspot.com/o/products%2FSTRIPED%20OVERSIZE%20SHIRT%2F1.jpg?alt=media&token=15b61b69-e5e3-450b-9719-1fcffb76c7d5',
@@ -125,12 +119,6 @@ List<ProductModel> initialProducts = [
     category: '6k9or5e98E8MnAzfqUm0',
     description:
         'Relaxed fit shirt made of cotton and linen blend fabric. Italian collar and short sleeves. All over embroidered tonal cord. Front button closure',
-    colors: [
-      ColorModel(
-        name: 'Beige',
-        color: const Color(0xFFEAD2A8),
-      ),
-    ],
     sizes: ['S', 'M', 'L', 'XL'],
     images: [
       'https://firebasestorage.googleapis.com/v0/b/deliverytak.appspot.com/o/products%2FFLORAL%20EMBROIDERED%20SHIRT%2F1.jpg?alt=media&token=756f3bf3-6d73-408e-8761-b54c6acc6465',
@@ -155,21 +143,6 @@ List<ProductModel> initialProducts = [
     category: 'Kg5mbNAybYwUUaOBrFxJ',
     description:
         'Tapered pants made of cotton and linen blend fabric. Adjustable elastic drawstring waistband. Front pockets and back patch pockets. Front zip and button closure',
-    colors: [
-      ColorModel(name: 'Black', color: Colors.black),
-      ColorModel(
-        name: 'Sky blue',
-        color: const Color(0xFF87CEEB),
-      ),
-      ColorModel(
-        name: 'Beige',
-        color: const Color(0xFFEAD2A8),
-      ),
-      ColorModel(
-        name: 'Oyster white',
-        color: const Color(0xFFE1DAC7),
-      ),
-    ],
     sizes: ['S', 'M', 'L', 'XL'],
     images: [
       'https://firebasestorage.googleapis.com/v0/b/deliverytak.appspot.com/o/products%2FTAPERED%20PANTS%2F1.jpg?alt=media&token=21e722bc-233c-47d3-b5db-11f780e5be57',
@@ -216,12 +189,6 @@ List<ProductModel> initialProducts = [
     category: '7TaIUuGpfiZOrsJJxZnq',
     description:
         'Blazer with satin effect lapel collar and long sleeves with shoulder pads. Front flap pockets. Fitted waist. Front button closure',
-    colors: [
-      ColorModel(
-        name: 'Oyster white',
-        color: const Color(0xFFE1DAC7),
-      ),
-    ],
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
     images: [
       'https://firebasestorage.googleapis.com/v0/b/deliverytak.appspot.com/o/products%2FTUXEDO%20JACKET%2F1.jpg?alt=media&token=4177321e-c119-46d5-865b-905823830740',
@@ -245,7 +212,6 @@ List<ProductModel> initialProducts = [
     category: 'lmQbK7Mjtj9DhDdRGLQZ',
     description:
         'Midi dress made of 100% cotton. Lapel collar and below-the-elbow length sleeves with cuffs. Adjustable self belt with lined buckle. Embroidered eyelet detail. Tonal interior lining. Front hidden button closure',
-    colors: [],
     sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
     images: [
       'https://firebasestorage.googleapis.com/v0/b/deliverytak.appspot.com/o/products%2FZW%20COLLECTION%20EMBROIDERED%20SHIRTDRESS%2F1.jpg?alt=media&token=8a101a42-9192-4c50-b34e-03741a5129e1',
@@ -272,16 +238,6 @@ List<ProductModel> initialProducts = [
     category: 'lmQbK7Mjtj9DhDdRGLQZ',
     description:
         'Midi dress made of 100% cotton. V-neckline and dropped short sleeves. Adjustable tied self belt. Wrinkled fabric and pronounced tonal topstitching. Front button closure',
-    colors: [
-      ColorModel(
-        name: 'Khaki ',
-        color: const Color(0xFFc3b091),
-      ),
-      ColorModel(
-        name: 'Beige',
-        color: const Color(0xFFEAD2A8),
-      ),
-    ],
     sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
     images: [
       'https://firebasestorage.googleapis.com/v0/b/deliverytak.appspot.com/o/products%2FZW%20COLLECTION%20BELTED%20WRINKLED%20DRESS%2F1.jpg?alt=media&token=61c6f4f7-eac2-4e55-95fe-b0cd072c7d17',

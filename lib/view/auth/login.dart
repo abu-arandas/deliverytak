@@ -117,7 +117,7 @@ class _LoginState extends State<Login> {
 
               // Sign Up
               Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

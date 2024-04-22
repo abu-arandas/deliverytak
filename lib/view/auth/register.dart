@@ -114,7 +114,7 @@ class _RegisterState extends State<Register> {
               const SizedBox(height: 8),
               PhoneInput(
                 countrySelectorNavigator:
-                    const CountrySelectorNavigator.bottomSheet(),
+                    const CountrySelectorNavigator.dialog(),
                 style: Theme.of(context)
                     .textTheme
                     .bodySmall!
@@ -185,7 +185,7 @@ class _RegisterState extends State<Register> {
 
               // Log In
               Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

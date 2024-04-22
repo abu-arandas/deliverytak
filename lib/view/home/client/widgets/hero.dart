@@ -38,7 +38,7 @@ class ClientHero extends StatelessWidget {
               classNames: 'col-lg-6 col-md-9 col-sm-12',
               child: Text(
                 'Raining Offers For Hot Summer!',
-                style: Theme.of(context).textTheme.displayLarge!.copyWith(
+                style: Theme.of(context).textTheme.headlineLarge!.copyWith(
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
@@ -52,15 +52,10 @@ class ClientHero extends StatelessWidget {
               classNames: 'col-lg-6 col-md-9 col-sm-12 px-1 py-3',
               child: Text(
                 '25% Off On All Products',
-                style: Theme.of(context).textTheme.displaySmall!.copyWith(
+                style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                       color: Colors.white,
-                      fontWeight: FontWeight.w300,
                     ),
               ),
-            ),
-            FB5Col(
-              classNames: 'col-12',
-              child: Container(),
             ),
             FB5Col(
               classNames: 'p-1',

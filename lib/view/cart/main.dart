@@ -24,7 +24,8 @@ class _CartState extends State<Cart> {
   @override
   Widget build(BuildContext context) => ClientScaffold(
         pageName: 'cart',
-        pageImage: '',
+        pageImage:
+            'https://firebasestorage.googleapis.com/v0/b/deliverytak.appspot.com/o/title%2Fcart.jpeg?alt=media&token=eeade872-dd24-4767-a0b0-1f27f33a9ecd',
         body: GetBuilder<CartController>(
           builder: (productController) {
             if (productController.cartProducts.isEmpty) {
@@ -62,130 +63,346 @@ class _CartState extends State<Cart> {
                 ),
               );
             } else {
-              return FB5Row(
-                children: [
-                  // Map
-                  FB5Col(
-                    classNames: 'col-lg-6 col-md-12 col-sm-12',
-                    height: MediaQuery.sizeOf(context).width >= 1000 &&
-                            key.currentContext != null
-                        ? key.currentContext!.height
-                        : 400,
-                    child: FlutterMap(
-                      options: MapOptions(
-                        initialCenter: latLng,
-                        initialZoom: 15,
-                        onMapEvent: (event) =>
-                            setState(() => latLng = event.camera.center),
-                        onTap: (tapPosition, point) =>
-                            setState(() => latLng = point),
+              return FB5Container(
+                child: FB5Row(
+                  children: [
+                    // Products
+                    FB5Col(
+                      classNames: 'col-12 p-3',
+                      child: StreamBuilder(
+                        stream: products(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return Table(
+                              columnWidths: const {
+                                0: FlexColumnWidth(2),
+                                1: FlexColumnWidth(4),
+                                2: FlexColumnWidth(2),
+                                3: FlexColumnWidth(2),
+                                4: FlexColumnWidth(2),
+                              },
+                              children: [
+                                // Title
+                                const TableRow(
+                                  decoration: BoxDecoration(
+                                    border: Border(bottom: BorderSide()),
+                                  ),
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.all(8),
+                                      child: Text('image'),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.all(8),
+                                      child: Text('title'),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.all(8),
+                                      child: Text('price'),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.all(8),
+                                      child: Text('size'),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.all(8),
+                                      child: Text('count'),
+                                    ),
+                                  ],
+                                ),
+
+                                // Products
+                                for (ProductModel product
+                                    in productController.cartProducts) ...{
+                                  productRow(
+                                    productController,
+                                    snapshot.data!.singleWhere(
+                                        (element) => element.id == product.id),
+                                  ),
+                                }
+                              ],
+                            );
+                          } else if (snapshot.hasError) {
+                            return Center(
+                                child: Text(
+                              snapshot.error.toString(),
+                            ));
+                          } else if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          } else {
+                            return Container();
+                          }
+                        },
                       ),
-                      children: [
-                        TileLayer(
-                          urlTemplate:
-                              'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                          userAgentPackageName: 'com.arandas.deliverytak',
-                        ),
-                        MarkerLayer(
-                          markers: [
-                            Marker(
-                              point: latLng,
-                              child: const Icon(Icons.location_pin,
-                                  color: Colors.red),
+                    ),
+
+                    // Pilling
+                    FB5Col(
+                      classNames: 'col-lg-7 col-md-6 col-sm-12 col-xs-12 p-3',
+                      child: Form(
+                        child: Column(
+                          children: [
+                            // Map
+                            SizedBox(
+                              height:
+                                  MediaQuery.sizeOf(context).width >= 1000 &&
+                                          key.currentContext != null
+                                      ? key.currentContext!.height
+                                      : 400,
+                              child: FlutterMap(
+                                options: MapOptions(
+                                  initialCenter: latLng,
+                                  initialZoom: 15,
+                                  onMapEvent: (event) => setState(
+                                      () => latLng = event.camera.center),
+                                  onTap: (tapPosition, point) =>
+                                      setState(() => latLng = point),
+                                ),
+                                children: [
+                                  TileLayer(
+                                    urlTemplate:
+                                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                    userAgentPackageName:
+                                        'com.arandas.deliverytak',
+                                  ),
+                                  MarkerLayer(
+                                    markers: [
+                                      Marker(
+                                        point: latLng,
+                                        child: const Icon(Icons.location_pin,
+                                            color: Colors.red),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
+
+                            // Payment
+                            FB5Row(
+                              children: List.generate(
+                                PaymentMethod.values.length,
+                                (index) => FB5Col(
+                                  classNames: 'col-6',
+                                  child: RadioListTile(
+                                    title: Text(paymentMethod
+                                        .reverse[PaymentMethod.values[index]]!),
+                                    value: PaymentMethod.values[index],
+                                    groupValue: payment,
+                                    onChanged: (value) => setState(() =>
+                                        payment = PaymentMethod.values[index]),
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            // Online Payment
+                            if (payment == PaymentMethod.online) ...{
+                              Container(
+                                padding: const EdgeInsets.all(8),
+                                constraints:
+                                    const BoxConstraints(maxWidth: 500),
+                                child: onlineForm(),
+                              ),
+                            },
                           ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
 
-                  // Products
-                  FB5Col(
-                    classNames: 'col-lg-6 col-md-12 col-sm-12',
-                    child: FB5Container(
+                    // Additional
+                    FB5Col(
+                      classNames: 'col-lg-5 col-md-6 col-sm-12 col-xs-12 p-3',
                       child: Column(
-                        key: key,
-                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          FB5Row(
-                            children: List.generate(
-                              productController.cartProducts.length,
-                              (index) => FB5Col(
-                                classNames: 'col-lg-6 col-md-6 col-sm-12',
-                                child: CartProduct(
-                                  cartProduct:
-                                      productController.cartProducts[index],
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          // Payment
-                          FB5Row(
-                            children: List.generate(
-                              PaymentMethod.values.length,
-                              (index) => FB5Col(
-                                classNames: 'col-6',
-                                child: RadioListTile(
-                                  title: Text(paymentMethod
-                                      .reverse[PaymentMethod.values[index]]!),
-                                  value: PaymentMethod.values[index],
-                                  groupValue: payment,
-                                  onChanged: (value) => setState(() =>
-                                      payment = PaymentMethod.values[index]),
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          // Online Payment
-                          if (payment == PaymentMethod.online) ...{
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              constraints: const BoxConstraints(maxWidth: 500),
-                              child: onlineForm(),
-                            ),
-                          },
-
-                          // Check Out
-                          Container(
-                            width: 500,
-                            padding: const EdgeInsets.all(16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              mainAxisSize: MainAxisSize.max,
-                              crossAxisAlignment: CrossAxisAlignment.center,
+                          // Products Price
+                          RichText(
+                            text: TextSpan(
+                              style: const TextStyle(color: Colors.black),
                               children: [
-                                // Price
-                                Padding(
-                                  padding: const EdgeInsets.all(16),
-                                  child: Text(
-                                    '${(productController.cartPrice() + 1).toStringAsFixed(2)} JD',
-                                  ),
+                                const TextSpan(
+                                  text: 'Products : ',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
-
-                                // Cart
-                                Expanded(
-                                  child: ElevatedButton(
-                                    onPressed: () => validate(),
-                                    child: loading
-                                        ? const CircularProgressIndicator()
-                                        : const Text('Continue'),
-                                  ),
+                                TextSpan(
+                                  text: productController
+                                      .cartPrice()
+                                      .toStringAsFixed(2),
                                 ),
                               ],
+                            ),
+                          ),
+
+                          // Deliver Price
+                          RichText(
+                            text: const TextSpan(
+                              style: TextStyle(color: Colors.black),
+                              children: [
+                                TextSpan(
+                                  text: 'Deliver : ',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                TextSpan(text: '1'),
+                              ],
+                            ),
+                          ),
+
+                          // Products Price
+                          RichText(
+                            text: TextSpan(
+                              style: const TextStyle(color: Colors.black),
+                              children: [
+                                const TextSpan(
+                                  text: 'Total : ',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                TextSpan(
+                                  text: (productController.cartPrice() + 1)
+                                      .toStringAsFixed(2),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          const Divider(),
+
+                          // Check Out
+                          Align(
+                            alignment: Alignment.center,
+                            child: ElevatedButton(
+                              onPressed: () => validate(),
+                              style: ElevatedButton.styleFrom(
+                                fixedSize: const Size(200, 50),
+                              ),
+                              child: const Text('Check Out'),
                             ),
                           ),
                         ],
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
             }
           },
         ),
       );
+
+  TableRow productRow(
+    CartController productController,
+    ProductModel product,
+  ) {
+    String? size = product.sizes.isEmpty ? product.sizes.first : null;
+    int stock = productController.cartProducts
+        .singleWhere((element) => element.id == product.id)
+        .stock;
+
+    return TableRow(
+      decoration: const BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: Colors.grey),
+        ),
+      ),
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child: CachedNetworkImage(
+            imageUrl: product.image,
+            fit: BoxFit.fill,
+            width: 75,
+            height: 75,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child: Text(product.name),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child: Text(product.price.toStringAsFixed(2)),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child: PopupMenuButton(
+            itemBuilder: (BuildContext context) => List.generate(
+              product.sizes.length,
+              (index) => PopupMenuItem(
+                onTap: () {
+                  setState(() => size = product.sizes[index]);
+
+                  productController.cartProducts
+                      .singleWhere((element) => element.id == product.id)
+                      .sizes = [product.sizes[index]];
+
+                  productController.update();
+                },
+                child: Text(product.sizes[index]),
+              ),
+            ),
+            child: ListTile(
+              title: Text(
+                size ?? 'Selecet a Size',
+                style: const TextStyle(color: Colors.black),
+              ),
+              trailing: const Icon(Icons.keyboard_arrow_down),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child: Row(
+            children: [
+              Text(stock.toString()),
+              Column(
+                children: [
+                  if (stock <= product.stock) ...{
+                    InkWell(
+                      onTap: () {
+                        setState(() => stock++);
+
+                        productController.cartProducts
+                            .singleWhere((element) => element.id == product.id)
+                            .stock++;
+                        productController.update();
+                      },
+                      child: const Icon(Icons.keyboard_arrow_up),
+                    )
+                  },
+                  if (stock >= 1) ...{
+                    const SizedBox(height: 4),
+                    InkWell(
+                      onTap: () {
+                        if (stock == 1) {
+                          setState(() => stock = 0);
+
+                          productController.cartProducts.removeWhere(
+                              (element) => element.id == product.id);
+                        } else {
+                          setState(() => stock--);
+
+                          productController.cartProducts
+                              .singleWhere(
+                                  (element) => element.id == product.id)
+                              .stock--;
+                        }
+
+                        productController.update();
+                      },
+                      child: const Icon(Icons.keyboard_arrow_down),
+                    ),
+                  }
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 
   Widget onlineForm() => Form(
         key: formKey,

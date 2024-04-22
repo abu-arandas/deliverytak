@@ -4,7 +4,6 @@ class ProductModel {
   String id, name, image;
   double price;
   String category, description;
-  List<ColorModel> colors;
   List<String> sizes;
   List<String> images;
   String? brand;
@@ -18,7 +17,6 @@ class ProductModel {
     required this.price,
     required this.category,
     required this.description,
-    required this.colors,
     required this.sizes,
     required this.images,
     this.brand,
@@ -41,10 +39,6 @@ class ProductModel {
           json['sizes'].length,
           (index) => json['sizes'][index].toString(),
         ),
-        colors: List.generate(
-          json['colors'].length,
-          (index) => ColorModel.fromJson(json['colors'][index]),
-        ),
         images: List.generate(
           json['images'].length,
           (index) => json['images'][index].toString(),
@@ -65,10 +59,6 @@ class ProductModel {
         ),
         category: json['category'],
         description: json['description'],
-        colors: List.generate(
-          json['colors'].length,
-          (index) => ColorModel.fromJson(json['colors'][index]),
-        ),
         sizes: List.generate(
           json['sizes'].length,
           (index) => json['sizes'][index].toString(),
@@ -88,7 +78,6 @@ class ProductModel {
     double? price,
     String? category,
     String? description,
-    List<ColorModel>? colors,
     List<String>? sizes,
     List<String>? images,
     String? brand,
@@ -102,7 +91,6 @@ class ProductModel {
         price: price ?? this.price,
         category: category ?? this.category,
         description: description ?? this.description,
-        colors: colors ?? this.colors,
         sizes: sizes ?? this.sizes,
         images: images ?? this.images,
         brand: brand ?? this.brand,
@@ -117,10 +105,6 @@ class ProductModel {
         'price': price,
         'category': category,
         'description': description,
-        'colors': List.generate(
-          colors.length,
-          (index) => colors[index].toJson(),
-        ),
         'sizes': List.generate(
           sizes.length,
           (index) => sizes[index].toString(),
@@ -129,27 +113,5 @@ class ProductModel {
         'brand': brand,
         'gender': genders.reverse[gender],
         'stock': stock,
-      };
-}
-
-class ColorModel {
-  String name;
-  Color color;
-
-  ColorModel({required this.name, required this.color});
-
-  factory ColorModel.fromJson(Map<String, dynamic> json) => ColorModel(
-        name: json['name'],
-        color: Color(json['color']),
-      );
-
-  ColorModel copyWith({String? name, Color? color}) => ColorModel(
-        name: name ?? this.name,
-        color: color ?? this.color,
-      );
-
-  Map<String, dynamic> toJson() => {
-        'name': name,
-        'color': color.value,
       };
 }

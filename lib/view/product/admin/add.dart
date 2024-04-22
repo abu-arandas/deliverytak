@@ -25,11 +25,6 @@ class _AddProductState extends State<AddProduct> {
   TextEditingController brand = TextEditingController();
   TextEditingController stock = TextEditingController();
 
-  GlobalKey<FormState> colorFormKey = GlobalKey();
-  TextEditingController colorName = TextEditingController();
-  Color? colorHex;
-  List<ColorModel> colors = [];
-
   TextEditingController size = TextEditingController();
   List<String> sizes = [];
 
@@ -197,8 +192,9 @@ class _AddProductState extends State<AddProduct> {
                           const InputDecoration(labelText: 'Description'),
                       controller: description,
                       keyboardType: TextInputType.multiline,
-                      expands: true,
                       textInputAction: TextInputAction.newline,
+                      minLines: 1,
+                      maxLength: 10,
                       validator: (value) {
                         if (value!.isEmpty) {
                           return '* required';
@@ -375,148 +371,6 @@ class _AddProductState extends State<AddProduct> {
                     ),
                   ),
 
-                  // Colors
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8),
-                              child: Text(
-                                'Colors',
-                                style: Theme.of(context)
-                                    .inputDecorationTheme
-                                    .labelStyle!
-                                    .copyWith(fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            IconButton.outlined(
-                              onPressed: () => showDialog(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                  content: Form(
-                                    key: colorFormKey,
-                                    child: SingleChildScrollView(
-                                      child: Column(
-                                        children: [
-                                          // Name
-                                          TextFormField(
-                                            controller: colorName,
-                                            decoration: const InputDecoration(
-                                                labelText: 'Name'),
-                                            keyboardType: TextInputType.name,
-                                            textInputAction:
-                                                TextInputAction.done,
-                                            validator: (value) {
-                                              if (value!.isEmpty) {
-                                                return '* required';
-                                              } else {
-                                                return null;
-                                              }
-                                            },
-                                          ),
-
-                                          // Color
-                                          ColorPicker(
-                                            color: colorHex ??
-                                                Theme.of(context)
-                                                    .colorScheme
-                                                    .primary,
-                                            onColorChanged: (Color color) =>
-                                                setState(
-                                                    () => colorHex = color),
-                                            width: 44,
-                                            height: 44,
-                                            borderRadius: 22,
-                                            heading: Text(
-                                              'Select color',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headlineSmall,
-                                            ),
-                                            subheading: Text(
-                                              'Select color shade',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .titleSmall,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  actions: [
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        if (colorFormKey.currentState!
-                                                .validate() &&
-                                            colorHex != null) {
-                                          colors.add(
-                                            ColorModel(
-                                                name: colorName.text,
-                                                color: colorHex!),
-                                          );
-
-                                          colorName.clear();
-                                          colorHex = null;
-
-                                          setState(() {});
-
-                                          Navigator.pop(context);
-                                        }
-                                      },
-                                      child: const Text('add'),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              icon: const Icon(Icons.add),
-                            ),
-                          ],
-                        ),
-                        Wrap(
-                          children: List.generate(
-                            colors.length,
-                            (index) => Container(
-                              margin: const EdgeInsets.only(
-                                right: 4,
-                                bottom: 4,
-                              ),
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                border: Border.all(),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.circle,
-                                    color: colors[index].color,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 4),
-                                    child: Text(colors[index].name),
-                                  ),
-                                  InkWell(
-                                    onTap: () => colors.removeAt(index),
-                                    child: const Icon(Icons.close),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
                   // Sizes
                   Padding(
                     padding: const EdgeInsets.all(8),
@@ -674,7 +528,6 @@ class _AddProductState extends State<AddProduct> {
             price: double.parse(price.text),
             category: category.text,
             description: description.text,
-            colors: colors,
             sizes: sizes,
             images: [],
             gender: genders.map[gender.text]!,

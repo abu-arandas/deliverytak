@@ -9,392 +9,255 @@ class ProductDetails extends StatefulWidget {
 }
 
 class _ProductDetailsState extends State<ProductDetails> {
-  int count = 0;
-  String? size;
-  String? color;
-
-  @override
-  void initState() {
-    super.initState();
-
-    for (var element in CartController.instance.cartProducts) {
-      if (widget.id == element.id) {
-        setState(() {
-          count = element.stock;
-          size = element.sizes.first;
-          color = element.colors.first.name;
-        });
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) => ClientScaffold(
         pageName: 'product',
         pageImage: '',
-        body: StreamBuilder(
-          stream: singleProduct(widget.id),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return Column(
-                children: [
-                  FB5Row(
-                    children: [
-                      image(snapshot.data!.image),
-                      FB5Col(
-                        classNames: 'col-lg-6 col-md-6 col-sm-12',
-                        child: FB5Row(
-                          children: [
-                            title(snapshot.data!.name),
-                            categoryBrand(snapshot.data!),
-                            description(snapshot.data!.description),
-                            colorsSizes(snapshot.data!),
-                            images(snapshot.data!),
-                            FB5Col(
-                              classNames: 'col-12',
-                              child: const SizedBox(height: 48),
-                            ),
-                            price(snapshot.data!),
-                          ],
+        body: FB5Container(
+          child: StreamBuilder(
+            stream: singleProduct(widget.id),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Column(
+                  children: [
+                    FB5Row(
+                      classNames: 'align-items-start',
+                      children: [
+                        FB5Col(
+                          classNames: 'col-lg-6 col-md-6 col-sm-12',
+                          child: CachedNetworkImage(
+                            imageUrl: snapshot.data!.image,
+                            fit: BoxFit.fill,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  relatedProductsWidget(snapshot.data!),
-                ],
-              );
-            } else if (snapshot.hasError) {
-              return Center(child: Text(snapshot.error.toString()));
-            } else if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else {
-              return Container();
-            }
-          },
-        ),
-      );
-
-  FB5Col image(String image) => FB5Col(
-        classNames: 'col-lg-6 col-md-6 col-sm-12',
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.sizeOf(context).height - 75,
-          ),
-          child: CachedNetworkImage(
-            imageUrl: image,
-            fit: BoxFit.fill,
-            width: double.maxFinite,
-          ),
-        ),
-      );
-
-  FB5Col title(String title) => FB5Col(
-        classNames: 'col-12 px-3 pt-3',
-        child: Text(
-          title.toUpperCase(),
-          style: Theme.of(context).textTheme.headlineMedium,
-        ),
-      );
-
-  FB5Col categoryBrand(ProductModel product) => FB5Col(
-        classNames: 'col-12 px-3 pt-3',
-        child: Align(
-          alignment: Alignment.center,
-          child: Container(
-            constraints: const BoxConstraints(maxWidth: 300),
-            margin: const EdgeInsets.all(16),
-            padding: const EdgeInsets.all(16),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: StreamBuilder(
-              stream: category(product.category),
-              builder: (context, categorySnapshot) {
-                if (categorySnapshot.hasData) {
-                  if (product.brand != null) {
-                    return StreamBuilder(
-                      stream: brand(product.brand),
-                      builder: (context, brandSnapshot) {
-                        if (brandSnapshot.hasData) {
-                          return Text(
-                            toTitleCase(
-                                '${categorySnapshot.data!.name}  |  ${brandSnapshot.data!.name}'),
-                            style: const TextStyle(color: Colors.white),
-                          );
-                        } else {
-                          return Text(
-                            toTitleCase(categorySnapshot.data!.name),
-                            style: const TextStyle(color: Colors.white),
-                          );
-                        }
-                      },
-                    );
-                  } else {
-                    return Text(
-                      toTitleCase(categorySnapshot.data!.name),
-                      style: const TextStyle(color: Colors.white),
-                    );
-                  }
-                } else {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-              },
-            ),
-          ),
-        ),
-      );
-
-  FB5Col description(String description) => FB5Col(
-        classNames: 'col-12 px-3 pt-3',
-        child: Text(
-          description,
-          style: const TextStyle(fontWeight: FontWeight.normal),
-        ),
-      );
-
-  FB5Col colorsSizes(ProductModel product) {
-    String classNames = product.colors.isEmpty || product.sizes.isEmpty
-        ? 'col-12 p-1'
-        : 'col-6 p-1';
-
-    return FB5Col(
-      classNames: 'col-12 px-3 pt-3',
-      child: FB5Row(
-        children: [
-          // Colors
-          FB5Col(
-            classNames: classNames,
-            child: FB5Row(
-              children: List.generate(
-                product.colors.length,
-                (index) => FB5Col(
-                  classNames: 'col-lg-6 col-md-6 col-sm-12 p-1',
-                  child: ListTile(
-                    onTap: () =>
-                        setState(() => color = product.colors[index].name),
-                    shape: BeveledRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                      side: color == product.colors[index].name
-                          ? const BorderSide(color: Colors.black)
-                          : BorderSide.none,
-                    ),
-                    leading: Icon(
-                      Icons.circle,
-                      color: product.colors[index].color,
-                    ),
-                    title: Text(product.colors[index].name),
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-          // Sizes
-          FB5Col(
-            classNames: classNames,
-            child: FB5Row(
-              children: List.generate(
-                product.sizes.length,
-                (index) => FB5Col(
-                  classNames: 'col-6 p-1',
-                  child: ListTile(
-                    onTap: () => setState(() => size = product.sizes[index]),
-                    shape: BeveledRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                      side: size == product.sizes[index]
-                          ? const BorderSide(color: Colors.black)
-                          : BorderSide.none,
-                    ),
-                    title: Text(product.sizes[index]),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  FB5Col images(ProductModel product) => FB5Col(
-        classNames: 'col-12 px-3 pt-3',
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: List.generate(
-              product.images.length,
-              (index) => Container(
-                margin: const EdgeInsets.only(left: 8),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12.5),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black,
-                      blurRadius: 5,
-                      blurStyle: BlurStyle.outer,
-                    ),
-                  ],
-                ),
-                child: InkWell(
-                  onTap: () => showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      contentPadding: EdgeInsets.zero,
-                      content: CachedNetworkImage(
-                        imageUrl: product.images[index],
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                  ),
-                  child: CachedNetworkImage(
-                    imageUrl: product.images[index],
-                    fit: BoxFit.fill,
-                    width: 50,
-                    height: 50,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-
-  FB5Col price(ProductModel product) => FB5Col(
-        classNames: 'col-12',
-        child: Container(
-          width: double.maxFinite,
-          color: Colors.black,
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              Text(
-                '${product.price} JD',
-                style: const TextStyle(color: Colors.white),
-              ),
-              const Spacer(),
-              GetBuilder<CartController>(
-                builder: (controller) {
-                  bool exists = controller.cartProducts
-                      .any((element) => element.id == product.id);
-
-                  return Row(
-                    children: [
-                      // Remove
-                      if (exists) ...{
-                        IconButton(
-                          onPressed: () {
-                            if (count > 1) {
-                              controller.cartProducts
-                                  .singleWhere(
-                                      (element) => element.id == product.id)
-                                  .stock--;
-                              controller.update();
-
-                              count--;
-                              setState(() {});
-                            } else {
-                              controller.cartProducts.removeWhere(
-                                  (element) => element.id == product.id);
-                              controller.update();
-                            }
-                          },
-                          icon: const Icon(Icons.remove, color: Colors.white),
-                        )
-                      },
-
-                      // Count
-                      if (exists) ...{
-                        Text(
-                          count.toString(),
-                          style: const TextStyle(color: Colors.white),
-                        )
-                      },
-
-                      // Add
-                      if (product.stock >= count && !exists) ...{
-                        TextButton(
-                          onPressed: () {
-                            controller.cartProducts.add(
-                              product.copyWith(
-                                colors: color != null
-                                    ? [
-                                        product.colors.singleWhere(
-                                            (element) => element.name == color)
-                                      ]
-                                    : null,
-                                sizes: size != null ? [size!] : null,
-                                stock: 1,
+                        FB5Col(
+                          classNames: 'col-lg-6 col-md-6 col-sm-12 p-3',
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Name
+                              Text(
+                                snapshot.data!.name.toUpperCase(),
+                                style:
+                                    Theme.of(context).textTheme.headlineMedium,
                               ),
-                            );
+                              const SizedBox(height: 16),
 
-                            showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: const Text('Added to cart'),
-                                content: Column(
-                                  mainAxisSize: MainAxisSize.min,
+                              // Description
+                              Text(snapshot.data!.description),
+                              const SizedBox(height: 16),
+
+                              // Price
+                              Text(
+                                '${snapshot.data!.price.toStringAsFixed(2)} JD',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .copyWith(
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                    ),
+                              ),
+                              const SizedBox(height: 20),
+
+                              // Sizes
+                              if (snapshot.data!.sizes.isNotEmpty) ...{
+                                Row(
                                   children: [
-                                    ElevatedButton(
-                                      onPressed: () => page(
-                                        context: context,
-                                        page: const Cart(),
-                                      ),
-                                      child: const Text('View Cart'),
+                                    const Text(
+                                      'Sizes: ',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
                                     ),
-                                    ElevatedButton(
-                                      onPressed: () => Navigator.pop(context),
-                                      child: const Text('COntinue Shopping'),
-                                    ),
+                                    const Spacer(),
+                                    for (var element
+                                        in snapshot.data!.sizes) ...{
+                                      Padding(
+                                        padding: const EdgeInsets.all(4),
+                                        child: Text(element),
+                                      )
+                                    }
                                   ],
                                 ),
+                              },
+
+                              const SizedBox(height: 16),
+
+                              // Cart
+                              Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: GetBuilder<CartController>(
+                                  builder: (controller) => ElevatedButton(
+                                    onPressed: () {
+                                      ProductModel product = snapshot.data!;
+
+                                      controller.cartProducts.add(
+                                        product.copyWith(stock: 1),
+                                      );
+
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                          title: const Text('Added to cart'),
+                                          actions: [
+                                            OutlinedButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(context),
+                                              child: const Text(
+                                                  'Continue Shopping'),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            ElevatedButton(
+                                              onPressed: () => page(
+                                                context: context,
+                                                page: const Cart(),
+                                              ),
+                                              child: const Text('View Cart'),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+
+                                      controller.update();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      fixedSize: const Size(200, 50),
+                                    ),
+                                    child: const Text('Add to Cart'),
+                                  ),
+                                ),
                               ),
-                            );
+                              const SizedBox(height: 16),
 
-                            controller.update();
-                            count++;
-                            setState(() {});
-                          },
-                          child: const Text('add to cart'),
-                        )
-                      },
+                              // Category
+                              StreamBuilder(
+                                stream: category(snapshot.data!.category),
+                                builder: (context, categorySnapshot) {
+                                  if (categorySnapshot.hasData) {
+                                    return RichText(
+                                      text: TextSpan(
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                        ),
+                                        children: [
+                                          const TextSpan(
+                                            text: 'Category: ',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: categorySnapshot.data!.name,
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  } else if (categorySnapshot.hasError) {
+                                    return Center(
+                                        child: Text(
+                                            categorySnapshot.error.toString()));
+                                  } else if (categorySnapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const Center(
+                                        child: CircularProgressIndicator());
+                                  } else {
+                                    return Container();
+                                  }
+                                },
+                              ),
+                              const SizedBox(height: 8),
 
-                      // Increase
-                      if (product.stock >= count && exists) ...{
-                        IconButton(
-                          onPressed: () {
-                            ProductModel cartProduct = controller.cartProducts
-                                .singleWhere(
-                                    (element) => element.id == product.id);
+                              // Brand
+                              if (snapshot.data!.brand != null) ...{
+                                StreamBuilder(
+                                  stream: brand(snapshot.data!.brand),
+                                  builder: (context, brandSnapshot) {
+                                    if (brandSnapshot.hasData) {
+                                      return RichText(
+                                        text: TextSpan(
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                          ),
+                                          children: [
+                                            const TextSpan(
+                                              text: 'Brand: ',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            TextSpan(
+                                              text: brandSnapshot.data!.name,
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    } else if (brandSnapshot.hasError) {
+                                      return Center(
+                                          child: Text(
+                                              brandSnapshot.error.toString()));
+                                    } else if (brandSnapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return const Center(
+                                          child: CircularProgressIndicator());
+                                    } else {
+                                      return Container();
+                                    }
+                                  },
+                                )
+                              },
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    relatedProductsWidget(snapshot.data!),
+                  ],
+                );
+              } else if (snapshot.hasError) {
+                return Center(child: Text(snapshot.error.toString()));
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else {
+                return Container();
+              }
+            },
+          ),
+        ),
+      );
 
-                            if (color != null) {
-                              cartProduct.colors = [
-                                product.colors.singleWhere(
-                                    (element) => element.name == color)
-                              ];
-                            }
-
-                            if (size != null) {
-                              cartProduct.sizes = [size!];
-                            }
-
-                            cartProduct.stock++;
-
-                            controller.update();
-                            count++;
-                            setState(() {});
-                          },
-                          icon: const Icon(Icons.add, color: Colors.white),
-                        )
-                      },
-                    ],
-                  );
-                },
+  Widget images(ProductModel product) => Row(
+        children: List.generate(
+          product.images.length,
+          (index) => Container(
+            margin: const EdgeInsets.only(left: 8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12.5),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black,
+                  blurRadius: 5,
+                  blurStyle: BlurStyle.outer,
+                ),
+              ],
+            ),
+            child: InkWell(
+              onTap: () => showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  contentPadding: EdgeInsets.zero,
+                  content: CachedNetworkImage(
+                    imageUrl: product.images[index],
+                    fit: BoxFit.fill,
+                  ),
+                ),
               ),
-            ],
+              child: CachedNetworkImage(
+                imageUrl: product.images[index],
+                fit: BoxFit.fill,
+                width: 50,
+                height: 50,
+              ),
+            ),
           ),
         ),
       );
@@ -409,16 +272,13 @@ class _ProductDetailsState extends State<ProductDetails> {
                         4, (index) => categoryProductsSnapshot.data![index])
                     : categoryProductsSnapshot.data!;
 
-            return FB5Container(
-              child: FB5Row(
-                classNames: 'pt-3',
-                children: List.generate(
-                  categoryProducts.length,
-                  (index) => FB5Col(
-                    classNames: 'col-lg-4 col-md-6 col-12 p-3',
-                    child:
-                        ClientProductWidget(product: categoryProducts[index]),
-                  ),
+            return FB5Row(
+              classNames: 'pt-3',
+              children: List.generate(
+                categoryProducts.length,
+                (index) => FB5Col(
+                  classNames: 'col-lg-4 col-md-6 col-12 p-3',
+                  child: ClientProductWidget(product: categoryProducts[index]),
                 ),
               ),
             );

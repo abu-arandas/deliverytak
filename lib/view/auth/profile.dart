@@ -26,14 +26,14 @@ class _ProfileState extends State<Profile> {
     super.initState();
 
     singleUser(widget.id).listen((event) {
-      setState(() {
-        image = NetworkImage(event.image);
-        imageUrl = event.image;
-        fName = TextEditingController(text: event.name['first']);
-        lName = TextEditingController(text: event.name['last']);
-        phone = PhoneController(event.phone);
-        user = event;
-      });
+      image = NetworkImage(event.image);
+      imageUrl = event.image;
+      fName = TextEditingController(text: event.name['first']);
+      lName = TextEditingController(text: event.name['last']);
+      phone = PhoneController(event.phone);
+      user = event;
+
+      setState(() {});
     });
   }
 
@@ -169,7 +169,7 @@ class _ProfileState extends State<Profile> {
                 const SizedBox(height: 8),
                 PhoneInput(
                   countrySelectorNavigator:
-                      const CountrySelectorNavigator.bottomSheet(),
+                      const CountrySelectorNavigator.dialog(),
                   style: Theme.of(context)
                       .textTheme
                       .bodySmall!

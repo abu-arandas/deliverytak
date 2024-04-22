@@ -15,7 +15,7 @@ class AdminCategories extends StatelessWidget {
                   'Categories',
                   style: Theme.of(context)
                       .textTheme
-                      .headlineLarge!
+                      .headlineSmall!
                       .copyWith(fontWeight: FontWeight.bold),
                 ),
                 IconButton(
@@ -36,7 +36,7 @@ class AdminCategories extends StatelessWidget {
                   children: List.generate(
                     snapshot.data!.length,
                     (index) => FB5Col(
-                      classNames: 'col-lg-12 col-md-12 col-sm-6 col-xs-6 p-1',
+                      classNames: 'col-lg-6 col-md-6 col-sm-12 col-xs-12 p-1',
                       child: ListTile(
                         contentPadding: const EdgeInsets.all(8),
 
