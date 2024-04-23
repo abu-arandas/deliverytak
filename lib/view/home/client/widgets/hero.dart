@@ -57,6 +57,7 @@ class ClientHero extends StatelessWidget {
                     ),
               ),
             ),
+            FB5Col(classNames: 'col-12', child: Container()),
             FB5Col(
               classNames: 'p-1',
               child: ElevatedButton(
