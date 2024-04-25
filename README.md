@@ -70,14 +70,14 @@ DeliveryTak is a fictional project created for demonstration purposes only. It i
 
 ## Screenshots
 
-    Client Interface
+**Client Interface**
 
 <img src="assets/screenshots/client/1.png" width="200"/>  <img src="assets/screenshots/client/2.png" width="200"/>  <img src="assets/screenshots/client/3.png" width="200"/>  <img src="assets/screenshots/client/4.png" width="200"/>  <img src="assets/screenshots/client/5.png" width="200"/>  <img src="assets/screenshots/client/6.png" width="200"/>  <img src="assets/screenshots/client/7.png" width="200"/>  <img src="assets/screenshots/client/8.png" width="200"/>  <img src="assets/screenshots/client/9.png" width="200"/>  <img src="assets/screenshots/client/10.png" width="200"/>  <img src="assets/screenshots/client/11.png" width="200"/>  <img src="assets/screenshots/client/12.png" width="200"/>
 
-    Admin Interface
+**Admin Interface**
 
 <img src="assets/screenshots/admin/1.png" width="200"/>  <img src="assets/screenshots/admin/2.png" width="200"/>  <img src="assets/screenshots/admin/3.png" width="200"/>  <img src="assets/screenshots/admin/4.png" width="200"/>  <img src="assets/screenshots/admin/5.png" width="200"/>  <img src="assets/screenshots/admin/6.png" width="200"/>  <img src="assets/screenshots/admin/7.png" width="200"/>  <img src="assets/screenshots/admin/8.png" width="200"/>  <img src="assets/screenshots/admin/9.png" width="200"/>  <img src="assets/screenshots/admin/10.png" width="200"/>  <img src="assets/screenshots/admin/11.png" width="200"/>  <img src="assets/screenshots/admin/12.png" width="200"/>
 
-    Authentication Interface
+**Authentication Interface**
 
 <img src="assets/screenshots/1.png" width="200"/>  <img src="assets/screenshots/2.png" width="200"/>
