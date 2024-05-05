@@ -42,9 +42,7 @@ class _AdminScaffoldState extends State<AdminScaffold> {
           // Side
           drawer: Drawer(
             shape: const BeveledRectangleBorder(),
-            child: AdminSideSection(
-              pageName: widget.pageName,
-            ),
+            child: AdminSideSection(pageName: widget.pageName),
           ),
 
           // Search

@@ -39,6 +39,53 @@ class ClientShopSort extends StatelessWidget {
               const SizedBox(height: 32),
             },
 
+            // Gender
+            ...{
+              Text(
+                'Genders',
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              GetBuilder<SortController>(
+                builder: (controller) {
+                  return FB5Row(
+                    children: List.generate(
+                      Genders.values.length,
+                      (index) => FB5Col(
+                        classNames: 'col-6',
+                        child: ListTile(
+                          onTap: () {
+                            controller.gender = Genders.values[index];
+                            controller.update();
+                          },
+                          title: Text(
+                            toTitleCase(
+                              genders.reverse[Genders.values[index]]!
+                                  .toUpperCase(),
+                            ),
+                            style: TextStyle(
+                              color: controller.gender == Genders.values[index]
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Colors.black,
+                              fontSize: 12,
+                            ),
+                          ),
+                          trailing: controller.gender == Genders.values[index]
+                              ? IconButton(
+                                  onPressed: () {
+                                    controller.gender = null;
+                                    controller.update();
+                                  },
+                                  icon: const Icon(Icons.close),
+                                )
+                              : null,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              )
+            },
+
             // Categories
             ...{
               Text(
@@ -50,7 +97,6 @@ class ClientShopSort extends StatelessWidget {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return FB5Row(
-                      classNames: 'justify-content-center',
                       children: List.generate(
                         snapshot.data!.length,
                         (index) => FB5Col(
@@ -113,7 +159,6 @@ class ClientShopSort extends StatelessWidget {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return FB5Row(
-                      classNames: 'justify-content-center',
                       children: List.generate(
                         snapshot.data!.length,
                         (index) => FB5Col(

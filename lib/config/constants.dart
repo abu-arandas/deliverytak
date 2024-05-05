@@ -58,12 +58,6 @@ page({required BuildContext context, required Widget page}) {
     ),
   );
 
-  SortController.instance.title.clear();
-  SortController.instance.brand = null;
-  SortController.instance.category = null;
-  SortController.instance.gender = null;
-  SortController.instance.update();
-
   return page == const Main()
       ? Navigator.of(context).pushAndRemoveUntil(
           route,

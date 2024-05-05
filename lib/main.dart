@@ -117,9 +117,9 @@ class MyApp extends StatelessWidget {
           ),
           initialBinding: BindingsBuilder(() {
             Get.put(NotificationController());
-            Get.put(CartController());
             Get.put(SortController());
             Get.put(LocationController());
+            Get.put(CartController());
           }),
           home: OrientationBuilder(
             builder: (context, orientation) => const Main(),

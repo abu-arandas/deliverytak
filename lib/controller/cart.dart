@@ -3,7 +3,7 @@ import '/exports.dart';
 class CartController extends GetxController {
   static CartController instance = Get.find();
 
-  RxList<ProductModel> cartProducts = <ProductModel>[].obs;
+  RxList<CartModel> cartProducts = <CartModel>[].obs;
 
   @override
   void onInit() {
@@ -32,15 +32,19 @@ class CartController extends GetxController {
         );
       }
     }
+
+    setLatLng(LocationController.instance.currentLocation);
   }
 
-  double cartPrice() {
-    double total = 0;
+  LatLng? latLng;
+  setLatLng(LatLng latLng) {
+    this.latLng = latLng;
+    update();
+  }
 
-    for (var product in cartProducts) {
-      total += product.price * product.stock;
-    }
-
-    return total;
+  PaymentMethod payment = PaymentMethod.cash;
+  setPayment(PaymentMethod payment) {
+    this.payment = payment;
+    update();
   }
 }

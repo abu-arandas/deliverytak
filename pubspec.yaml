@@ -28,6 +28,8 @@ dependencies:
   geolocator: ^11.0.0
   syncfusion_flutter_charts: ^25.1.38
   flex_color_picker: ^3.4.1
+  barcode_widget: ^2.0.4
+  simple_barcode_scanner: ^0.1.1
 
 dev_dependencies:
   flutter_test:

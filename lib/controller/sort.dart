@@ -24,7 +24,7 @@ class SortController extends GetxController {
 
             // Category
             if (category != null) {
-              return element.category.toLowerCase() == category;
+              return element.category!.toLowerCase() == category;
             }
 
             // Brand

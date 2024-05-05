@@ -6,24 +6,30 @@ class AdminShop extends StatelessWidget {
   @override
   Widget build(BuildContext context) => AdminScaffold(
         pageName: 'Shop',
-        body: Card(
-          margin: const EdgeInsets.all(16),
-          child: FB5Row(
-            children: [
-              FB5Col(
-                classNames: 'col-lg-6 col-md-6 col-sm-12 p-3',
-                child: const AdminCategories(),
+        body: FB5Row(
+          children: [
+            FB5Col(
+              classNames: 'col-lg-6 col-md-6 col-sm-12 p-3',
+              child: const Card(
+                margin: EdgeInsets.all(8),
+                child: AdminCategories(),
               ),
-              FB5Col(
-                classNames: 'col-lg-6 col-md-6 col-sm-12 p-3',
-                child: const AdminBrands(),
+            ),
+            FB5Col(
+              classNames: 'col-lg-6 col-md-6 col-sm-12 p-3',
+              child: const Card(
+                margin: EdgeInsets.all(8),
+                child: AdminBrands(),
               ),
-              FB5Col(
-                classNames: 'col-12 p-3',
-                child: const AdminProducts(),
+            ),
+            FB5Col(
+              classNames: 'col-12 p-3',
+              child: const Card(
+                margin: EdgeInsets.all(8),
+                child: AdminProducts(),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
 }

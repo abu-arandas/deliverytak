@@ -5,8 +5,10 @@ class OrderModel {
   String clientId;
   DateTime startTime;
   LatLng clientAddress;
-  List<ProductModel> products;
+  List<CartModel> products;
   DateTime? acceptTime;
+  String? driverId;
+  DateTime? pickTime;
   PaymentMethod payment;
   OrderProgress progress;
 
@@ -16,8 +18,10 @@ class OrderModel {
     required this.startTime,
     required this.clientAddress,
     required this.products,
-    required this.payment,
     this.acceptTime,
+    this.driverId,
+    this.pickTime,
+    required this.payment,
     required this.progress,
   });
 
@@ -28,12 +32,16 @@ class OrderModel {
         clientAddress: LatLng.fromJson(data['clientAddress']),
         products: List.generate(
           data['products'].length,
-          (index) => ProductModel.fromJson(data['products'][index]),
+          (index) => CartModel.fromJson(data['products'][index]),
         ),
-        payment: paymentMethod.map[data['payment']]!,
         acceptTime: data['acceptTime'] != null
             ? (data['acceptTime'] as Timestamp).toDate()
             : null,
+        driverId: data['driverId'],
+        pickTime: data['pickTime'] != null
+            ? (data['pickTime'] as Timestamp).toDate()
+            : null,
+        payment: paymentMethod.map[data['payment']]!,
         progress: orderProgress.map[data['progress']]!,
       );
 
@@ -41,11 +49,11 @@ class OrderModel {
     String? clientId,
     DateTime? startTime,
     LatLng? clientAddress,
-    List<ProductModel>? products,
-    String? driverId,
-    PaymentMethod? payment,
+    List<CartModel>? products,
     DateTime? acceptTime,
-    DateTime? endTime,
+    String? driverId,
+    DateTime? pickTime,
+    PaymentMethod? payment,
     OrderProgress? progress,
   }) =>
       OrderModel(
@@ -56,6 +64,8 @@ class OrderModel {
         products: products ?? this.products,
         payment: payment ?? this.payment,
         acceptTime: acceptTime ?? this.acceptTime,
+        driverId: driverId ?? this.driverId,
+        pickTime: pickTime ?? this.pickTime,
         progress: progress ?? this.progress,
       );
 
@@ -67,8 +77,10 @@ class OrderModel {
           products.length,
           (index) => products[index].toJson(),
         ),
-        'payment': paymentMethod.reverse[payment],
         'acceptTime': acceptTime,
+        'driverId': driverId,
+        'pickTime': pickTime,
+        'payment': paymentMethod.reverse[payment],
         'progress': orderProgress.reverse[progress],
       };
 }

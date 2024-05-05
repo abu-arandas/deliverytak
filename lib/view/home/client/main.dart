@@ -11,7 +11,6 @@ class ClientHome extends StatelessWidget {
             const ClientHero(),
             SizedBox(height: MediaQuery.sizeOf(context).width > 767 ? 64 : 32),
             const ClientBrands(),
-            SizedBox(height: MediaQuery.sizeOf(context).width > 767 ? 64 : 32),
             const ClientProducts(),
             SizedBox(height: MediaQuery.sizeOf(context).width > 767 ? 64 : 32),
             const ClientSpecialOffer(),

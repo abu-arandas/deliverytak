@@ -11,7 +11,7 @@ class ClientProductWidget extends StatelessWidget {
           page: ProductDetails(id: product.id),
         ),
         child: CachedNetworkImage(
-          imageUrl: product.image,
+          imageUrl: product.images.first,
           imageBuilder: (context, imageProvider) => AspectRatio(
             aspectRatio: 3 / 4,
             child: Container(

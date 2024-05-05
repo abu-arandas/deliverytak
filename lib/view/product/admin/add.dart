@@ -12,587 +12,694 @@ class AddProduct extends StatefulWidget {
 class _AddProductState extends State<AddProduct> {
   GlobalKey<FormState> formKey = GlobalKey();
 
-  XFile? pickedImage;
-  ImageProvider imageProvider = NetworkImage(noImage);
-  List<XFile?> pickedImages = [];
-  List<ImageProvider> imageProviders = [];
+  List<XFile> images = [];
+  List<ImageProvider> imagesProviders = [];
 
   TextEditingController name = TextEditingController();
   TextEditingController price = TextEditingController();
   TextEditingController description = TextEditingController();
-  TextEditingController category = TextEditingController();
-  TextEditingController gender = TextEditingController();
-  TextEditingController brand = TextEditingController();
+  CategoryModel? category;
+  BrandModel? brand;
+  Genders? gender;
   TextEditingController stock = TextEditingController();
 
   TextEditingController size = TextEditingController();
   List<String> sizes = [];
+  List<Color> colors = [];
+
+  bool loading = false;
 
   @override
   Widget build(BuildContext context) => AdminScaffold(
         pageName: 'Shop',
-        body: Form(
-          key: formKey,
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 500),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        body: FB5Row(
+          children: [
+            // Images
+            FB5Col(
+              classNames: 'col-lg-7 col-md-6 col-sm-12 col-xs-12',
+              child: FB5Row(
                 children: [
-                  // Image
-                  Container(
-                    width: double.maxFinite,
-                    height: 200,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.vertical(
-                        bottom: Radius.circular(12.5),
+                  // Title
+                  FB5Col(
+                    classNames: 'col-12 px-3',
+                    child: ListTile(
+                      shape: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
                       ),
-                      image: DecorationImage(
-                        image: imageProvider,
-                        fit: BoxFit.fill,
+                      title: const Text(
+                        'Images',
+                        style: TextStyle(fontSize: 14),
                       ),
-                    ),
-                    child: IconButton(
-                      onPressed: () async => await ImagePicker()
-                          .pickImage(source: ImageSource.gallery)
-                          .then((value) async {
-                        pickedImage = value;
-
-                        if (value != null) {
-                          imageProvider = MemoryImage(
-                            await value.readAsBytes(),
-                          );
-                        }
-
-                        setState(() {});
-                      }),
-                      icon: const Icon(Icons.camera_alt),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-
-                  // Images
-                  SizedBox(
-                    width: double.maxFinite,
-                    height: 100,
-                    child: Row(
-                      children: [
-                        // Add
-                        AspectRatio(
-                          aspectRatio: 1,
-                          child: Container(
-                            width: double.maxFinite,
-                            height: double.maxFinite,
-                            alignment: Alignment.center,
-                            margin: const EdgeInsets.only(left: 8),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12.5),
-                              color: Colors.transparent.withOpacity(0.5),
-                            ),
-                            child: IconButton(
-                              onPressed: () async => await ImagePicker()
-                                  .pickImage(source: ImageSource.gallery)
-                                  .then((value) async {
-                                pickedImages.add(value);
-
-                                if (value != null) {
-                                  imageProviders.add(
-                                    MemoryImage(
-                                      await value.readAsBytes(),
-                                    ),
-                                  );
-                                }
-
-                                setState(() {});
-                              }),
-                              icon: const Icon(
-                                Icons.add,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        // Images
-                        Expanded(
-                          child: Row(
-                            children: List.generate(
-                              imageProviders.length,
-                              (index) => AspectRatio(
-                                aspectRatio: 1,
-                                child: Container(
-                                  width: double.maxFinite,
-                                  height: double.maxFinite,
-                                  alignment: Alignment.center,
-                                  margin: const EdgeInsets.only(left: 8),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12.5),
-                                    image: DecorationImage(
-                                      image: imageProviders[index],
-                                      fit: BoxFit.fill,
-                                    ),
-                                  ),
-                                  child: IconButton(
-                                    onPressed: () => setState(() {
-                                      imageProviders.removeAt(index);
-                                    }),
-                                    icon: const Icon(Icons.remove_circle),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Name
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: TextFormField(
-                      decoration: const InputDecoration(labelText: 'Name'),
-                      controller: name,
-                      keyboardType: TextInputType.name,
-                      textInputAction: TextInputAction.next,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return '* required';
-                        } else {
-                          return null;
-                        }
-                      },
-                    ),
-                  ),
-
-                  // Price
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: TextFormField(
-                      decoration: const InputDecoration(labelText: 'Price'),
-                      controller: price,
-                      keyboardType: TextInputType.number,
-                      textInputAction: TextInputAction.next,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return '* required';
-                        } else {
-                          return null;
-                        }
-                      },
-                    ),
-                  ),
-
-                  // Description
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: TextFormField(
-                      decoration:
-                          const InputDecoration(labelText: 'Description'),
-                      controller: description,
-                      keyboardType: TextInputType.multiline,
-                      textInputAction: TextInputAction.newline,
-                      minLines: 1,
-                      maxLength: 10,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return '* required';
-                        } else {
-                          return null;
-                        }
-                      },
-                    ),
-                  ),
-
-                  // Category
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        labelText: 'Category',
-                        suffixIcon: StreamBuilder(
-                          stream: categories(),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return PopupMenuButton(
-                                itemBuilder: (BuildContext context) =>
-                                    List.generate(
-                                  snapshot.data!.length,
-                                  (index) => PopupMenuItem(
-                                    onTap: () => setState(
-                                      () => category = TextEditingController(
-                                        text: snapshot.data![index].id,
-                                      ),
-                                    ),
-                                    value: snapshot.data![index].id,
-                                    child: Text(snapshot.data![index].name),
-                                  ),
-                                ),
-                                child: const Icon(Icons.keyboard_arrow_down),
-                              );
-                            } else if (snapshot.hasError) {
-                              return Center(
-                                  child: Text(
-                                snapshot.error.toString(),
-                              ));
-                            } else if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            } else {
-                              return Container();
-                            }
-                          },
-                        ),
-                      ),
-                      controller: category,
-                      keyboardType: TextInputType.name,
-                      textInputAction: TextInputAction.next,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return '* required';
-                        } else {
-                          return null;
-                        }
-                      },
-                    ),
-                  ),
-
-                  // Brand
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        labelText: 'Brand',
-                        suffixIcon: StreamBuilder(
-                          stream: brands(),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return PopupMenuButton(
-                                itemBuilder: (BuildContext context) =>
-                                    List.generate(
-                                  snapshot.data!.length,
-                                  (index) => PopupMenuItem(
-                                    onTap: () => setState(
-                                      () => brand = TextEditingController(
-                                        text: snapshot.data![index].id,
-                                      ),
-                                    ),
-                                    value: snapshot.data![index].id,
-                                    child: Text(snapshot.data![index].name),
-                                  ),
-                                ),
-                                child: const Icon(Icons.keyboard_arrow_down),
-                              );
-                            } else if (snapshot.hasError) {
-                              return Center(
-                                  child: Text(
-                                snapshot.error.toString(),
-                              ));
-                            } else if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            } else {
-                              return Container();
-                            }
-                          },
-                        ),
-                      ),
-                      controller: category,
-                      keyboardType: TextInputType.name,
-                      textInputAction: TextInputAction.next,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return '* required';
-                        } else {
-                          return null;
-                        }
-                      },
-                    ),
-                  ),
-
-                  // Gender
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        labelText: 'Gender',
-                        suffixIcon: PopupMenuButton(
-                          itemBuilder: (BuildContext context) => List.generate(
-                            Genders.values.length,
-                            (index) => PopupMenuItem(
-                              onTap: () => setState(
-                                () => gender = TextEditingController(
-                                  text: genders.reverse[Genders.values[index]],
-                                ),
-                              ),
-                              value: Genders.values[index],
-                              child: Text(
-                                genders.reverse[Genders.values[index]]!,
-                              ),
-                            ),
-                          ),
-                          child: const Icon(Icons.keyboard_arrow_down),
-                        ),
-                      ),
-                      controller: category,
-                      keyboardType: TextInputType.name,
-                      textInputAction: TextInputAction.next,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return '* required';
-                        } else {
-                          return null;
-                        }
-                      },
-                    ),
-                  ),
-
-                  // Stock
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: TextFormField(
-                      controller: stock,
-                      decoration: const InputDecoration(labelText: 'Stock'),
-                      keyboardType: TextInputType.number,
-                      textInputAction: TextInputAction.done,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return '* required';
-                        } else {
-                          return null;
-                        }
-                      },
-                      onFieldSubmitted: (value) => validate(),
-                    ),
-                  ),
-
-                  // Sizes
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8),
-                              child: Text(
-                                'Sizes',
-                                style: Theme.of(context)
-                                    .inputDecorationTheme
-                                    .labelStyle!
-                                    .copyWith(fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            IconButton.outlined(
-                              onPressed: () => showDialog(
+                      trailing: const Icon(Icons.add),
+                      onTap: () => ImagePicker()
+                          .pickMultiImage()
+                          .then((value) async => value)
+                          .then((value) => showDialog(
                                 context: context,
                                 builder: (context) => AlertDialog(
-                                  title: const Text('Product sizes'),
                                   content: Wrap(
+                                    spacing: 8,
+                                    runSpacing: 8,
                                     children: List.generate(
-                                      sizes.length,
+                                      colors.length,
                                       (index) => Container(
                                         margin: const EdgeInsets.only(right: 4),
-                                        padding: const EdgeInsets.only(left: 4),
+                                        padding: const EdgeInsets.all(8),
                                         decoration: BoxDecoration(
                                           border: Border.all(),
                                           borderRadius:
                                               BorderRadius.circular(5),
                                         ),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(sizes[index]),
-                                            IconButton(
-                                              onPressed: () =>
-                                                  sizes.removeAt(index),
-                                              icon: const Icon(Icons.close),
-                                            ),
-                                          ],
+                                        child: InkWell(
+                                          onTap: () async {
+                                            for (var i = 0;
+                                                i < value.length;
+                                                i++) {
+                                              imagesProviders.add(
+                                                MemoryImage(await value[i]
+                                                    .readAsBytes()),
+                                              );
+
+                                              images.add(value[i]);
+
+                                              if (i == 0) {
+                                                images.add(XFile(
+                                                  value[i].path,
+                                                  name:
+                                                      '${ColorTools.nameThatColor(colors[index])} - main',
+                                                ));
+                                              } else {
+                                                images.add(XFile(
+                                                  value[i].path,
+                                                  name:
+                                                      '${ColorTools.nameThatColor(colors[index])} - $i',
+                                                ));
+                                              }
+                                            }
+
+                                            setState(() {});
+
+                                            Navigator.pop(context);
+                                          },
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                Icons.circle,
+                                                color: colors[index],
+                                              ),
+                                              const SizedBox(width: 4),
+                                              Text(
+                                                ColorTools.nameThatColor(
+                                                    colors[index]),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                  actions: [
-                                    TextFormField(
-                                      controller: size,
-                                      decoration: const InputDecoration(
-                                          labelText: 'Size'),
-                                      keyboardType: TextInputType.name,
-                                      textInputAction: TextInputAction.done,
-                                      validator: (value) {
-                                        if (value!.isEmpty) {
-                                          return '* required';
-                                        } else {
-                                          return null;
-                                        }
-                                      },
-                                      onFieldSubmitted: (value) {
-                                        setState(() {
-                                          if (!sizes.contains(value)) {
-                                            sizes.add(value);
-                                          }
+                                ),
+                              )),
+                    ),
+                  ),
 
-                                          size = TextEditingController();
-                                        });
-
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                  ],
+                  // Images
+                  FB5Col(
+                    classNames: 'col-12 p-3',
+                    child: FB5Row(
+                      children: List.generate(
+                        imagesProviders.length,
+                        (index) => FB5Col(
+                          classNames: 'col-lg-3 col-md-4 col-sm-6 col-xs-6',
+                          child: AspectRatio(
+                            aspectRatio: 1,
+                            child: Container(
+                              width: double.maxFinite,
+                              height: double.maxFinite,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: imagesProviders[index],
+                                  fit: BoxFit.fill,
                                 ),
                               ),
-                              icon: const Icon(Icons.add),
+                              child: IconButton.outlined(
+                                onPressed: () {
+                                  images.removeAt(index);
+                                  imagesProviders.removeAt(index);
+                                  setState(() {});
+                                },
+                                style: IconButton.styleFrom(
+                                  side: const BorderSide(color: Colors.red),
+                                  foregroundColor: Colors.red,
+                                ),
+                                icon: const Icon(Icons.remove),
+                              ),
                             ),
-                          ],
+                          ),
                         ),
-                        Wrap(
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Informations
+            FB5Col(
+              classNames: 'col-lg-5 col-md-6 col-sm-12 col-xs-12',
+              child: Form(
+                key: formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Name
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: TextFormField(
+                        decoration: const InputDecoration(labelText: 'Name'),
+                        controller: name,
+                        keyboardType: TextInputType.name,
+                        textInputAction: TextInputAction.next,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return '* required';
+                          } else {
+                            return null;
+                          }
+                        },
+                      ),
+                    ),
+
+                    // Price
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: TextFormField(
+                        decoration: const InputDecoration(labelText: 'Price'),
+                        controller: price,
+                        keyboardType: TextInputType.number,
+                        textInputAction: TextInputAction.next,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return '* required';
+                          } else {
+                            return null;
+                          }
+                        },
+                      ),
+                    ),
+
+                    // Description
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: TextFormField(
+                        decoration:
+                            const InputDecoration(labelText: 'Description'),
+                        controller: description,
+                        keyboardType: TextInputType.multiline,
+                        textInputAction: TextInputAction.newline,
+                        minLines: 1,
+                        maxLines: 10,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return '* required';
+                          } else {
+                            return null;
+                          }
+                        },
+                      ),
+                    ),
+
+                    // Sizes
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: ListTile(
+                        shape: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        onTap: () => showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Product sizes'),
+                            content: SizedBox(
+                              width: 500,
+                              child: Wrap(
+                                children: List.generate(
+                                  sizes.length,
+                                  (index) => Container(
+                                    margin: const EdgeInsets.only(right: 4),
+                                    padding: const EdgeInsets.only(left: 4),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(sizes[index]),
+                                        IconButton(
+                                          onPressed: () => setState(() {
+                                            sizes.removeAt(index);
+                                          }),
+                                          icon: const Icon(Icons.close),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            actions: [
+                              TextFormField(
+                                controller: size,
+                                decoration:
+                                    const InputDecoration(labelText: 'Size'),
+                                keyboardType: TextInputType.name,
+                                textInputAction: TextInputAction.done,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return '* required';
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                onFieldSubmitted: (value) {
+                                  setState(() {
+                                    if (!sizes.contains(value)) {
+                                      sizes.add(value);
+                                    }
+
+                                    size = TextEditingController();
+                                  });
+                                },
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    if (!sizes.contains(size.text) &&
+                                        size.text.isNotEmpty) {
+                                      sizes.add(size.text);
+                                    }
+
+                                    size = TextEditingController();
+                                  });
+                                },
+                                child: const Text('add'),
+                              ),
+                            ],
+                          ),
+                        ),
+                        title: const Text(
+                          'Sizes',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                        trailing: const Icon(Icons.keyboard_arrow_right),
+                        subtitle: Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
                           children: List.generate(
                             sizes.length,
                             (index) => Container(
-                              margin: const EdgeInsets.only(
-                                right: 4,
-                                bottom: 4,
-                              ),
-                              padding: const EdgeInsets.all(8),
+                              margin: const EdgeInsets.only(right: 4),
+                              padding: const EdgeInsets.only(left: 4),
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
                                 border: Border.all(),
+                                borderRadius: BorderRadius.circular(5),
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 4),
-                                    child: Text(sizes[index]),
-                                  ),
-                                  InkWell(
-                                    onTap: () => sizes.removeAt(index),
-                                    child: const Icon(Icons.close),
+                                  Text(sizes[index]),
+                                  IconButton(
+                                    onPressed: () => setState(() {
+                                      sizes.removeAt(index);
+                                    }),
+                                    icon: const Icon(Icons.close),
                                   ),
                                 ],
                               ),
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-
-                  // Button
-                  Container(
-                    width: double.maxFinite,
-                    padding: const EdgeInsets.all(8),
-                    alignment: Alignment.center,
-                    child: ElevatedButton(
-                      onPressed: () => validate(),
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: const Size(200, 50),
                       ),
-                      child: const Text('finish'),
                     ),
-                  ),
-                ],
+
+                    // Colors
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: ListTile(
+                        shape: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        onTap: () {
+                          Color color = Theme.of(context).colorScheme.primary;
+
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Add a new Color'),
+                              content: SizedBox(
+                                width: 500,
+                                child: ColorPicker(
+                                  color: color,
+                                  onColorChanged: (value) =>
+                                      setState(() => color = value),
+                                  showColorName: true,
+                                ),
+                              ),
+                              actions: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    colors.add(color);
+
+                                    setState(() {});
+
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('add'),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        title: const Text(
+                          'Colors',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                        trailing: const Icon(Icons.keyboard_arrow_right),
+                        subtitle: Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: List.generate(
+                            colors.length,
+                            (index) => Container(
+                              margin: const EdgeInsets.only(right: 4),
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                border: Border.all(),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.circle,
+                                    color: colors[index],
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(ColorTools.nameThatColor(colors[index])),
+                                  IconButton(
+                                    onPressed: () => setState(() {
+                                      colors.removeAt(index);
+                                    }),
+                                    icon: const Icon(Icons.close),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    // Category
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: StreamBuilder(
+                        stream: categories(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return PopupMenuButton(
+                              itemBuilder: (BuildContext context) =>
+                                  List.generate(
+                                snapshot.data!.length,
+                                (index) => PopupMenuItem(
+                                  onTap: () => setState(
+                                    () => category = snapshot.data![index],
+                                  ),
+                                  value: snapshot.data![index].id,
+                                  child: Text(snapshot.data![index].name),
+                                ),
+                              ),
+                              child: ListTile(
+                                shape: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                leading: category != null
+                                    ? CachedNetworkImage(
+                                        imageUrl: category!.image,
+                                        width: 75,
+                                        height: 50,
+                                      )
+                                    : null,
+                                title: const Text(
+                                  'Category',
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                                trailing:
+                                    const Icon(Icons.keyboard_arrow_right),
+                                subtitle: category != null
+                                    ? Padding(
+                                        padding: const EdgeInsets.all(8),
+                                        child: Text(category!.name),
+                                      )
+                                    : null,
+                              ),
+                            );
+                          } else if (snapshot.hasError) {
+                            return Center(
+                              child: Text(snapshot.error.toString()),
+                            );
+                          } else if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          } else {
+                            return Container();
+                          }
+                        },
+                      ),
+                    ),
+
+                    // Brand
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: StreamBuilder(
+                        stream: brands(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return PopupMenuButton(
+                              itemBuilder: (BuildContext context) =>
+                                  List.generate(
+                                snapshot.data!.length,
+                                (index) => PopupMenuItem(
+                                  onTap: () => setState(
+                                    () => brand = snapshot.data![index],
+                                  ),
+                                  value: snapshot.data![index].id,
+                                  child: Text(snapshot.data![index].name),
+                                ),
+                              ),
+                              child: ListTile(
+                                shape: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                leading: brand != null
+                                    ? CachedNetworkImage(
+                                        imageUrl: brand!.image,
+                                        width: 75,
+                                        height: 50,
+                                      )
+                                    : null,
+                                title: const Text(
+                                  'Brand',
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                                trailing:
+                                    const Icon(Icons.keyboard_arrow_right),
+                                subtitle: brand != null
+                                    ? Padding(
+                                        padding: const EdgeInsets.all(8),
+                                        child: Text(brand!.name),
+                                      )
+                                    : null,
+                              ),
+                            );
+                          } else if (snapshot.hasError) {
+                            return Center(
+                              child: Text(snapshot.error.toString()),
+                            );
+                          } else if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          } else {
+                            return Container();
+                          }
+                        },
+                      ),
+                    ),
+
+                    // Gender
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: PopupMenuButton(
+                        itemBuilder: (BuildContext context) => List.generate(
+                          Genders.values.length,
+                          (index) => PopupMenuItem(
+                            onTap: () => setState(
+                              () => gender = Genders.values[index],
+                            ),
+                            value: Genders.values[index],
+                            child:
+                                Text(genders.reverse[Genders.values[index]]!),
+                          ),
+                        ),
+                        child: ListTile(
+                          shape: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          title: const Text(
+                            'Gender',
+                            style: TextStyle(fontSize: 14),
+                          ),
+                          trailing: const Icon(Icons.keyboard_arrow_right),
+                          subtitle: gender != null
+                              ? Padding(
+                                  padding: const EdgeInsets.all(8),
+                                  child: Text(
+                                    genders.reverse[gender]!,
+                                  ),
+                                )
+                              : null,
+                        ),
+                      ),
+                    ),
+
+                    // Stock
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: TextFormField(
+                        controller: stock,
+                        decoration: const InputDecoration(labelText: 'Stock'),
+                        keyboardType: TextInputType.number,
+                        textInputAction: TextInputAction.done,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return '* required';
+                          } else {
+                            return null;
+                          }
+                        },
+                        onFieldSubmitted: (value) => validate(),
+                      ),
+                    ),
+
+                    // Button
+                    Container(
+                      width: double.maxFinite,
+                      padding: const EdgeInsets.all(8),
+                      alignment: Alignment.center,
+                      child: ElevatedButton(
+                        onPressed: () => validate(),
+                        style: ElevatedButton.styleFrom(
+                          fixedSize: const Size(200, 50),
+                        ),
+                        child: loading
+                            ? const CircularProgressIndicator()
+                            : const Text('finish'),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ),
+            )
+          ],
         ),
       );
 
-  void validate() async {
+  void validate() {
+    setState(() => loading = true);
+
     if (formKey.currentState!.validate()) {
-      if (pickedImage != null) {
-        try {
-          const chars =
-              'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
-          Random rnd = Random();
+      try {
+        const chars =
+            'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+        Random rnd = Random();
 
-          String getRandomString() => String.fromCharCodes(
-                Iterable.generate(
-                    15, (_) => chars.codeUnitAt(rnd.nextInt(chars.length))),
-              );
+        ProductModel product = ProductModel(
+          id: String.fromCharCodes(
+            Iterable.generate(
+              15,
+              (_) => chars.codeUnitAt(rnd.nextInt(chars.length)),
+            ),
+          ),
+          name: name.text,
+          price: double.parse(price.text),
+          description: description.text,
+          images: [],
+          category: category?.id,
+          brand: brand?.id,
+          sizes: sizes,
+          colors: colors,
+          gender: gender,
+          stock: int.parse(stock.text),
+        );
 
-          ProductModel product = ProductModel(
-            id: '',
-            name: name.text,
-            image: '',
-            price: double.parse(price.text),
-            category: category.text,
-            description: description.text,
-            sizes: sizes,
-            images: [],
-            gender: genders.map[gender.text]!,
-            stock: int.parse(stock.text),
-          );
+        // Firestore
+        productsCollection
+            .doc(product.id)
+            .set(product.toJson())
 
-          // Firestore
-          productsCollection
-              .doc(getRandomString())
-              .set(product.toJson())
+            // Storage
+            .then((value) async {
+          for (var element in colors) {
+            List<XFile> colorImages = images
+                .where((image) =>
+                    image.name.contains(ColorTools.nameThatColor(element)))
+                .toList();
 
-              // Storage
-              .then((value) async => FirebaseStorage.instance
-                  .ref('products/${getRandomString()}/')
-                  .child('main')
-                  .putData(await pickedImage!.readAsBytes()))
+            for (var i = 0; i < colorImages.length; i++) {
+              String child = i == 0 ? 'main' : i.toString();
 
-              // Image url
-              .then((value) => value.ref.getDownloadURL())
+              Uint8List image = await colorImages[i].readAsBytes();
 
-              // Images
-              .then((image) async {
-                List<String> refs = [];
+              // Upload
+              FirebaseStorage.instance
+                  .ref(
+                      'products/${product.id}/${ColorTools.nameThatColor(element)}/')
+                  .child(child)
+                  .putData(image)
 
-                for (var i = 0; i < pickedImages.length; i++) {
-                  Uint8List image = await pickedImages[i]!.readAsBytes();
+                  // Get URL
+                  .then((ref) async => await ref.ref.getDownloadURL())
 
-                  FirebaseStorage.instance
-                      .ref('products/${getRandomString()}/')
-                      .child(i.toString())
-                      .putData(image)
-                      .then((p0) async {
-                    String link = await p0.ref.getDownloadURL();
+                  // Update Product
+                  .then((value) => productsCollection.doc(product.id).update(
+                        {
+                          'images': FieldValue.arrayUnion([value])
+                        },
+                      ));
+            }
+          }
+        })
 
-                    refs.add(link);
-                  });
-                }
+            // Exit
+            .then((value) {
+          setState(() => loading = false);
+          Navigator.pop(context);
 
-                return {'mainImage': image, 'refs': refs};
-              })
+          succesSnackBar(context, 'Added');
+        });
+      } catch (error) {
+        setState(() => loading = false);
 
-              // Update Images
-              .then((value) =>
-                  productsCollection.doc(getRandomString()).update(product
-                      .copyWith(
-                        image: value['mainImage'].toString(),
-                        images: value['refs'] as List<String>,
-                      )
-                      .toJson()))
-
-              // Exit
-              .then((value) {
-                Navigator.pop(context);
-
-                succesSnackBar(context, 'Added');
-              });
-        } catch (error) {
-          errorSnackBar(
-            context,
-            error.toString(),
-          );
-        }
-      } else {
-        errorSnackBar(context, 'Please add the Main image');
+        errorSnackBar(context, error.toString());
       }
+    } else {
+      setState(() => loading = false);
     }
   }
 }

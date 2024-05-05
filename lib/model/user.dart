@@ -8,6 +8,7 @@ class UserModel {
   String image;
   PhoneNumber phone;
   GeoPoint? address;
+  bool available;
   UserRole role;
   String token;
 
@@ -18,6 +19,7 @@ class UserModel {
     this.password,
     required this.image,
     required this.phone,
+    this.available = false,
     this.address,
     required this.role,
     required this.token,
@@ -30,6 +32,7 @@ class UserModel {
         image: data['image'],
         password: data['password'],
         phone: PhoneNumber.fromJson(data['phone']),
+        available: data['available'],
         address: data['address'],
         role: roles.map[data['role']]!,
         token: data['token'],
@@ -42,6 +45,7 @@ class UserModel {
     String? image,
     PhoneNumber? phone,
     GeoPoint? address,
+    bool? available,
   }) =>
       UserModel(
         id: id,
@@ -51,6 +55,7 @@ class UserModel {
         image: image ?? this.image,
         phone: phone ?? this.phone,
         address: address ?? this.address,
+        available: available ?? this.available,
         role: role,
         token: token,
       );
@@ -62,14 +67,16 @@ class UserModel {
         'image': image,
         'phone': phone.toJson(),
         'address': address,
+        'available': available,
         'role': roles.reverse[role],
         'token': token,
       };
 }
 
-enum UserRole { admin, client }
+enum UserRole { admin, client, driver }
 
 EnumValues<UserRole> roles = EnumValues({
   'Admin': UserRole.admin,
   'Client': UserRole.client,
+  'Driver': UserRole.driver,
 });

@@ -37,10 +37,16 @@ class _OrdersState extends State<Orders> {
                     if (userSnapshot.hasData) {
                       Stream<List<OrderModel>> stream;
 
-                      if (userSnapshot.data!.role == UserRole.client) {
-                        stream = clientOrders(userSnapshot.data!.id);
-                      } else {
-                        stream = orders();
+                      switch (userSnapshot.data!.role) {
+                        case UserRole.admin:
+                          stream = orders();
+                          break;
+                        case UserRole.client:
+                          stream = clientOrders(userSnapshot.data!.id);
+                          break;
+                        case UserRole.driver:
+                          stream = driverOrders(userSnapshot.data!.id);
+                          break;
                       }
 
                       return StreamBuilder(
@@ -99,47 +105,64 @@ class _OrdersState extends State<Orders> {
     orders.sort((a, b) => a.startTime.compareTo(b.startTime));
 
     if (orders.isNotEmpty) {
-      return FB5Row(
-        children: List.generate(
-          orders.length,
-          (index) {
-            double total = 0;
+      return StreamBuilder(
+        stream: products(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return FB5Row(
+              children: List.generate(
+                orders.length,
+                (index) {
+                  double total = 0;
 
-            for (var product in orders[index].products) {
-              total += (product.price * product.stock);
-            }
+                  for (var product in orders[index].products) {
+                    total += (snapshot.data!
+                            .singleWhere((element) => element.id == product.id)
+                            .price *
+                        product.stock);
+                  }
 
-            return FB5Col(
-              classNames: 'col-lg-4 col-md-6 col-sm-12 p-3',
-              child: ListTile(
-                onTap: () => showDialog(
-                  context: context,
-                  builder: (context) => OrderDetails(order: orders[index]),
-                ),
-                leading: Icon(
-                  Icons.circle,
-                  color: progressColor(orders[index].progress),
-                ),
-                title: Padding(
-                  padding: const EdgeInsets.all(4),
-                  child: Text(
-                    progressDescription(orders[index].progress),
-                  ),
-                ),
-                subtitle: Text(
-                  DateFormat.yMEd().format(orders[index].startTime),
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-                trailing: Text(
-                  '${total.toStringAsFixed(2)} JD',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
+                  return FB5Col(
+                    classNames: 'col-lg-4 col-md-6 col-sm-12 p-3',
+                    child: ListTile(
+                      onTap: () => showDialog(
+                        context: context,
+                        builder: (context) =>
+                            OrderDetails(order: orders[index]),
+                      ),
+                      leading: Icon(
+                        Icons.circle,
+                        color: progressColor(orders[index].progress),
+                      ),
+                      title: Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: Text(
+                          progressDescription(orders[index].progress),
+                        ),
+                      ),
+                      subtitle: Text(
+                        DateFormat.yMEd().format(orders[index].startTime),
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                      trailing: Text(
+                        '${total.toStringAsFixed(2)} JD',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
             );
-          },
-        ),
+          } else if (snapshot.hasError) {
+            return Center(child: Text(snapshot.error.toString()));
+          } else if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else {
+            return Container();
+          }
+        },
       );
     } else {
       return Container(

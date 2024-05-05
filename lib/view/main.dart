@@ -19,6 +19,8 @@ class Main extends StatelessWidget {
                       return const AdminHome();
                     case UserRole.client:
                       return const ClientHome();
+                    case UserRole.driver:
+                      return const DriverHome();
                   }
                 }
 

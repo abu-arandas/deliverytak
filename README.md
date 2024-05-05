@@ -68,6 +68,20 @@ DeliveryTak is a fictional project created for demonstration purposes only. It i
 - [APK](assets/app.apk) 
 - [Web](https://deliverytak.web.app)
 
+## Users
+**Emails**
+- Admin
+    - admin@deliverytak.com
+- Client
+    - client1@deliverytak.com
+    - client2@deliverytak.com
+- Driver
+    - driver1@deliverytak.com
+    - driver2@deliverytak.com
+    - driver3@deliverytak.com
+
+**Passwords** 123456 
+
 ## Screenshots
 
 **Client Interface**
