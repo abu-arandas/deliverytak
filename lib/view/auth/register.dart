@@ -209,29 +209,13 @@ class _RegisterState extends State<Register> {
     setState(() => loading = true);
 
     if (formKey.currentState!.validate()) {
-      try {
-        String token = await FirebaseMessaging.instance.getToken() ?? '';
-
-        FirebaseAuth.instance
-            .createUserWithEmailAndPassword(
-              email: email.text,
-              password: password.text,
-            )
-            .then(
-              (value) => usersCollection.doc(value.user!.uid).set(UserModel(
-                    id: '',
-                    name: {'first': fName.text, 'last': lName.text},
-                    email: email.text,
-                    image: image,
-                    phone: phone.value!,
-                    role: UserRole.client,
-                    token: token,
-                  ).toJson()),
-            )
-            .then((value) => page(context: context, page: const Main()));
-      } catch (error) {
-        errorSnackBar(context, error.toString());
-      }
+      currentUser(
+        context: context,
+        name: {'first': fName.text, 'last': lName.text},
+        email: email.text,
+        password: password.text,
+        phone: phone.value!,
+      );
     }
 
     setState(() => loading = false);

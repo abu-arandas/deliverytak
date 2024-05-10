@@ -40,10 +40,17 @@ class _OrderDetailsState extends State<OrderDetails> {
         ),
         actionsAlignment: MainAxisAlignment.center,
         actions: [
-          SingleOrderPrintButton(order: widget.order),
-          SingleOrderStartButton(order: widget.order),
-          SingleOrderDeleteButton(order: widget.order),
-          SingleOrderDeliverButton(order: widget.order),
+          Row(
+            children: [
+              SingleOrderPrintButton(order: widget.order),
+              const SizedBox(width: 8),
+              SingleOrderStartButton(order: widget.order),
+              const SizedBox(width: 8),
+              SingleOrderDeleteButton(order: widget.order),
+              const SizedBox(width: 8),
+              SingleOrderDeliverButton(order: widget.order),
+            ],
+          )
         ],
       );
 }

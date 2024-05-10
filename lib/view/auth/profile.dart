@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import '/exports.dart';
 
 class Profile extends StatefulWidget {
@@ -12,7 +14,7 @@ class _ProfileState extends State<Profile> {
   GlobalKey<FormState> formKey = GlobalKey();
   XFile? pickedImage;
   ImageProvider? image;
-  String? imageUrl;
+
   TextEditingController fName = TextEditingController();
   TextEditingController lName = TextEditingController();
   PhoneController phone = PhoneController(null);
@@ -27,7 +29,6 @@ class _ProfileState extends State<Profile> {
 
     singleUser(widget.id).listen((event) {
       image = NetworkImage(event.image);
-      imageUrl = event.image;
       fName = TextEditingController(text: event.name['first']);
       lName = TextEditingController(text: event.name['last']);
       phone = PhoneController(event.phone);
@@ -223,27 +224,14 @@ class _ProfileState extends State<Profile> {
     setState(() => loading = true);
 
     if (formKey.currentState!.validate()) {
-      if (pickedImage != null) {
-        // Storage
-        await FirebaseStorage.instance
-            .ref('users/')
-            .child(widget.id)
-            .putData(await pickedImage!.readAsBytes())
-
-            // Image Url
-            .then((value) => value.ref.getDownloadURL())
-
-            // Firestore
-            .then((value) => setState(() => imageUrl = value));
-      }
-
-      await usersCollection.doc(widget.id).update(
-            user.copyWith(
-              name: {'first': fName.text, 'last': lName.text},
-              image: imageUrl ?? user.image,
-              phone: phone.value,
-            ).toJson(),
-          );
+      updateProfile(
+        context: context,
+        first: fName.text,
+        last: lName.text,
+        phone: phone.value!,
+        pickedImage: pickedImage,
+        image: user.image,
+      );
     }
 
     setState(() => loading = false);

@@ -90,73 +90,74 @@ class _EditProductState extends State<EditProduct> {
                       onTap: () => ImagePicker()
                           .pickMultiImage()
                           .then((value) async => value)
-                          .then((value) => showDialog(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                  content: Wrap(
-                                    spacing: 8,
-                                    runSpacing: 8,
-                                    children: List.generate(
-                                      colors.length,
-                                      (index) => Container(
-                                        margin: const EdgeInsets.only(right: 4),
-                                        padding: const EdgeInsets.all(8),
-                                        decoration: BoxDecoration(
-                                          border: Border.all(),
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                        ),
-                                        child: InkWell(
-                                          onTap: () async {
-                                            for (var i = 0;
-                                                i < value.length;
-                                                i++) {
-                                              imagesProviders.add(
-                                                MemoryImage(await value[i]
-                                                    .readAsBytes()),
-                                              );
+                          .then(
+                            (value) => showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                content: Wrap(
+                                  spacing: 8,
+                                  runSpacing: 8,
+                                  children: List.generate(
+                                    colors.length,
+                                    (index) => Container(
+                                      margin: const EdgeInsets.only(right: 4),
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(),
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      child: InkWell(
+                                        onTap: () async {
+                                          for (var i = 0;
+                                              i < value.length;
+                                              i++) {
+                                            imagesProviders.add(
+                                              MemoryImage(
+                                                  await value[i].readAsBytes()),
+                                            );
 
-                                              images.add(value[i]);
+                                            images.add(value[i]);
 
-                                              if (i == 0) {
-                                                images.add(XFile(
-                                                  value[i].path,
-                                                  name:
-                                                      '${ColorTools.nameThatColor(colors[index])} - main',
-                                                ));
-                                              } else {
-                                                images.add(XFile(
-                                                  value[i].path,
-                                                  name:
-                                                      '${ColorTools.nameThatColor(colors[index])} - $i',
-                                                ));
-                                              }
+                                            if (i == 0) {
+                                              images.add(XFile(
+                                                value[i].path,
+                                                name:
+                                                    '${ColorTools.nameThatColor(colors[index])} - main',
+                                              ));
+                                            } else {
+                                              images.add(XFile(
+                                                value[i].path,
+                                                name:
+                                                    '${ColorTools.nameThatColor(colors[index])} - $i',
+                                              ));
                                             }
+                                          }
 
-                                            setState(() {});
+                                          setState(() {});
 
-                                            Navigator.pop(context);
-                                          },
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Icon(
-                                                Icons.circle,
-                                                color: colors[index],
-                                              ),
-                                              const SizedBox(width: 4),
-                                              Text(
-                                                ColorTools.nameThatColor(
-                                                    colors[index]),
-                                              ),
-                                            ],
-                                          ),
+                                          Navigator.pop(context);
+                                        },
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(
+                                              Icons.circle,
+                                              color: colors[index],
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              ColorTools.nameThatColor(
+                                                  colors[index]),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              )),
+                              ),
+                            ),
+                          ),
                     ),
                   ),
 
@@ -277,58 +278,31 @@ class _EditProductState extends State<EditProduct> {
                           context: context,
                           builder: (context) => AlertDialog(
                             title: const Text('Product sizes'),
-                            content: SizedBox(
-                              width: 500,
-                              child: Wrap(
-                                children: List.generate(
-                                  sizes.length,
-                                  (index) => Container(
-                                    margin: const EdgeInsets.only(right: 4),
-                                    padding: const EdgeInsets.only(left: 4),
-                                    decoration: BoxDecoration(
-                                      border: Border.all(),
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(sizes[index]),
-                                        IconButton(
-                                          onPressed: () => setState(() {
-                                            sizes.removeAt(index);
-                                          }),
-                                          icon: const Icon(Icons.close),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
+                            content: TextFormField(
+                              controller: size,
+                              decoration:
+                                  const InputDecoration(labelText: 'Size'),
+                              keyboardType: TextInputType.name,
+                              textInputAction: TextInputAction.done,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return '* required';
+                                } else {
+                                  return null;
+                                }
+                              },
+                              onFieldSubmitted: (value) {
+                                setState(() {
+                                  if (!sizes.contains(value)) {
+                                    sizes.add(value);
+                                  }
+
+                                  size = TextEditingController();
+                                });
+                                Navigator.pop(context);
+                              },
                             ),
                             actions: [
-                              TextFormField(
-                                controller: size,
-                                decoration:
-                                    const InputDecoration(labelText: 'Size'),
-                                keyboardType: TextInputType.name,
-                                textInputAction: TextInputAction.done,
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return '* required';
-                                  } else {
-                                    return null;
-                                  }
-                                },
-                                onFieldSubmitted: (value) {
-                                  setState(() {
-                                    if (!sizes.contains(value)) {
-                                      sizes.add(value);
-                                    }
-
-                                    size = TextEditingController();
-                                  });
-                                },
-                              ),
                               ElevatedButton(
                                 onPressed: () {
                                   setState(() {
@@ -339,6 +313,7 @@ class _EditProductState extends State<EditProduct> {
 
                                     size = TextEditingController();
                                   });
+                                  Navigator.pop(context);
                                 },
                                 child: const Text('add'),
                               ),
@@ -641,20 +616,10 @@ class _EditProductState extends State<EditProduct> {
                       child: Row(
                         children: [
                           ElevatedButton(
-                            onPressed: () {
-                              try {
-                                productsCollection.doc(widget.id).delete();
-
-                                FirebaseStorage.instance
-                                    .ref('products/${widget.id}/')
-                                    .delete();
-
-                                Navigator.pop(context);
-                                succesSnackBar(context, 'deleted');
-                              } catch (error) {
-                                errorSnackBar(context, error.toString());
-                              }
-                            },
+                            onPressed: () => deleteProduct(
+                              context: context,
+                              id: widget.id,
+                            ),
                             style: ElevatedButton.styleFrom(
                               fixedSize: const Size(200, 50),
                               backgroundColor: Colors.red,
@@ -686,73 +651,22 @@ class _EditProductState extends State<EditProduct> {
     setState(() => loading = true);
 
     if (formKey.currentState!.validate()) {
-      try {
-        ProductModel product = ProductModel(
-          id: widget.id,
-          name: name.text,
-          price: double.parse(price.text),
-          description: description.text,
-          images: [],
-          category: category?.id,
-          brand: brand?.id,
-          sizes: sizes,
-          colors: colors,
-          gender: gender,
-          stock: int.parse(stock.text),
-        );
-
-        // Firestore
-        productsCollection
-            .doc(product.id)
-            .update(product.toJson())
-
-            // Storage
-            .then((value) async {
-          for (var element in colors) {
-            List<XFile> colorImages = images
-                .where((image) =>
-                    image.name.contains(ColorTools.nameThatColor(element)))
-                .toList();
-
-            for (var i = 0; i < colorImages.length; i++) {
-              String child = i == 0 ? 'main' : i.toString();
-
-              Uint8List image = await colorImages[i].readAsBytes();
-
-              // Upload
-              FirebaseStorage.instance
-                  .ref(
-                      'products/${product.id}/${ColorTools.nameThatColor(element)}/')
-                  .child(child)
-                  .putData(image)
-
-                  // Get URL
-                  .then((ref) async => await ref.ref.getDownloadURL())
-
-                  // Update Product
-                  .then((value) => productsCollection.doc(product.id).update(
-                        {
-                          'images': FieldValue.arrayUnion([value])
-                        },
-                      ));
-            }
-          }
-        })
-
-            // Exit
-            .then((value) {
-          setState(() => loading = false);
-          Navigator.pop(context);
-
-          succesSnackBar(context, 'Update');
-        });
-      } catch (error) {
-        setState(() => loading = false);
-
-        errorSnackBar(context, error.toString());
-      }
-    } else {
-      setState(() => loading = false);
+      updateProduct(
+        context: context,
+        id: widget.id,
+        name: name.text,
+        price: double.parse(price.text),
+        description: description.text,
+        images: images,
+        sizes: sizes,
+        colors: colors,
+        category: category!.id,
+        brand: brand!.id,
+        gender: gender!,
+        stock: int.parse(stock.text),
+      );
     }
+
+    setState(() => loading = false);
   }
 }

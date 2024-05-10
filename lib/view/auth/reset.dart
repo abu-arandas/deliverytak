@@ -76,13 +76,7 @@ class _ResetState extends State<Reset> {
     setState(() => loading = true);
 
     if (formKey.currentState!.validate()) {
-      try {
-        FirebaseAuth.instance
-            .sendPasswordResetEmail(email: email.text)
-            .then((value) => page(context: context, page: const Main()));
-      } catch (error) {
-        errorSnackBar(context, error.toString());
-      }
+      sendPasswordResetEmail(context: context, email: email.text);
     }
 
     setState(() => loading = false);

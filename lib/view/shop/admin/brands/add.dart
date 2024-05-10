@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import '/exports.dart';
 
 class AddBrand extends StatefulWidget {
@@ -45,9 +43,7 @@ class _AddBrandState extends State<AddBrand> {
                         pickedImage = value;
 
                         if (value != null) {
-                          imageProvider = MemoryImage(
-                            await value.readAsBytes(),
-                          );
+                          imageProvider = FileImage(File(value.path));
                         }
 
                         setState(() {});
@@ -87,59 +83,14 @@ class _AddBrandState extends State<AddBrand> {
   void validate() async {
     if (formKey.currentState!.validate()) {
       if (pickedImage != null) {
-        const chars =
-            'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
-        Random rnd = Random();
-
-        String getRandomString() => String.fromCharCodes(
-              Iterable.generate(
-                  15,
-                  (_) => chars.codeUnitAt(
-                        rnd.nextInt(chars.length),
-                      )),
-            );
-
         try {
-          // Storage
-          FirebaseStorage.instance
-              .ref('brands')
-              .child(
-                getRandomString(),
-              )
-              .putData(
-                await pickedImage!.readAsBytes(),
-              )
-
-              // Image url
-              .then((value) => value.ref
-                  .getDownloadURL()
-
-                  // Firestore
-                  .then(
-                    (value) => brandsCollection
-                        .doc(
-                          getRandomString(),
-                        )
-                        .set(
-                          BrandModel(
-                            id: '',
-                            name: name.text,
-                            image: value,
-                          ).toJson(),
-                        ),
-                  ))
-
-              // Exit
-              .then((value) {
-            Navigator.pop(context);
-
-            succesSnackBar(context, 'Added');
-          });
-        } catch (error) {
-          errorSnackBar(
-            context,
-            error.toString(),
+          addBrand(
+            context: context,
+            name: name.text,
+            pickedImage: pickedImage,
           );
+        } on FirebaseException catch (error) {
+          errorSnackBar(context, error.message.toString());
         }
       } else {
         errorSnackBar(context, 'Please add the Brand Logo');

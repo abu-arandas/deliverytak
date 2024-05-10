@@ -15,14 +15,6 @@ class ClientShopSort extends StatelessWidget {
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(8),
                   labelText: 'search product...',
-                  border:
-                      const OutlineInputBorder(borderRadius: BorderRadius.zero),
-                  focusedBorder:
-                      const OutlineInputBorder(borderRadius: BorderRadius.zero),
-                  enabledBorder:
-                      const OutlineInputBorder(borderRadius: BorderRadius.zero),
-                  errorBorder:
-                      const OutlineInputBorder(borderRadius: BorderRadius.zero),
                   prefixIcon: const Icon(Icons.search),
                   suffix: IconButton.filled(
                     onPressed: () {},

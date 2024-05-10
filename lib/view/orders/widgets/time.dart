@@ -48,17 +48,20 @@ class SingleOrderTime extends StatelessWidget {
       Padding(
         padding: const EdgeInsets.all(8).copyWith(bottom: 0),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               '$title at : ',
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            Text(
-              DateFormat('yyyy-MMMM-dd : hh-mm-ss EEEE').format(date),
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall!
-                  .copyWith(color: Colors.red),
+            Flexible(
+              child: Text(
+                DateFormat('yyyy-MMMM-dd : hh-mm-ss EEEE').format(date),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall!
+                    .copyWith(color: Colors.red),
+              ),
             ),
           ],
         ),

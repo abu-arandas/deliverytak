@@ -42,6 +42,12 @@ class AdminCategories extends StatelessWidget {
                         classNames: 'col-lg-6 col-md-6 col-sm-12 col-xs-12 p-1',
                         child: ListTile(
                           contentPadding: const EdgeInsets.all(8),
+                          onTap: () => showDialog(
+                            context: context,
+                            builder: (context) => CategoryDetails(
+                              category: snapshot.data![index],
+                            ),
+                          ),
 
                           // Image
                           leading: AspectRatio(

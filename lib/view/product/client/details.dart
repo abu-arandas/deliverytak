@@ -103,6 +103,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                           // Sizes
                           if (snapshot.data!.sizes.isNotEmpty) ...{
                             Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 const Text(
                                   'Sizes: ',
@@ -110,28 +112,37 @@ class _ProductDetailsState extends State<ProductDetails> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                const Spacer(),
-                                for (var i = 0;
-                                    i < snapshot.data!.sizes.length;
-                                    i++) ...{
-                                  InkWell(
-                                    onTap: () => setState(() {
-                                      sizeIndex = i;
-                                    }),
-                                    child: Container(
-                                      margin: const EdgeInsets.only(right: 4),
-                                      padding: const EdgeInsets.all(4),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(),
-                                        borderRadius: BorderRadius.circular(5),
-                                        color: Colors.transparent.withOpacity(
-                                          i == sizeIndex ? 0.25 : 0,
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Wrap(
+                                    alignment: WrapAlignment.end,
+                                    children: List.generate(
+                                      snapshot.data!.sizes.length,
+                                      (index) => InkWell(
+                                        onTap: () => setState(() {
+                                          sizeIndex = index;
+                                        }),
+                                        child: Container(
+                                          margin: const EdgeInsets.only(
+                                            right: 4,
+                                            bottom: 4,
+                                          ),
+                                          padding: const EdgeInsets.all(4),
+                                          decoration: BoxDecoration(
+                                            border: index == sizeIndex
+                                                ? Border.all()
+                                                : null,
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                          ),
+                                          child: Text(
+                                            snapshot.data!.sizes[index],
+                                          ),
                                         ),
                                       ),
-                                      child: Text(snapshot.data!.sizes[i]),
                                     ),
                                   ),
-                                }
+                                ),
                               ],
                             ),
                           },
@@ -139,6 +150,8 @@ class _ProductDetailsState extends State<ProductDetails> {
 
                           // Colors
                           Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               const Text(
                                 'Colors: ',
@@ -146,92 +159,111 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const Spacer(),
-                              for (var i = 0;
-                                  i < snapshot.data!.colors.length;
-                                  i++) ...{
-                                InkWell(
-                                  onTap: () => setState(() {
-                                    colorIndex = i;
-                                  }),
-                                  child: Container(
-                                    margin: const EdgeInsets.only(right: 4),
-                                    padding: const EdgeInsets.all(4),
-                                    decoration: BoxDecoration(
-                                      border: Border.all(),
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: Colors.transparent.withOpacity(
-                                        i == colorIndex ? 0.25 : 0,
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Wrap(
+                                  alignment: WrapAlignment.end,
+                                  children: List.generate(
+                                    snapshot.data!.colors.length,
+                                    (index) => InkWell(
+                                      onTap: () => setState(() {
+                                        colorIndex = index;
+                                      }),
+                                      child: Container(
+                                        margin: const EdgeInsets.only(
+                                          right: 4,
+                                          bottom: 4,
+                                        ),
+                                        padding: const EdgeInsets.all(4),
+                                        decoration: BoxDecoration(
+                                          border: index == colorIndex
+                                              ? Border.all()
+                                              : null,
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(
+                                              Icons.circle,
+                                              color:
+                                                  snapshot.data!.colors[index],
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              ColorTools.nameThatColor(
+                                                  snapshot.data!.colors[index]),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(
-                                          Icons.circle,
-                                          color: snapshot.data!.colors[i],
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                          ColorTools.nameThatColor(
-                                              snapshot.data!.colors[i]),
-                                        ),
-                                      ],
                                     ),
                                   ),
                                 ),
-                                const SizedBox(width: 4),
-                              }
+                              ),
                             ],
                           ),
                           const SizedBox(height: 16),
 
                           // Cart
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: GetBuilder<CartController>(
-                              builder: (controller) => ElevatedButton(
-                                onPressed: () {
-                                  controller.cartProducts.add(
-                                    CartModel(
-                                      id: snapshot.data!.id,
-                                      color: colorIndex,
-                                      size: sizeIndex,
-                                      stock: 1,
-                                    ),
-                                  );
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              GetBuilder<CartController>(
+                                builder: (controller) => ElevatedButton(
+                                  onPressed: () {
+                                    controller.cartProducts.add(
+                                      CartModel(
+                                        id: snapshot.data!.id,
+                                        color: colorIndex,
+                                        size: sizeIndex,
+                                        stock: 1,
+                                      ),
+                                    );
 
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                      title: const Text('Added to cart'),
-                                      actions: [
-                                        OutlinedButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context),
-                                          child:
-                                              const Text('Continue Shopping'),
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        title: const Text('Added to cart'),
+                                        content: Row(
+                                          children: [
+                                            Expanded(
+                                              flex: 3,
+                                              child: OutlinedButton(
+                                                onPressed: () =>
+                                                    Navigator.pop(context),
+                                                child: const Text(
+                                                    'Continue Shopping'),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Expanded(
+                                              flex: 2,
+                                              child: ElevatedButton(
+                                                onPressed: () => page(
+                                                  context: context,
+                                                  page: const Cart(),
+                                                ),
+                                                child: const Text('View Cart'),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        const SizedBox(width: 8),
-                                        ElevatedButton(
-                                          onPressed: () => page(
-                                            context: context,
-                                            page: const Cart(),
-                                          ),
-                                          child: const Text('View Cart'),
-                                        ),
-                                      ],
-                                    ),
-                                  );
+                                      ),
+                                    );
 
-                                  controller.update();
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  fixedSize: const Size(200, 50),
+                                    controller.update();
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    fixedSize: const Size(200, 50),
+                                  ),
+                                  child: const Text('Add to Cart'),
                                 ),
-                                child: const Text('Add to Cart'),
                               ),
-                            ),
+                              const SizedBox(width: 16),
+                              favoriteButton(id: snapshot.data!.id)
+                            ],
                           ),
                           const SizedBox(height: 16),
 

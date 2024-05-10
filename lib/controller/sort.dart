@@ -11,28 +11,40 @@ class SortController extends GetxController {
       productsCollection.snapshots().map((query) =>
           query.docs.map((item) => ProductModel.fromDoc(item)).where((element) {
             // Title
+            bool titleSort;
+
             if (title.text.isNotEmpty) {
-              return element.name
-                  .toLowerCase()
-                  .contains(title.text.toLowerCase());
+              titleSort =
+                  element.name.toLowerCase().contains(title.text.toLowerCase());
+            } else {
+              titleSort = true;
             }
 
             // Brand
-            if (brand != null && element.brand != null) {
-              return element.brand!.toLowerCase() == brand;
+            bool brandSort;
+            if (brand != null) {
+              brandSort = element.brand == brand;
+            } else {
+              brandSort = true;
             }
 
             // Category
+            bool categorySort;
             if (category != null) {
-              return element.category!.toLowerCase() == category;
+              categorySort = element.category == category;
+            } else {
+              categorySort = true;
             }
 
             // Brand
-            if (gender != null) {
-              return element.gender == gender;
+            bool genderSort;
+            if (gender != null && element.gender != null) {
+              genderSort = element.gender == gender;
+            } else {
+              genderSort = true;
             }
 
-            return true;
+            return titleSort && brandSort && categorySort && genderSort;
           }).toList());
 }
 

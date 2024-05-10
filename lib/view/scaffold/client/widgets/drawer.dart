@@ -248,11 +248,8 @@ class ClientDrawer extends StatelessWidget {
                             context: context,
                             page: const Main(),
                           ));
-                    } catch (error) {
-                      errorSnackBar(
-                        context,
-                        error.toString(),
-                      );
+                    } on FirebaseException catch (error) {
+                      errorSnackBar(context, error.message.toString());
                     }
                   },
                 ),

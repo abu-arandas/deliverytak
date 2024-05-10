@@ -15,8 +15,6 @@ class AdminScaffold extends StatefulWidget {
 }
 
 class _AdminScaffoldState extends State<AdminScaffold> {
-  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
-
   ScrollController scrollController = ScrollController();
   bool scrolled = false;
 
@@ -34,10 +32,8 @@ class _AdminScaffoldState extends State<AdminScaffold> {
   @override
   Widget build(BuildContext context) => SafeArea(
         child: Scaffold(
-          key: scaffoldKey,
-
           // Nav Bar
-          appBar: AdminAppBar(scaffoldKey: scaffoldKey),
+          appBar: const AdminAppBar(),
 
           // Side
           drawer: Drawer(

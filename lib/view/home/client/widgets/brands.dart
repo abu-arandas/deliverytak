@@ -10,22 +10,6 @@ class ClientBrands extends StatefulWidget {
 class _ClientBrandsState extends State<ClientBrands> {
   ScrollController scrollController = ScrollController(initialScrollOffset: 0);
 
-  @override
-  void initState() {
-    super.initState();
-
-    scrollController.addListener(() {
-      Timer.periodic(
-        const Duration(seconds: 2),
-        (timer) => scrollController.animateTo(
-          scrollController.offset + 100,
-          duration: const Duration(seconds: 2),
-          curve: Curves.ease,
-        ),
-      );
-    });
-  }
-
   GlobalKey containerKey = GlobalKey();
   GlobalKey brandsKey = GlobalKey();
 

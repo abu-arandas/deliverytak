@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(
               seedColor: const Color(0xFF3A57E8),
               background: const Color(0xFFF8F8F8),
+              brightness: Brightness.light,
             ),
             inputDecorationTheme: InputDecorationTheme(
               contentPadding: const EdgeInsets.all(16),
@@ -115,6 +116,7 @@ class MyApp extends StatelessWidget {
               foregroundColor: Colors.white,
             ),
           ),
+          themeMode: ThemeMode.light,
           initialBinding: BindingsBuilder(() {
             Get.put(NotificationController());
             Get.put(SortController());

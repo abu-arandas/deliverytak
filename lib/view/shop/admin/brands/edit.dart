@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import '/exports.dart';
 
 class EditBrand extends StatefulWidget {
@@ -89,25 +87,10 @@ class _EditBrandState extends State<EditBrand> {
         ),
         actions: [
           ElevatedButton(
-            onPressed: () {
-              try {
-                brandsCollection.doc(widget.brandModel.id).delete();
-
-                FirebaseStorage.instance
-                    .ref('brands')
-                    .child(widget.brandModel.id)
-                    .delete();
-
-                Navigator.pop(context);
-
-                succesSnackBar(context, 'Deleted');
-              } on FirebaseException catch (error) {
-                errorSnackBar(
-                  context,
-                  error.message.toString(),
-                );
-              }
-            },
+            onPressed: () => deleteBrand(
+              context: context,
+              id: widget.brandModel.id,
+            ),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             child: const Text('delete'),
           ),
@@ -120,45 +103,12 @@ class _EditBrandState extends State<EditBrand> {
 
   void validate() async {
     if (formKey.currentState!.validate()) {
-      try {
-        // Storage
-        FirebaseStorage.instance
-            .ref('brands')
-            .child(widget.brandModel.id)
-            .putData(
-              await pickedImage!.readAsBytes(),
-            )
-
-            // Image url
-            .then(
-              (value) => value.ref
-                  .getDownloadURL()
-
-                  // Firestore
-                  .then(
-                    (value) =>
-                        brandsCollection.doc(widget.brandModel.id).update(
-                              BrandModel(
-                                id: widget.brandModel.id,
-                                name: name.text,
-                                image: value,
-                              ).toJson(),
-                            ),
-                  ),
-            )
-
-            // Exit
-            .then((value) {
-          Navigator.pop(context);
-
-          succesSnackBar(context, 'Updated');
-        });
-      } catch (error) {
-        errorSnackBar(
-          context,
-          error.toString(),
-        );
-      }
+      updateBrand(
+        context: context,
+        id: widget.brandModel.id,
+        name: name.text,
+        pickedImage: pickedImage,
+      );
     }
   }
 }

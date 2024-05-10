@@ -58,16 +58,25 @@ class Cart extends StatelessWidget {
                     ),
                     FB5Col(
                       classNames: 'col-lg-5 col-md-6 col-sm-12 col-xs-12 p-3',
-                      child: const SizedBox(
+                      child: SizedBox(
                         height: 400,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            CartPayment(),
-                            CartPrice(),
-                            Spacer(),
-                            Divider(),
-                            CartCheckOut(),
+                            const CartPayment(),
+                            const CartPrice(),
+                            const Spacer(),
+                            const Divider(),
+                            Align(
+                              alignment: Alignment.center,
+                              child: ElevatedButton(
+                                onPressed: () => addOrder(context: context),
+                                style: ElevatedButton.styleFrom(
+                                  fixedSize: const Size(200, 50),
+                                ),
+                                child: const Text('Check Out'),
+                              ),
+                            ),
                           ],
                         ),
                       ),

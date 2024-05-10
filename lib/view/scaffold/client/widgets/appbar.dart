@@ -2,22 +2,21 @@ import '/exports.dart';
 
 class ClientAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String pageName;
-  final GlobalKey<ScaffoldState> scaffoldKey;
   final bool scrolled, hasDrawer;
 
   const ClientAppBar({
     super.key,
     required this.pageName,
-    required this.scaffoldKey,
     required this.scrolled,
     required this.hasDrawer,
   });
 
-  Color color() => pageName == 'home' ? Colors.white : Colors.black;
+  Color color() =>
+      pageName == 'home' && !scrolled ? Colors.white : Colors.black;
 
   @override
   Widget build(BuildContext context) => Material(
-        color: pageName == 'home'
+        color: pageName == 'home' && !scrolled
             ? Colors.transparent.withOpacity(0.25)
             : Colors.white,
         child: FB5Container(
@@ -26,7 +25,7 @@ class ClientAppBar extends StatelessWidget implements PreferredSizeWidget {
               // Sort Button
               if (hasDrawer) ...{
                 IconButton(
-                  onPressed: () => scaffoldKey.currentState!.openDrawer(),
+                  onPressed: () => Scaffold.of(context).openDrawer(),
                   icon: const Icon(Icons.sort),
                 )
               },
@@ -176,11 +175,9 @@ class ClientAppBar extends StatelessWidget implements PreferredSizeWidget {
                                             context: context,
                                             page: const Main(),
                                           ));
-                                } catch (error) {
+                                } on FirebaseException catch (error) {
                                   errorSnackBar(
-                                    context,
-                                    error.toString(),
-                                  );
+                                      context, error.message.toString());
                                 }
                               },
                               child: const Text('Sign Out'),
@@ -207,7 +204,7 @@ class ClientAppBar extends StatelessWidget implements PreferredSizeWidget {
               // Mobile Menu
               if (MediaQuery.sizeOf(context).width <= 900) ...{
                 IconButton(
-                  onPressed: () => scaffoldKey.currentState!.openEndDrawer(),
+                  onPressed: () => Scaffold.of(context).openEndDrawer(),
                   icon: Icon(
                     Icons.menu,
                     color: color(),

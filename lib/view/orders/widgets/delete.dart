@@ -39,28 +39,11 @@ class SingleOrderDeleteButton extends StatelessWidget {
 
             if (show) {
               return ElevatedButton(
-                onPressed: () {
-                  try {
-                    ordersCollection.doc(order.id).update(order
-                        .copyWith(progress: OrderProgress.deleted)
-                        .toJson());
-
-                    singleUser(order.clientId).listen((event) {
-                      NotificationController.instance.sendMessage(
-                        context: context,
-                        token: event.token,
-                        title: 'Order Deleted',
-                        body:
-                            'Order number ${order.id} is ${orderProgress.reverse[order.progress]}',
-                      );
-                    });
-
-                    succesSnackBar(context, 'Deleted');
-                    Navigator.pop(context);
-                  } catch (error) {
-                    errorSnackBar(context, error.toString());
-                  }
-                },
+                onPressed: () => deleteOrder(
+                  context: context,
+                  id: order.id,
+                  clientId: order.clientId,
+                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.error,
                 ),

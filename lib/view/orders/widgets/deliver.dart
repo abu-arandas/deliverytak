@@ -13,27 +13,10 @@ class SingleOrderDeliverButton extends StatelessWidget {
                 order.progress == OrderProgress.inProgress &&
                 order.driverId == snapshot.data!.id) {
               return ElevatedButton(
-                onPressed: () async {
-                  try {
-                    var res = page(
-                      context: context,
-                      page: const SimpleBarcodeScannerPage(),
-                    );
-
-                    if (res == order.id) {
-                      ordersCollection.doc(order.id).update(order
-                          .copyWith(
-                            pickTime: DateTime.now(),
-                            progress: OrderProgress.done,
-                          )
-                          .toJson());
-                    } else {
-                      errorSnackBar(context, 'not the same order');
-                    }
-                  } catch (error) {
-                    errorSnackBar(context, error.toString());
-                  }
-                },
+                onPressed: () => pickOrder(
+                  context: context,
+                  id: order.id,
+                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.primary,
                 ),

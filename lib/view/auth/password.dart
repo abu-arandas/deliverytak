@@ -82,13 +82,7 @@ class _ChangePasswordState extends State<ChangePassword> {
     setState(() => loading = true);
 
     if (formKey.currentState!.validate()) {
-      try {
-        FirebaseAuth.instance.currentUser!
-            .updatePassword(password.text)
-            .then((value) => page(context: context, page: const Main()));
-      } catch (error) {
-        errorSnackBar(context, error.toString());
-      }
+      updatePassword(context: context, password: password.text);
     }
 
     setState(() => loading = false);

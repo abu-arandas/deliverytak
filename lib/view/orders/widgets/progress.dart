@@ -37,17 +37,16 @@ class SingleOrderProgress extends StatelessWidget {
     required OrderProgress progress,
     required bool select,
   }) =>
-      Container(
-        height: 2,
-        constraints: const BoxConstraints(maxWidth: 100),
-        margin: const EdgeInsets.only(right: 16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12.5),
-          color: order.progress == OrderProgress.deleted
-              ? const Color(0xffdc3545)
-              : select
-                  ? progressColor(order.progress)
-                  : Colors.grey,
+      Expanded(
+        child: Padding(
+          padding: const EdgeInsets.only(right: 8),
+          child: Divider(
+            color: order.progress == OrderProgress.deleted
+                ? const Color(0xffdc3545)
+                : select
+                    ? progressColor(order.progress)
+                    : Colors.grey,
+          ),
         ),
       );
 }

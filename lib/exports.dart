@@ -1,7 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages
 
-/* ====== Package ====== */
 export 'dart:async';
+export 'dart:io' hide HeaderValue;
 export 'dart:math' hide pi;
 
 export 'package:barcode_widget/barcode_widget.dart';
@@ -28,22 +28,24 @@ export 'package:phone_input/phone_input_package.dart';
 export 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 export 'package:url_launcher/url_launcher.dart';
 
-/* ====== Config ====== */
 export 'config/app.dart';
 export 'config/constants.dart';
+export 'controller/brand.dart';
 export 'controller/cart.dart';
-export 'controller/firestore.dart';
+export 'controller/category.dart';
+export 'controller/favorite.dart';
 export 'controller/location.dart';
-/* ====== Controller ====== */
 export 'controller/notifications.dart';
+export 'controller/order.dart';
+export 'controller/product.dart';
 export 'controller/sort.dart';
+export 'controller/user.dart';
 export 'firebase_options.dart';
 export 'model/brand.dart';
 export 'model/cart.dart';
 export 'model/category.dart';
 export 'model/order.dart';
 export 'model/product.dart';
-/* ====== Model ====== */
 export 'model/user.dart';
 export 'view/about.dart';
 export 'view/auth/login.dart';
@@ -52,7 +54,6 @@ export 'view/auth/profile.dart';
 export 'view/auth/register.dart';
 export 'view/auth/reset.dart';
 export 'view/cart/main.dart';
-export 'view/cart/widgets/check_out.dart';
 export 'view/cart/widgets/map.dart';
 export 'view/cart/widgets/payment.dart';
 export 'view/cart/widgets/price.dart';
@@ -69,7 +70,6 @@ export 'view/home/client/widgets/hero.dart';
 export 'view/home/client/widgets/products.dart';
 export 'view/home/client/widgets/special.dart';
 export 'view/home/driver.dart';
-/* ====== View ====== */
 export 'view/main.dart';
 export 'view/orders/details.dart';
 export 'view/orders/main.dart';
@@ -100,9 +100,11 @@ export 'view/scaffold/client/widgets/appbar.dart';
 export 'view/scaffold/client/widgets/body.dart';
 export 'view/scaffold/client/widgets/drawer.dart';
 export 'view/shop/admin/brands/add.dart';
+export 'view/shop/admin/brands/details.dart';
 export 'view/shop/admin/brands/edit.dart';
 export 'view/shop/admin/brands/widget.dart';
 export 'view/shop/admin/categories/add.dart';
+export 'view/shop/admin/categories/details.dart';
 export 'view/shop/admin/categories/edit.dart';
 export 'view/shop/admin/categories/widget.dart';
 export 'view/shop/admin/main.dart';

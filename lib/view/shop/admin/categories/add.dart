@@ -86,64 +86,11 @@ class _AddCategoryState extends State<AddCategory> {
 
   void validate() async {
     if (formKey.currentState!.validate()) {
-      if (pickedImage != null) {
-        const chars =
-            'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
-        Random rnd = Random();
-
-        String getRandomString() => String.fromCharCodes(
-              Iterable.generate(
-                  15,
-                  (_) => chars.codeUnitAt(
-                        rnd.nextInt(chars.length),
-                      )),
-            );
-
-        try {
-          // Storage
-          FirebaseStorage.instance
-              .ref('categories')
-              .child(
-                getRandomString(),
-              )
-              .putData(
-                await pickedImage!.readAsBytes(),
-              )
-
-              // Image url
-              .then((value) => value.ref
-                  .getDownloadURL()
-
-                  // Firestore
-                  .then(
-                    (value) => categoriesCollection
-                        .doc(
-                          getRandomString(),
-                        )
-                        .set(
-                          CategoryModel(
-                            id: '',
-                            name: name.text,
-                            image: value,
-                          ).toJson(),
-                        ),
-                  ))
-
-              // Exit
-              .then((value) {
-            Navigator.pop(context);
-
-            succesSnackBar(context, 'Added');
-          });
-        } catch (error) {
-          errorSnackBar(
-            context,
-            error.toString(),
-          );
-        }
-      } else {
-        errorSnackBar(context, 'Please add the Category Logo');
-      }
+      addCategory(
+        context: context,
+        name: name.text,
+        pickedImage: pickedImage,
+      );
     }
   }
 }

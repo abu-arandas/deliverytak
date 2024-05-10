@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import '/exports.dart';
 
 class EditCategory extends StatefulWidget {
@@ -89,25 +87,10 @@ class _EditCategoryState extends State<EditCategory> {
         ),
         actions: [
           ElevatedButton(
-            onPressed: () {
-              try {
-                categoriesCollection.doc(widget.categoryModel.id).delete();
-
-                FirebaseStorage.instance
-                    .ref('categories')
-                    .child(widget.categoryModel.id)
-                    .delete();
-
-                Navigator.pop(context);
-
-                succesSnackBar(context, 'Deleted');
-              } catch (error) {
-                errorSnackBar(
-                  context,
-                  error.toString(),
-                );
-              }
-            },
+            onPressed: () => deleteCategory(
+              context: context,
+              id: widget.categoryModel.id,
+            ),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             child: const Text('delete'),
           ),
@@ -119,43 +102,12 @@ class _EditCategoryState extends State<EditCategory> {
       );
 
   void validate() async {
-    try {
-      // Storage
-      FirebaseStorage.instance
-          .ref('categories')
-          .child(widget.categoryModel.id)
-          .putData(
-            await pickedImage!.readAsBytes(),
-          )
-
-          // Image url
-          .then(
-            (value) => value.ref
-                .getDownloadURL()
-
-                // Firestore
-                .then(
-                  (value) =>
-                      categoriesCollection.doc(widget.categoryModel.id).update(
-                            CategoryModel(
-                              id: widget.categoryModel.id,
-                              name: name.text,
-                              image: value,
-                            ).toJson(),
-                          ),
-                ),
-          )
-
-          // Exit
-          .then((value) {
-        Navigator.pop(context);
-
-        succesSnackBar(context, 'Updated');
-      });
-    } catch (error) {
-      errorSnackBar(
-        context,
-        error.toString(),
+    if (formKey.currentState!.validate()) {
+      updateCategory(
+        context: context,
+        id: widget.categoryModel.id,
+        name: name.text,
+        pickedImage: pickedImage,
       );
     }
   }

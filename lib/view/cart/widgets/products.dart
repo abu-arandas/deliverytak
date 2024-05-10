@@ -9,58 +9,64 @@ class CartProducts extends StatelessWidget {
           stream: products(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return Table(
-                columnWidths: const {
-                  0: FlexColumnWidth(2),
-                  1: FlexColumnWidth(4),
-                  2: FlexColumnWidth(2),
-                  3: FlexColumnWidth(2),
-                  4: FlexColumnWidth(2),
-                  5: FlexColumnWidth(2),
-                },
-                children: [
-                  // Title
-                  const TableRow(
-                    decoration: BoxDecoration(
-                      border: Border(bottom: BorderSide()),
-                    ),
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minWidth: 750),
+                  child: Table(
+                    columnWidths: const {
+                      0: FlexColumnWidth(2),
+                      1: FlexColumnWidth(4),
+                      2: FlexColumnWidth(2),
+                      3: FlexColumnWidth(3),
+                      4: FlexColumnWidth(4),
+                      5: FlexColumnWidth(2),
+                    },
                     children: [
-                      Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Text('image'),
+                      // Title
+                      const TableRow(
+                        decoration: BoxDecoration(
+                          border: Border(bottom: BorderSide()),
+                        ),
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.all(8),
+                            child: Text('image'),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8),
+                            child: Text('title'),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8),
+                            child: Text('price'),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8),
+                            child: Text('size'),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8),
+                            child: Text('color'),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8),
+                            child: Text('count'),
+                          ),
+                        ],
                       ),
-                      Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Text('title'),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Text('price'),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Text('size'),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Text('color'),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Text('count'),
-                      ),
+
+                      // Products
+                      for (CartModel product in controller.cartProducts) ...{
+                        productRow(
+                          controller,
+                          snapshot.data!.singleWhere(
+                              (element) => element.id == product.id),
+                        ),
+                      }
                     ],
                   ),
-
-                  // Products
-                  for (CartModel product in controller.cartProducts) ...{
-                    productRow(
-                      controller,
-                      snapshot.data!
-                          .singleWhere((element) => element.id == product.id),
-                    ),
-                  }
-                ],
+                ),
               );
             } else if (snapshot.hasError) {
               return Center(child: Text(snapshot.error.toString()));
@@ -128,9 +134,7 @@ class CartProducts extends StatelessWidget {
             ),
             child: ListTile(
               title: Text(
-                product.sizes.length == 1
-                    ? 'Product have a single size'
-                    : 'Size is : ${product.sizes[size]}',
+                product.sizes[size],
                 style: const TextStyle(color: Colors.black),
               ),
               trailing: const Icon(Icons.keyboard_arrow_down),
@@ -162,12 +166,11 @@ class CartProducts extends StatelessWidget {
             child: ListTile(
               leading: Icon(
                 Icons.circle,
+                size: 16,
                 color: product.colors[color],
               ),
               title: Text(
-                product.colors.length == 1
-                    ? 'Product have a single color'
-                    : 'Color is : ${ColorTools.nameThatColor(product.colors[color])}',
+                ColorTools.nameThatColor(product.colors[color]),
                 style: const TextStyle(color: Colors.black),
               ),
               trailing: const Icon(Icons.keyboard_arrow_down),

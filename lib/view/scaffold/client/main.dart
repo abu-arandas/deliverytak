@@ -19,7 +19,6 @@ class ClientScaffold extends StatefulWidget {
 }
 
 class _ClientScaffoldState extends State<ClientScaffold> {
-  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
   ScrollController scrollController = ScrollController();
   bool scrolled = false;
@@ -38,13 +37,11 @@ class _ClientScaffoldState extends State<ClientScaffold> {
   @override
   Widget build(BuildContext context) => SafeArea(
         child: Scaffold(
-          key: scaffoldKey,
           extendBodyBehindAppBar: widget.pageImage == null,
 
           // Nav Bar
           appBar: ClientAppBar(
             pageName: widget.pageName,
-            scaffoldKey: scaffoldKey,
             scrolled: scrolled,
             hasDrawer: widget.drawer != null,
           ),

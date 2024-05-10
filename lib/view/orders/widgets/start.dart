@@ -136,8 +136,8 @@ class SingleOrderStartButton extends StatelessWidget {
 
             succesSnackBar(context, 'Started');
             Navigator.pop(context);
-          } catch (error) {
-            errorSnackBar(context, error.toString());
+          } on FirebaseException catch (error) {
+            errorSnackBar(context, error.message.toString());
           }
         },
 

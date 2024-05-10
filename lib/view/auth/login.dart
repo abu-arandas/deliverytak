@@ -148,8 +148,8 @@ class _LoginState extends State<Login> {
               password: password.text,
             )
             .then((value) => page(context: context, page: const Main()));
-      } catch (error) {
-        errorSnackBar(context, error.toString());
+      } on FirebaseException catch (error) {
+        errorSnackBar(context, error.message.toString());
       }
     }
 
