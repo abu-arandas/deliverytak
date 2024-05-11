@@ -21,16 +21,33 @@ class AdminUsersSection extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.all(16),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: const EdgeInsets.all(16),
-            child: Text(
-              'Drivers',
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium!
-                  .copyWith(fontWeight: FontWeight.bold),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'Drivers',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(fontWeight: FontWeight.bold),
+                ),
+                TextButton(
+                  onPressed: () => showDialog(
+                    context: context,
+                    builder: (context) => const NewDrivwer(),
+                  ),
+                  child: Text(
+                    'add',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                )
+              ],
             ),
           ),
           ListView.builder(
@@ -54,7 +71,8 @@ class AdminUsersSection extends StatelessWidget {
                     ),
                   ),
                   title: Text('${user.name['first']} ${user.name['last']}'),
-                  trailing: Text(data[index]['distance'].toString()),
+                  trailing:
+                      Text(data[index]['distance'].toStringAsFixed(3) + ' km'),
                 ),
               );
             },

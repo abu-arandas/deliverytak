@@ -37,32 +37,48 @@ class _DriverHomeState extends State<DriverHome> {
             child: Material(
               color: Colors.white,
               child: FB5Container(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32),
-                  child: RichText(
-                    text: TextSpan(
-                      text: 'Good ',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyLarge!
-                          .copyWith(color: Colors.grey),
-                      children: [
-                        TextSpan(
-                          text: DateTime.now().day >= 12
-                              ? 'Afternoon'
-                              : 'Morning',
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'Good ',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge!
+                              .copyWith(color: Colors.grey),
+                          children: [
+                            TextSpan(
+                              text: DateTime.now().day >= 12
+                                  ? 'Afternoon'
+                                  : 'Morning',
+                            ),
+                            const TextSpan(text: '\n'),
+                            TextSpan(
+                              text: DateFormat.yMMMEd().format(
+                                DateTime.now(),
+                              ),
+                              style: const TextStyle(color: Colors.black),
+                            ),
+                          ],
                         ),
-                        const TextSpan(text: '\n'),
-                        TextSpan(
-                          text: DateFormat.yMMMEd().format(
-                            DateTime.now(),
-                          ),
-                          style: const TextStyle(color: Colors.black),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                    const Spacer(),
+                    IconButton(
+                      onPressed: () => showDialog(
+                        context: context,
+                        builder: (context) =>
+                            Profile(id: FirebaseAuth.instance.currentUser!.uid),
+                      ),
+                      icon: const Icon(Icons.person),
+                    ),
+                    IconButton(
+                      onPressed: () => signOut(context: context),
+                      icon: const Icon(Icons.logout),
+                    ),
+                  ],
                 ),
               ),
             ),

@@ -42,6 +42,12 @@ class AdminBrands extends StatelessWidget {
                         classNames: 'col-lg-6 col-md-6 col-sm-12 col-xs-12 p-1',
                         child: ListTile(
                           contentPadding: const EdgeInsets.all(8),
+                          shape: RoundedRectangleBorder(
+                            side: const BorderSide(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+
+                          // Details
                           onTap: () => showDialog(
                             context: context,
                             builder: (context) => BrandDetails(
@@ -62,29 +68,24 @@ class AdminBrands extends StatelessWidget {
                           title: Text(snapshot.data![index].name),
 
                           // Edit
-                          subtitle: TextButton(
+                          trailing: IconButton(
                             onPressed: () => showDialog(
                               context: context,
                               builder: (context) => EditBrand(
                                 brandModel: snapshot.data![index],
                               ),
                             ),
-                            child: const Text('edit'),
+                            icon: const Icon(Icons.edit),
                           ),
                         ),
                       ),
                     ),
                   );
                 } else if (snapshot.hasError) {
-                  return Center(
-                      child: Text(
-                    snapshot.error.toString(),
-                  ));
+                  return Center(child: Text(snapshot.error.toString()));
                 } else if (snapshot.connectionState ==
                     ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return const Center(child: CircularProgressIndicator());
                 } else {
                   return Container();
                 }

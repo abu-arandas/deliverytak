@@ -49,6 +49,7 @@ export 'model/product.dart';
 export 'model/user.dart';
 export 'view/about.dart';
 export 'view/auth/login.dart';
+export 'view/auth/new_driver.dart';
 export 'view/auth/password.dart';
 export 'view/auth/profile.dart';
 export 'view/auth/register.dart';

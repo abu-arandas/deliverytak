@@ -49,6 +49,7 @@ class AdminHome extends StatelessWidget {
                               child: AdminUsersSection(
                                 drivers: usersSnapshot.data!
                                     .where((element) =>
+                                        element.address != null &&
                                         element.role == UserRole.driver)
                                     .toList(),
                               ),

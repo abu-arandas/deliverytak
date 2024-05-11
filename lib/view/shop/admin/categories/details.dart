@@ -18,20 +18,33 @@ class CategoryDetails extends StatelessWidget {
                   .where((element) => element.category == category.id)
                   .toList();
 
-              return FB5Row(
-                children: List.generate(
-                  products.length,
-                  (index) => FB5Col(
-                    classNames: 'col-6 p-3',
-                    child: ListTile(
-                      isThreeLine: true,
-                      leading: CachedNetworkImage(
-                        imageUrl: products[index].images.first,
-                      ),
-                      title: Text(products[index].name),
-                      subtitle: Text(products[index].description),
-                      trailing: Text(
-                        products[index].price.toStringAsFixed(2),
+              return SingleChildScrollView(
+                child: FB5Row(
+                  children: List.generate(
+                    products.length,
+                    (index) => FB5Col(
+                      classNames: 'col-lg-4 col-md-6 col-sm-12 col-xs-12 p-1',
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          border: Border.all(),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: [
+                            CachedNetworkImage(
+                              imageUrl: products[index].images.first,
+                              width: 50,
+                              height: 50,
+                            ),
+                            Expanded(child: Text(products[index].name)),
+                            Text(
+                              '${products[index].price.toStringAsFixed(2)} JD',
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

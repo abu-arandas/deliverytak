@@ -139,6 +139,7 @@ void updateProduct({
         ).toJson());
 
     for (var element in colors) {
+      // TODO
       List<XFile> colorImages = images
           .where(
               (image) => image.name.contains(ColorTools.nameThatColor(element)))

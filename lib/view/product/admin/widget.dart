@@ -44,6 +44,10 @@ class AdminProducts extends StatelessWidget {
                             classNames: 'col-lg-4 col-md-6 col-sm-12 p-1',
                             child: ListTile(
                               contentPadding: const EdgeInsets.all(8),
+                              shape: RoundedRectangleBorder(
+                                side: const BorderSide(color: Colors.grey),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
 
                               // Image
                               leading: AspectRatio(
@@ -58,13 +62,13 @@ class AdminProducts extends StatelessWidget {
                               title: Text(snapshot.data![index].name),
 
                               // Edit
-                              subtitle: TextButton(
+                              trailing: IconButton(
                                 onPressed: () => page(
                                   context: context,
                                   page:
                                       EditProduct(id: snapshot.data![index].id),
                                 ),
-                                child: const Text('Edit'),
+                                icon: const Icon(Icons.edit),
                               ),
                             ),
                           ),

@@ -81,6 +81,41 @@ void updateProfile({
   }
 }
 
+void newDriver({
+  required BuildContext context,
+  required String email,
+  required String password,
+  required PhoneNumber phone,
+}) async {
+  try {
+    await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(email: email, password: password);
+
+    await usersCollection
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .set(UserModel(
+          id: FirebaseAuth.instance.currentUser!.uid,
+          name: {'first': 'Driver', 'last': ''},
+          email: email,
+          image: noImage,
+          phone: phone,
+          role: UserRole.driver,
+          token: '',
+        ).toJson());
+
+    await FirebaseAuth.instance.signOut();
+
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: 'admin@deliverytak.com',
+      password: '123456',
+    );
+
+    page(context: context, page: const Main());
+  } on FirebaseException catch (error) {
+    errorSnackBar(context, error.message.toString());
+  }
+}
+
 void updateToken({required BuildContext context}) {
   try {
     FirebaseAuth.instance.authStateChanges().listen((event) async {

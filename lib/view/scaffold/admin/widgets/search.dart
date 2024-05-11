@@ -49,27 +49,24 @@ class AdminSearch extends StatelessWidget {
                   stream: controller.limitProducts(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      List<ProductModel> products = snapshot.data!.length <= 3
-                          ? snapshot.data!
-                          : List.generate(3, (index) => snapshot.data![index]);
-
-                      return ListView.builder(
+                      return ListView.separated(
                         shrinkWrap: true,
                         padding: EdgeInsets.zero,
-                        itemCount: products.length,
+                        itemCount: snapshot.data!.length,
+                        separatorBuilder: (context, index) => const Divider(),
                         itemBuilder: (context, index) => ListTile(
                           // Image
                           leading: AspectRatio(
                             aspectRatio: 1,
                             child: CachedNetworkImage(
-                              imageUrl: products[index].images.first,
+                              imageUrl: snapshot.data![index].images.first,
                               fit: BoxFit.fill,
                             ),
                           ),
 
                           // Name
                           title: Text(
-                            products[index].name,
+                            snapshot.data![index].name,
                             maxLines: 2,
                           ),
 
