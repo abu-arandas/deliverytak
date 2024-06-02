@@ -23,7 +23,7 @@ class CategoryDetails extends StatelessWidget {
                   children: List.generate(
                     products.length,
                     (index) => FB5Col(
-                      classNames: 'col-lg-4 col-md-6 col-sm-12 col-xs-12 p-1',
+                      classNames: 'col-12 p-1',
                       child: Container(
                         padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
