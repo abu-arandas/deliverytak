@@ -93,8 +93,8 @@ class ClientBody extends StatelessWidget {
                       Uri.parse('https://web.facebook.com/abu00arandas/'),
                     ),
                     style: ButtonStyle(
-                      foregroundColor: MaterialStateColor.resolveWith(
-                        (states) => states.contains(MaterialState.hovered)
+                      foregroundColor: WidgetStateColor.resolveWith(
+                        (states) => states.contains(WidgetState.hovered)
                             ? Theme.of(context).primaryColor
                             : Colors.white,
                       ),

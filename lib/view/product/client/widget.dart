@@ -92,28 +92,28 @@ class ClientProductWidget extends StatelessWidget {
                             controller.update();
                           },
                           style: ButtonStyle(
-                            shape: const MaterialStatePropertyAll(
+                            shape: const WidgetStatePropertyAll(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.zero,
                               ),
                             ),
-                            backgroundColor: MaterialStateColor.resolveWith(
+                            backgroundColor: WidgetStateColor.resolveWith(
                               (states) => states
-                                          .contains(MaterialState.hovered) ||
-                                      states.contains(MaterialState.focused) ||
-                                      states.contains(MaterialState.pressed)
+                                          .contains(WidgetState.hovered) ||
+                                      states.contains(WidgetState.focused) ||
+                                      states.contains(WidgetState.pressed)
                                   ? Colors.black
                                   : Colors.white,
                             ),
-                            foregroundColor: MaterialStateColor.resolveWith(
+                            foregroundColor: WidgetStateColor.resolveWith(
                               (states) => states
-                                          .contains(MaterialState.hovered) ||
-                                      states.contains(MaterialState.focused) ||
-                                      states.contains(MaterialState.pressed)
+                                          .contains(WidgetState.hovered) ||
+                                      states.contains(WidgetState.focused) ||
+                                      states.contains(WidgetState.pressed)
                                   ? Colors.white
                                   : Colors.black,
                             ),
-                            padding: const MaterialStatePropertyAll(
+                            padding: const WidgetStatePropertyAll(
                               EdgeInsets.symmetric(
                                   vertical: 16, horizontal: 32),
                             ),

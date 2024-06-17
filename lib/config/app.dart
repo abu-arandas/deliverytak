@@ -19,9 +19,7 @@ class App {
               color: color,
             );
           } else if (snapshot.hasError) {
-            return Text(
-              snapshot.error.toString(),
-            );
+            return Text(snapshot.error.toString());
           } else if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator();
           } else {

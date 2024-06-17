@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
             fontFamily: 'Montserrat',
             colorScheme: ColorScheme.fromSeed(
               seedColor: const Color(0xFF3A57E8),
-              background: const Color(0xFFF8F8F8),
+              surface: const Color(0xFFF8F8F8),
               brightness: Brightness.light,
             ),
             inputDecorationTheme: InputDecorationTheme(
@@ -51,27 +51,27 @@ class MyApp extends StatelessWidget {
             ),
             textButtonTheme: const TextButtonThemeData(
               style: ButtonStyle(
-                overlayColor: MaterialStatePropertyAll(Colors.transparent),
+                overlayColor: WidgetStatePropertyAll(Colors.transparent),
               ),
             ),
             elevatedButtonTheme: ElevatedButtonThemeData(
               style: ButtonStyle(
-                shape: MaterialStatePropertyAll(
+                shape: WidgetStatePropertyAll(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
                 ),
-                backgroundColor: MaterialStateProperty.resolveWith(
-                  (states) => states.contains(MaterialState.focused) ||
-                          states.contains(MaterialState.hovered) ||
-                          states.contains(MaterialState.pressed)
+                backgroundColor: WidgetStateProperty.resolveWith(
+                  (states) => states.contains(WidgetState.focused) ||
+                          states.contains(WidgetState.hovered) ||
+                          states.contains(WidgetState.pressed)
                       ? Colors.white
                       : const Color(0xFF3A57E8),
                 ),
-                foregroundColor: MaterialStateProperty.resolveWith(
-                  (states) => states.contains(MaterialState.focused) ||
-                          states.contains(MaterialState.hovered) ||
-                          states.contains(MaterialState.pressed)
+                foregroundColor: WidgetStateProperty.resolveWith(
+                  (states) => states.contains(WidgetState.focused) ||
+                          states.contains(WidgetState.hovered) ||
+                          states.contains(WidgetState.pressed)
                       ? const Color(0xFF3A57E8)
                       : Colors.white,
                 ),
@@ -79,30 +79,30 @@ class MyApp extends StatelessWidget {
             ),
             outlinedButtonTheme: OutlinedButtonThemeData(
               style: ButtonStyle(
-                shape: MaterialStatePropertyAll(
+                shape: WidgetStatePropertyAll(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
                 ),
-                backgroundColor: MaterialStateProperty.resolveWith(
-                  (states) => states.contains(MaterialState.focused) ||
-                          states.contains(MaterialState.hovered) ||
-                          states.contains(MaterialState.pressed)
+                backgroundColor: WidgetStateProperty.resolveWith(
+                  (states) => states.contains(WidgetState.focused) ||
+                          states.contains(WidgetState.hovered) ||
+                          states.contains(WidgetState.pressed)
                       ? const Color(0xFF3A57E8)
                       : Colors.transparent,
                 ),
-                foregroundColor: MaterialStateProperty.resolveWith(
-                  (states) => states.contains(MaterialState.focused) ||
-                          states.contains(MaterialState.hovered) ||
-                          states.contains(MaterialState.pressed)
+                foregroundColor: WidgetStateProperty.resolveWith(
+                  (states) => states.contains(WidgetState.focused) ||
+                          states.contains(WidgetState.hovered) ||
+                          states.contains(WidgetState.pressed)
                       ? Colors.white
                       : const Color(0xFF3A57E8),
                 ),
-                side: MaterialStateProperty.resolveWith(
+                side: WidgetStateProperty.resolveWith(
                   (states) => BorderSide(
-                    color: states.contains(MaterialState.focused) ||
-                            states.contains(MaterialState.hovered) ||
-                            states.contains(MaterialState.pressed)
+                    color: states.contains(WidgetState.focused) ||
+                            states.contains(WidgetState.hovered) ||
+                            states.contains(WidgetState.pressed)
                         ? Colors.white
                         : const Color(0xFF3A57E8),
                   ),

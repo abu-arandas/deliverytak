@@ -5,7 +5,7 @@ class AdminAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) => Material(
-        color: Theme.of(context).colorScheme.background,
+        color: Theme.of(context).colorScheme.surface,
         child: FB5Container(
           child: Row(
             children: [

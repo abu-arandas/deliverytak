@@ -19,7 +19,6 @@ class ClientScaffold extends StatefulWidget {
 }
 
 class _ClientScaffoldState extends State<ClientScaffold> {
-
   ScrollController scrollController = ScrollController();
   bool scrolled = false;
 

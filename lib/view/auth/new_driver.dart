@@ -13,7 +13,7 @@ class _NewDrivwerState extends State<NewDrivwer> {
   GlobalKey<FormState> formKey = GlobalKey();
 
   TextEditingController email = TextEditingController();
-  PhoneController phone = PhoneController(null);
+  PhoneController phone = PhoneController();
   TextEditingController password = TextEditingController();
   bool obscureText = true, loading = false;
 
@@ -68,7 +68,7 @@ class _NewDrivwerState extends State<NewDrivwer> {
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                   const SizedBox(height: 8),
-                  PhoneInput(
+                  PhoneFormField(
                     countrySelectorNavigator:
                         const CountrySelectorNavigator.dialog(),
                     style: Theme.of(context)
@@ -82,9 +82,9 @@ class _NewDrivwerState extends State<NewDrivwer> {
                     controller: phone,
                     textInputAction: TextInputAction.next,
                     validator: PhoneValidator.compose([
-                      PhoneValidator.required(),
-                      PhoneValidator.valid(),
-                      PhoneValidator.validMobile(),
+                      PhoneValidator.required(context),
+                      PhoneValidator.valid(context),
+                      PhoneValidator.validMobile(context),
                     ]),
                   ),
                   const SizedBox(height: 16),
@@ -150,7 +150,7 @@ class _NewDrivwerState extends State<NewDrivwer> {
       newDriver(
         context: context,
         email: email.text,
-        phone: phone.value!,
+        phone: phone.value,
         password: password.text,
       );
     }

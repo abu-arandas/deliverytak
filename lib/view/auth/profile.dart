@@ -17,7 +17,7 @@ class _ProfileState extends State<Profile> {
 
   TextEditingController fName = TextEditingController();
   TextEditingController lName = TextEditingController();
-  PhoneController phone = PhoneController(null);
+  PhoneController phone = PhoneController();
 
   bool loading = false;
 
@@ -27,24 +27,20 @@ class _ProfileState extends State<Profile> {
   void initState() {
     super.initState();
 
-    singleUser(widget.id).listen((event) {
-      image = NetworkImage(event.image);
-      fName = TextEditingController(text: event.name['first']);
-      lName = TextEditingController(text: event.name['last']);
-      phone = PhoneController(event.phone);
-      user = event;
+    usersCollection.doc(widget.id).get().then((value) {
+      user = UserModel.fromJson(value);
+
+      image = NetworkImage(user.image);
+      fName = TextEditingController(text: user.name['first']);
+      lName = TextEditingController(text: user.name['last']);
+      phone = PhoneController(initialValue: user.phone);
 
       setState(() {});
     });
   }
 
   @override
-  Widget build(BuildContext context) {
-    if (pickedImage == null) {
-      image = NetworkImage(noImage);
-    }
-
-    return AlertDialog(
+  Widget build(BuildContext context) => AlertDialog(
       // Title
       title: const Text('Enter your informations to Complete'),
 
@@ -168,7 +164,7 @@ class _ProfileState extends State<Profile> {
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 const SizedBox(height: 8),
-                PhoneInput(
+                PhoneFormField(
                   countrySelectorNavigator:
                       const CountrySelectorNavigator.dialog(),
                   style: Theme.of(context)
@@ -182,9 +178,9 @@ class _ProfileState extends State<Profile> {
                   controller: phone,
                   textInputAction: TextInputAction.done,
                   validator: PhoneValidator.compose([
-                    PhoneValidator.required(),
-                    PhoneValidator.valid(),
-                    PhoneValidator.validMobile(),
+                    PhoneValidator.required(context),
+                    PhoneValidator.valid(context),
+                    PhoneValidator.validMobile(context),
                   ]),
                   onSubmitted: (value) => validate(),
                 ),
@@ -218,7 +214,6 @@ class _ProfileState extends State<Profile> {
         )
       ],
     );
-  }
 
   validate() async {
     setState(() => loading = true);
@@ -228,7 +223,7 @@ class _ProfileState extends State<Profile> {
         context: context,
         first: fName.text,
         last: lName.text,
-        phone: phone.value!,
+        phone: phone.value,
         pickedImage: pickedImage,
         image: user.image,
       );

@@ -15,7 +15,7 @@ class _RegisterState extends State<Register> {
   TextEditingController fName = TextEditingController();
   TextEditingController lName = TextEditingController();
   TextEditingController email = TextEditingController();
-  PhoneController phone = PhoneController(null);
+  PhoneController phone = PhoneController();
   TextEditingController password = TextEditingController();
   bool obscureText = true, loading = false;
 
@@ -112,7 +112,7 @@ class _RegisterState extends State<Register> {
                 style: Theme.of(context).textTheme.bodySmall,
               ),
               const SizedBox(height: 8),
-              PhoneInput(
+              PhoneFormField(
                 countrySelectorNavigator:
                     const CountrySelectorNavigator.dialog(),
                 style: Theme.of(context)
@@ -126,9 +126,9 @@ class _RegisterState extends State<Register> {
                 controller: phone,
                 textInputAction: TextInputAction.next,
                 validator: PhoneValidator.compose([
-                  PhoneValidator.required(),
-                  PhoneValidator.valid(),
-                  PhoneValidator.validMobile(),
+                  PhoneValidator.required(context),
+                  PhoneValidator.valid(context),
+                  PhoneValidator.validMobile(context),
                 ]),
               ),
               const SizedBox(height: 16),
@@ -214,7 +214,7 @@ class _RegisterState extends State<Register> {
         name: {'first': fName.text, 'last': lName.text},
         email: email.text,
         password: password.text,
-        phone: phone.value!,
+        phone: phone.value,
       );
     }
 

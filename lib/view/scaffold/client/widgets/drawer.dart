@@ -125,13 +125,13 @@ class ClientDrawer extends StatelessWidget {
                                 page: const Main(),
                               ),
                               style: ButtonStyle(
-                                foregroundColor: MaterialStateColor.resolveWith(
+                                foregroundColor: WidgetStateColor.resolveWith(
                                   (states) =>
-                                      states.contains(MaterialState.hovered)
+                                      states.contains(WidgetState.hovered)
                                           ? Theme.of(context).primaryColor
                                           : Colors.black,
                                 ),
-                                textStyle: MaterialStateTextStyle.resolveWith(
+                                textStyle: WidgetStateTextStyle.resolveWith(
                                   (states) => const TextStyle(
                                     fontSize: 24,
                                     fontWeight: FontWeight.bold,
@@ -154,12 +154,12 @@ class ClientDrawer extends StatelessWidget {
                           page: const Main(),
                         ),
                         style: ButtonStyle(
-                          foregroundColor: MaterialStateColor.resolveWith(
-                            (states) => states.contains(MaterialState.hovered)
+                          foregroundColor: WidgetStateColor.resolveWith(
+                            (states) => states.contains(WidgetState.hovered)
                                 ? Theme.of(context).primaryColor
                                 : Colors.black,
                           ),
-                          textStyle: MaterialStateTextStyle.resolveWith(
+                          textStyle: WidgetStateTextStyle.resolveWith(
                             (states) => const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,

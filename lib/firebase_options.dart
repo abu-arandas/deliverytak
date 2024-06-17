@@ -62,8 +62,10 @@ class DefaultFirebaseOptions {
     projectId: 'deliverytak',
     databaseURL: 'https://deliverytak-default-rtdb.firebaseio.com',
     storageBucket: 'deliverytak.appspot.com',
-    androidClientId: '752904600547-3lqg84h4ff8uudsu1ct61vlssubnmnpu.apps.googleusercontent.com',
-    iosClientId: '752904600547-3t74a9oorbor8ifj66o2tns6k3vg15fa.apps.googleusercontent.com',
+    androidClientId:
+        '752904600547-3lqg84h4ff8uudsu1ct61vlssubnmnpu.apps.googleusercontent.com',
+    iosClientId:
+        '752904600547-3t74a9oorbor8ifj66o2tns6k3vg15fa.apps.googleusercontent.com',
     iosBundleId: 'com.arandas.deliverytak',
   );
 
@@ -76,5 +78,4 @@ class DefaultFirebaseOptions {
     databaseURL: 'https://deliverytak-default-rtdb.firebaseio.com',
     storageBucket: 'deliverytak.appspot.com',
   );
-
 }

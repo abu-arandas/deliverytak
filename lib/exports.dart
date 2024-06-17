@@ -24,7 +24,7 @@ export 'package:get/get.dart';
 export 'package:image_picker/image_picker.dart';
 export 'package:intl/intl.dart' hide TextDirection;
 export 'package:latlong2/latlong.dart' hide Path;
-export 'package:phone_input/phone_input_package.dart';
+export 'package:phone_form_field/phone_form_field.dart';
 export 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 export 'package:url_launcher/url_launcher.dart';
 

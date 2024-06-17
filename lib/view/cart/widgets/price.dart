@@ -1,40 +1,39 @@
 import '/exports.dart';
 
-class CartPrice extends StatefulWidget {
+class CartPrice extends StatelessWidget {
   const CartPrice({super.key});
 
   @override
-  State<CartPrice> createState() => _CartPriceState();
-}
+  Widget build(BuildContext context) => StreamBuilder(
+        stream: products(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return GetBuilder<CartController>(
+              builder: (controller) {
+                double total = 0;
 
-class _CartPriceState extends State<CartPrice> {
-  double total = 0;
+                for (var product in snapshot.data!) {
+                  for (var element in controller.cartProducts) {
+                    if (product.id == element.id) {
+                      total += (product.price * element.stock);
+                    }
+                  }
+                }
 
-  @override
-  void initState() {
-    super.initState();
-
-    products().listen((event) {
-      for (var product in event) {
-        for (var element in CartController.instance.cartProducts) {
-          if (product.id == element.id) {
-            setState(() {
-              total += (product.price * element.stock);
-            });
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    price(title: 'Products', data: total),
+                    price(title: 'Deliver', data: 1),
+                    price(title: 'Total', data: total + 1),
+                  ],
+                );
+              },
+            );
+          } else {
+            return const SizedBox();
           }
-        }
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          price(title: 'Products', data: total),
-          price(title: 'Deliver', data: 1),
-          price(title: 'Total', data: total + 1),
-        ],
+        },
       );
 
   Widget price({

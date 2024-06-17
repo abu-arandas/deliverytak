@@ -37,15 +37,13 @@ class ClientAppBar extends StatelessWidget implements PreferredSizeWidget {
                   page: const Main(),
                 ),
                 style: ButtonStyle(
-                  foregroundColor: MaterialStatePropertyAll(
-                    color(),
-                  ),
-                  textStyle: MaterialStateProperty.resolveWith(
+                  foregroundColor: WidgetStatePropertyAll(color()),
+                  textStyle: WidgetStateProperty.resolveWith(
                     (states) => TextStyle(
                       fontSize: 24,
-                      fontWeight: states.contains(MaterialState.hovered) ||
-                              states.contains(MaterialState.focused) ||
-                              states.contains(MaterialState.pressed)
+                      fontWeight: states.contains(WidgetState.hovered) ||
+                              states.contains(WidgetState.focused) ||
+                              states.contains(WidgetState.pressed)
                           ? FontWeight.w900
                           : FontWeight.w400,
                       fontFamily: 'Breathing',
@@ -79,22 +77,22 @@ class ClientAppBar extends StatelessWidget implements PreferredSizeWidget {
                               controller.update();
                             },
                             style: ButtonStyle(
-                              textStyle: MaterialStateProperty.resolveWith(
+                              textStyle: WidgetStateProperty.resolveWith(
                                 (states) => TextStyle(
                                   fontSize: 14,
-                                  fontWeight:
-                                      states.contains(MaterialState.hovered) ||
-                                              states.contains(
-                                                  MaterialState.focused) ||
-                                              states.contains(
-                                                  MaterialState.pressed) ||
-                                              controller.gender == gender
-                                          ? FontWeight.w900
-                                          : FontWeight.w400,
+                                  fontWeight: states
+                                              .contains(WidgetState.hovered) ||
+                                          states
+                                              .contains(WidgetState.focused) ||
+                                          states
+                                              .contains(WidgetState.pressed) ||
+                                          controller.gender == gender
+                                      ? FontWeight.w900
+                                      : FontWeight.w400,
                                   color: color(),
                                 ),
                               ),
-                              foregroundColor: MaterialStatePropertyAll(
+                              foregroundColor: WidgetStatePropertyAll(
                                 color(),
                               ),
                             ),
@@ -227,18 +225,18 @@ class ClientAppBar extends StatelessWidget implements PreferredSizeWidget {
       TextButton(
         onPressed: () => page(context: context, page: widget),
         style: ButtonStyle(
-          textStyle: MaterialStateProperty.resolveWith(
+          textStyle: WidgetStateProperty.resolveWith(
             (states) => TextStyle(
               fontSize: 12,
-              fontWeight: states.contains(MaterialState.hovered) ||
-                      states.contains(MaterialState.focused) ||
-                      states.contains(MaterialState.pressed)
+              fontWeight: states.contains(WidgetState.hovered) ||
+                      states.contains(WidgetState.focused) ||
+                      states.contains(WidgetState.pressed)
                   ? FontWeight.w900
                   : FontWeight.w400,
               color: color(),
             ),
           ),
-          foregroundColor: MaterialStatePropertyAll(
+          foregroundColor: WidgetStatePropertyAll(
             color(),
           ),
         ),
