@@ -1,131 +1,103 @@
-import 'exports.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
+import 'package:logging/logging.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-/*
-flutter run -d edge --web-renderer html // to run the app
-flutter build web --web-renderer html --release // to generate a production build
-*/
+import 'config/routes.dart';
+import 'config/theme.dart';
 
-Future<void> main() async {
+import 'services/auth_service.dart';
+import 'services/delivery_service.dart';
+import 'services/driver_service.dart';
+import 'services/earnings_service.dart';
+import 'services/route_optimization_service.dart';
+import 'services/batch_delivery_service.dart';
+import 'services/delivery_schedule_service.dart';
+import 'services/schedule_conflict_service.dart';
+import 'services/notification_service.dart';
+
+import 'providers/auth_provider.dart';
+import 'providers/delivery_provider.dart';
+import 'providers/driver_provider.dart';
+import 'providers/earnings_provider.dart';
+import 'providers/route_optimization_provider.dart';
+import 'providers/batch_delivery_provider.dart';
+import 'providers/delivery_schedule_provider.dart';
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp();
+  await dotenv.load();
 
-  runApp(const MyApp());
-}
+  // Set up logging
+  Logger.root.level = Level.ALL;
+  Logger.root.onRecord.listen((record) {
+    debugPrint('${record.level.name}: ${record.time}: ${record.message}');
+  });
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final logger = Logger('main');
 
-  @override
-  Widget build(BuildContext context) => FlutterBootstrap5(
-        builder: (context) => GetMaterialApp(
-          title: App.name,
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            useMaterial3: true,
-            fontFamily: 'Montserrat',
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: const Color(0xFF3A57E8),
-              surface: const Color(0xFFF8F8F8),
-              brightness: Brightness.light,
-            ),
-            inputDecorationTheme: InputDecorationTheme(
-              contentPadding: const EdgeInsets.all(16),
-              labelStyle: const TextStyle(fontSize: 14),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
-              ),
-              errorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
-              ),
-            ),
-            buttonTheme: const ButtonThemeData(
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              buttonColor: Color(0xFF3A57E8),
-            ),
-            textButtonTheme: const TextButtonThemeData(
-              style: ButtonStyle(
-                overlayColor: WidgetStatePropertyAll(Colors.transparent),
-              ),
-            ),
-            elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ButtonStyle(
-                shape: WidgetStatePropertyAll(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                ),
-                backgroundColor: WidgetStateProperty.resolveWith(
-                  (states) => states.contains(WidgetState.focused) ||
-                          states.contains(WidgetState.hovered) ||
-                          states.contains(WidgetState.pressed)
-                      ? Colors.white
-                      : const Color(0xFF3A57E8),
-                ),
-                foregroundColor: WidgetStateProperty.resolveWith(
-                  (states) => states.contains(WidgetState.focused) ||
-                          states.contains(WidgetState.hovered) ||
-                          states.contains(WidgetState.pressed)
-                      ? const Color(0xFF3A57E8)
-                      : Colors.white,
-                ),
-              ),
-            ),
-            outlinedButtonTheme: OutlinedButtonThemeData(
-              style: ButtonStyle(
-                shape: WidgetStatePropertyAll(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                ),
-                backgroundColor: WidgetStateProperty.resolveWith(
-                  (states) => states.contains(WidgetState.focused) ||
-                          states.contains(WidgetState.hovered) ||
-                          states.contains(WidgetState.pressed)
-                      ? const Color(0xFF3A57E8)
-                      : Colors.transparent,
-                ),
-                foregroundColor: WidgetStateProperty.resolveWith(
-                  (states) => states.contains(WidgetState.focused) ||
-                          states.contains(WidgetState.hovered) ||
-                          states.contains(WidgetState.pressed)
-                      ? Colors.white
-                      : const Color(0xFF3A57E8),
-                ),
-                side: WidgetStateProperty.resolveWith(
-                  (states) => BorderSide(
-                    color: states.contains(WidgetState.focused) ||
-                            states.contains(WidgetState.hovered) ||
-                            states.contains(WidgetState.pressed)
-                        ? Colors.white
-                        : const Color(0xFF3A57E8),
-                  ),
-                ),
-              ),
-            ),
-            cardTheme: const CardTheme(elevation: 2.5),
-            floatingActionButtonTheme: const FloatingActionButtonThemeData(
-              shape: CircleBorder(),
-              backgroundColor: Color(0xFF3A57E8),
-              foregroundColor: Colors.white,
-            ),
-          ),
-          themeMode: ThemeMode.light,
-          initialBinding: BindingsBuilder(() {
-            Get.put(NotificationController());
-            Get.put(SortController());
-            Get.put(LocationController());
-            Get.put(CartController());
-          }),
-          home: OrientationBuilder(
-            builder: (context, orientation) => const Main(),
+  // Initialize notification service
+  final notificationService = NotificationService(logger);
+  await notificationService.initialize();
+
+  // Initialize services
+  final authService = AuthService(null, logger);
+  final driverService = DriverService(null, logger);
+  final deliveryService = DeliveryService(firestore: FirebaseFirestore.instance, logger: logger);
+  final earningsService = EarningsService(firestore: FirebaseFirestore.instance, logger: logger);
+  final batchDeliveryService = BatchDeliveryService(firestore: FirebaseFirestore.instance, logger: logger);
+  final routeOptimizationService = RouteOptimizationService(
+    firestore: FirebaseFirestore.instance,
+    googleMapsApiKey: dotenv.env['GOOGLE_MAPS_API_KEY'] ?? '',
+    logger: logger,
+  );
+  final scheduleConflictService = ScheduleConflictService(null, logger);
+  final deliveryScheduleService = DeliveryScheduleService(null, logger);
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<AuthProvider>(
+          create: (_) => AuthProvider(authService),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => DriverProvider(driverService, logger),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => DeliveryProvider(deliveryService),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => EarningsProvider(earningsService),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => BatchDeliveryProvider(batchDeliveryService),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => RouteOptimizationProvider(
+            service: routeOptimizationService,
+            logger: logger,
           ),
         ),
-      );
+        ChangeNotifierProvider(
+          create: (_) => DeliveryScheduleProvider(
+            deliveryScheduleService,
+            scheduleConflictService,
+            notificationService,
+            logger,
+          ),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'DeliveryTak',
+        theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
+        themeMode: ThemeMode.system,
+        initialRoute: AppRoutes.home,
+        routes: AppRoutes.routes,
+      ),
+    ),
+  );
 }

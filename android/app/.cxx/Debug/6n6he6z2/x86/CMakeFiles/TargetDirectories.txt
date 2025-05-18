@@ -1,0 +1,2 @@
+C:/Users/user/StudioProjects/deliverytak/android/app/.cxx/Debug/6n6he6z2/x86/CMakeFiles/edit_cache.dir
+C:/Users/user/StudioProjects/deliverytak/android/app/.cxx/Debug/6n6he6z2/x86/CMakeFiles/rebuild_cache.dir

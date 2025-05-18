@@ -1,65 +1,68 @@
 name: deliverytak
-description: "Deliverytak is a Flutter application integrated with Firebase backend services, designed to serve as a fashion store with an intuitive admin panel. It allows users to browse through a variety of fashion items, add them to their cart, and make purchases seamlessly. Additionally, it empowers administrators to manage product listings, orders, and user data efficiently."
+description: A new Flutter project.
 publish_to: 'none'
 version: 1.0.0+1
+
 environment:
-  sdk: '>=3.3.3 <4.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
   
-  firebase_core: ^2.27.1
-  firebase_auth: ^4.17.9
-  cloud_firestore: ^4.15.9
-  firebase_storage: ^11.6.10
-  firebase_messaging: ^14.8.2
+  # Firebase Integration
+  firebase_core: ^3.13.0
+  firebase_auth: ^5.5.3
+  cloud_firestore: ^5.6.7
+  firebase_storage: ^12.4.5
+  firebase_messaging: ^15.2.5
 
+  # State Management
+  provider: ^6.1.1
+
+  # UI Components
   flutter_bootstrap5: ^1.1.1+1
-  get: ^4.6.5
-  flutter_local_notifications: ^17.1.0
-  phone_form_field: ^9.2.5
-  font_awesome_flutter: ^10.5.0
-  url_launcher: ^6.1.12
+  carousel_slider: ^5.0.0
+  flutter_rating_bar: ^4.0.1
+  flutter_chat_ui: ^1.6.10
+  fl_chart: ^1.0.0
+  flutter_local_notifications: ^19.2.0
+  google_maps_flutter: ^2.12.2
+
+  # Payment Processing
+  flutter_stripe: ^11.5.0
+
+  # Image Handling
+  image_picker: ^1.0.7
+  image_cropper: ^9.1.0
   cached_network_image: ^3.3.0
-  carousel_slider: ^4.2.1
-  image_picker: ^1.0.2
-  flutter_map: ^6.1.0
-  geolocator: ^11.0.0
-  syncfusion_flutter_charts: ^25.1.38
-  flex_color_picker: ^3.4.1
-  barcode_widget: ^2.0.4
-  simple_barcode_scanner: ^0.1.1
+
+  # Authentication
+  google_sign_in: ^6.2.1
+  sign_in_with_apple: ^7.0.1
+
+  # Storage & Security
+  flutter_secure_storage: ^10.0.0-beta.4
+  shared_preferences: ^2.2.2
+
+  # Utilities
+  logger: ^2.0.2+1
+  intl: ^0.20.2
+  flutter_dotenv: ^5.1.0
+  url_launcher: ^6.2.4
+  connectivity_plus: ^6.1.4
+  http: ^1.1.0
+  path: any
+  logging: ^1.2.0
+  timezone: any
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-  flutter_lints: ^3.0.0
-  flutter_launcher_icons: ^0.13.1
-
-flutter_launcher_icons:
-  android: "launcher_icon"
-  ios: true
-  image_path: "assets/favicon.png"
-  adaptive_icon_background: "#ffffff"
-  adaptive_icon_foreground: "assets/favicon.png"
-  min_sdk_android: 21
-  web:
-    generate: true
-    image_path: "assets/favicon.png"
-    background_color: "#ffffff"
-    theme_color: "#ffffff"
+  flutter_lints: ^5.0.0
 
 flutter:
-
   uses-material-design: true
-
-  fonts:
-    - family: Montserrat
-      fonts:
-        - asset: assets/fonts/Montserrat.ttf
-        
-    - family: Breathing
-      fonts:
-        - asset: assets/fonts/Breathing.ttf
+  assets:
+    - .env
+    - assets/
