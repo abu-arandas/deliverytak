@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'config/routes.dart';
 import 'config/theme.dart';
+import 'config/firebase_options.dart';
 
 import 'services/auth_service.dart';
 import 'services/delivery_service.dart';
@@ -28,7 +29,9 @@ import 'providers/delivery_schedule_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await dotenv.load();
 
   // Set up logging

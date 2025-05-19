@@ -1,0 +1,2 @@
+C:/Users/user/StudioProjects/deliverytak/android/app/.cxx/RelWithDebInfo/r6e2a2f4/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/user/StudioProjects/deliverytak/android/app/.cxx/RelWithDebInfo/r6e2a2f4/armeabi-v7a/CMakeFiles/rebuild_cache.dir

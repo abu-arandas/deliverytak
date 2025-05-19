@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:logging/logging.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:convert';
 
 import '../models/batch_delivery.dart';
@@ -87,7 +88,7 @@ class BatchDeliveryService {
       final destination = waypoints.last;
 
       // Call Google Maps Directions API
-      final apiKey = 'YOUR_API_KEY'; // TODO Replace with your actual API key
+      final apiKey = dotenv.env['GOOGLE_MAPS_API_KEY'];
       final url =
           'https://maps.googleapis.com/maps/api/directions/json?origin=$origin&destination=$destination&waypoints=optimize:true|${waypoints.join('|')}&key=$apiKey';
       final response = await http.get(Uri.parse(url));
@@ -183,7 +184,7 @@ class BatchDeliveryService {
       final origin = waypoints.first;
       final destination = waypoints.last;
 
-      final apiKey = 'YOUR_API_KEY'; // TODO Replace with your actual API key
+      final apiKey = dotenv.env['GOOGLE_MAPS_API_KEY'];
       final url =
           'https://maps.googleapis.com/maps/api/directions/json?origin=$origin&destination=$destination&waypoints=${waypoints.join('|')}&key=$apiKey';
       final response = await http.get(Uri.parse(url));
